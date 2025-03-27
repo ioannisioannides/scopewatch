@@ -1,0 +1,201 @@
+# -------------- #
+#  Python / Core #
+# -------------- #
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# -------------- #
+#  Django Stuff  #
+# -------------- #
+
+*.log
+local_settings.py
+
+# SQLite (Django’s default dev DB if ever used)
+db.sqlite3
+db.sqlite3-journal
+
+# Static and media (if generated locally, not in version control)
+staticfiles/
+media/
+
+# -------------- #
+#  Flask stuff   #
+# -------------- #
+instance/
+.webassets-cache
+
+# -------------- #
+#  Scrapy stuff  #
+# -------------- #
+.scrapy
+
+# -------------- #
+#  Sphinx docs   #
+# -------------- #
+docs/_build/
+
+# -------------- #
+#  PyBuilder     #
+# -------------- #
+.pybuilder/
+target/
+
+# -------------- #
+#  Jupyter       #
+# -------------- #
+.ipynb_checkpoints
+
+# -------------- #
+#  IPython       #
+# -------------- #
+profile_default/
+ipython_config.py
+
+# -------------- #
+#   PyEnv stuff  #
+# -------------- #
+.python-version
+
+# -------------- #
+#   pipenv       #
+# -------------- #
+#Pipfile.lock
+
+# -------------- #
+#   poetry       #
+# -------------- #
+#poetry.lock
+
+# -------------- #
+#   pdm          #
+# -------------- #
+.pdm.toml
+.pdm-python
+.pdm-build/
+__pypackages__/
+
+# -------------- #
+#   Celery       #
+# -------------- #
+celerybeat-schedule
+celerybeat.pid
+
+# -------------- #
+#   SageMath     #
+# -------------- #
+*.sage.py
+
+# -------------- #
+#  Environments  #
+# -------------- #
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# -------------- #
+#  Spyder / Rope #
+# -------------- #
+.spyderproject
+.spyproject
+.ropeproject
+
+# -------------- #
+#   mkdocs       #
+# -------------- #
+/site
+
+# -------------- #
+#    mypy        #
+# -------------- #
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# -------------- #
+#    Pyre        #
+# -------------- #
+.pyre/
+
+# -------------- #
+#   pytype       #
+# -------------- #
+.pytype/
+
+# -------------- #
+#  Cython debug  #
+# -------------- #
+cython_debug/
+
+# -------------- #
+#   JetBrains    #
+# -------------- #
+# (See Global/JetBrains.gitignore for an expanded version)
+#.idea/
+
+# -------------- #
+#   Ruff         #
+# -------------- #
+.ruff_cache/
+
+# -------------- #
+#   PyPI config  #
+# -------------- #
+.pypirc
