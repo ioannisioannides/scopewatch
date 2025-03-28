@@ -1,3 +1,4 @@
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/ioannisioannides/scopewatch?utm_source=oss&utm_medium=github&utm_campaign=ioannisioannides%2Fscopewatch&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 # scopewatch
 Scopewatch is an open-source platform for managing compliance and certifications. It unites organizations, certifying bodies, and auditors in a privacy-first workflow, fostering trust, accountability, and transparency.
 ## Why Scopewatch?
