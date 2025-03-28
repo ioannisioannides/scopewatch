@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.audits.apps.AuditsConfig',
+    'apps.certification_bodies.apps.CertificationBodiesConfig',
 ]
 
 MIDDLEWARE = [
