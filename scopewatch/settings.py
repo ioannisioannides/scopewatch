@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.audits.apps.AuditsConfig',
     'apps.certification_bodies.apps.CertificationBodiesConfig',
+    'apps.organizations.apps.OrganizationsConfig',
 ]
 
 MIDDLEWARE = [
