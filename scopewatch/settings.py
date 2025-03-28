@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'apps.audits.apps.AuditsConfig',
     'apps.certification_bodies.apps.CertificationBodiesConfig',
     'apps.organizations.apps.OrganizationsConfig',
+    'apps.consultants.apps.ConsultantsConfig'
 ]
 
 MIDDLEWARE = [
