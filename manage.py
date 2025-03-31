@@ -3,6 +3,9 @@
 manage.py
 
 Django's command-line utility for administrative tasks in the Scopewatch project.
+
+This script is used to manage the application, including running the server,
+applying migrations, and other administrative tasks.
 """
 
 import os

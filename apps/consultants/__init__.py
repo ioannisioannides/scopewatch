@@ -1,5 +1,7 @@
 # apps/consultants/__init__.py
 """
 Initialize the Consultants app package.
-This file can remain empty unless you have package-level code to run.
+
+This file marks the 'consultants' directory as a Python package.
+It can remain empty unless package-level code is required.
 """

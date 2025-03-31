@@ -1,7 +1,8 @@
 """
-ASGI config for the Scopewatch project.
+ASGI configuration for the Scopewatch project.
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+This module contains the ASGI application used for serving the project
+in an asynchronous environment.
 """
 
 import os

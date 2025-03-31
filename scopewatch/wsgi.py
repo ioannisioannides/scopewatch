@@ -1,7 +1,8 @@
 """
-WSGI config for the Scopewatch project.
+WSGI configuration for the Scopewatch project.
 
-It exposes the WSGI callable as a module-level variable named ``application``.
+This module contains the WSGI application used for serving the project
+in a production environment.
 """
 
 import os
