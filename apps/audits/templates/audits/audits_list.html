@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audits</title>
+</head>
+<body>
+    <h1>Audit List</h1>
+    <ul>
+        {% for audit in audits %}
+            <li><a href="{{ audit.id }}/">{{ audit.audit_type }} - {{ audit.status }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
