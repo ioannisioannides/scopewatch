@@ -29,4 +29,10 @@ class Organization(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
+        """
+        Returns a string representation of the organization.
+
+        Returns:
+            str: The name of the organization.
+        """
         return self.name

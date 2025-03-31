@@ -7,7 +7,6 @@ This module contains views for listing audits and displaying audit details.
 """
 
 from django.shortcuts import render
-from django.http import HttpResponse
 from .models import Audit
 
 def audit_list_view(request):

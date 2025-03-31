@@ -29,4 +29,10 @@ class CertBody(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
+        """
+        Returns a string representation of the certification body.
+
+        Returns:
+            str: The name of the certification body.
+        """
         return self.name

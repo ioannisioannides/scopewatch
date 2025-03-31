@@ -36,4 +36,10 @@ class Audit(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        """
+        Returns a string representation of the audit.
+
+        Returns:
+            str: A string containing the audit type and status.
+        """
         return f"{self.audit_type} - {self.status}"

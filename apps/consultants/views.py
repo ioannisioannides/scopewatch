@@ -11,18 +11,18 @@ from django.http import HttpResponse
 
 def consultant_list_view(request):
     """
-    Placeholder view that returns a static HTTP response for listing consultants.
-
-    This view currently returns a simple HTTP response with placeholder text and is
-    meant to be expanded in the future to render dynamic consultant data or return JSON.
+    View for listing all consultants.
 
     Returns:
-        HttpResponse: A HTTP response containing a placeholder message.
+        HttpResponse: A placeholder response for the consultant list.
     """
     return HttpResponse("Consultant List Placeholder")
 
 def consultancy_firm_list_view(request):
     """
-    Placeholder view for listing consultancy firms.
+    View for listing all consultancy firms.
+
+    Returns:
+        HttpResponse: A placeholder response for the consultancy firm list.
     """
     return HttpResponse("Consultancy Firm List Placeholder")
