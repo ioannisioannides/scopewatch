@@ -1,6 +1,6 @@
 # Use an official Python runtime as a parent image.
-# The python:alpine image.
-FROM python:alpine
+# The python image.
+FROM python:3.13
 
 # Set environment variables:
 # Prevents Python from writing pyc files and forces stdout/stderr to be unbuffered.
