@@ -1,5 +1,12 @@
 # apps/consultants/views.py
 
+"""
+Views for the Consultants app.
+
+This module contains placeholder views for listing consultants and consultancy firms.
+These views can be expanded to include logic for rendering templates or returning JSON responses.
+"""
+
 from django.http import HttpResponse
 
 def consultant_list_view(request):
