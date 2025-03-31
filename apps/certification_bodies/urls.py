@@ -1,3 +1,10 @@
+"""
+URL configuration for the Certification Bodies app.
+
+This module defines the URL patterns for the Certification Bodies app,
+including routes for listing and viewing details of certification bodies.
+"""
+
 from django.urls import path
 from . import views
 
