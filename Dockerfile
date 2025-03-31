@@ -4,8 +4,8 @@ FROM python:3.13
 
 # Set environment variables:
 # Prevents Python from writing pyc files and forces stdout/stderr to be unbuffered.
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Set the working directory inside the container.
 WORKDIR /app
