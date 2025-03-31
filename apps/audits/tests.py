@@ -1,5 +1,12 @@
 # apps/audits/tests.py
 
+"""
+Unit tests for the Audits app.
+
+This module contains test cases for the Audit model and its functionality.
+Expand these tests to cover additional scenarios and edge cases.
+"""
+
 from django.test import TestCase
 from .models import Audit
 
