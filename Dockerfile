@@ -1,6 +1,6 @@
 # Use an official Python runtime as a parent image.
-# The python:3.10-slim image supports ARM on Mac.
-FROM python:3.10-slim
+# The python:alpine image.
+FROM python:alpine
 
 # Set environment variables:
 # Prevents Python from writing pyc files and forces stdout/stderr to be unbuffered.
