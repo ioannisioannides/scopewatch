@@ -63,11 +63,14 @@ WSGI_APPLICATION = 'scopewatch.wsgi.application'
 ASGI_APPLICATION = 'scopewatch.asgi.application'
 
 # Database
-# By default, use SQLite. Switch to PostgreSQL when you're ready.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'scopewatch',  # Replace with your PostgreSQL database name
+        'USER': 'scopewatch_user',  # Replace with your PostgreSQL username
+        'PASSWORD': 'your_password',  # Replace with your PostgreSQL password
+        'HOST': '127.0.0.1',  # Replace with your PostgreSQL host (e.g., localhost)
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 

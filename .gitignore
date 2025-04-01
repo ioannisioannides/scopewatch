@@ -65,8 +65,8 @@ cover/
 local_settings.py
 
 # SQLite (Django’s default dev DB if ever used)
-db.sqlite3
-db.sqlite3-journal
+# db.sqlite3
+# db.sqlite3-journal
 
 # Static and media (if generated locally, not in version control)
 staticfiles/
@@ -202,4 +202,3 @@ cython_debug/
 
 # Ignore macOS system files
 .DS_Store
-
