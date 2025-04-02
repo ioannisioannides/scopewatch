@@ -3,7 +3,8 @@
 """
 Models for the Certification Bodies app.
 
-This module defines the database models for the Certification Bodies app, including the CertBody model.
+This module defines the database models for the Certification Bodies app, 
+including the CertBody model.
 The CertBody model represents certification bodies that conduct audits and issue certificates.
 """
 
