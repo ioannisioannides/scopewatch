@@ -1,0 +1,105 @@
+name: Test Application
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-application:
+    name: Run Tests for All User Roles
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: scopewatch_user
+          POSTGRES_PASSWORD: mypassword
+          POSTGRES_DB: scopewatch
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U scopewatch_user -d scopewatch"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Set up the database
+      - name: Set up the database
+        env:
+          DJANGO_SETTINGS_MODULE: scopewatch.settings
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
+
+      # Step 5: Seed the database with test data
+      - name: Seed the database
+        env:
+          DJANGO_SETTINGS_MODULE: scopewatch.settings
+        run: |
+          python manage.py shell <<EOF
+          from apps.organizations.models import Organization, Certification
+          from apps.certification_bodies.models import CertBody
+          from django.contrib.auth.models import User
+
+          # Create test users
+          public_user = User.objects.create_user(username="public_user", password="password")
+          cb_user = User.objects.create_user(username="cert_body_user", password="password")
+          consultant_user = User.objects.create_user(username="consultant_user", password="password")
+          firm_user = User.objects.create_user(username="firm_user", password="password")
+          org_user = User.objects.create_user(username="org_user", password="password")
+          auditor_user = User.objects.create_user(username="auditor_user", password="password")
+
+          # Create test data
+          org = Organization.objects.create(name="Test Organization", contact_email="test@org.com")
+          cert_body = CertBody.objects.create(name="Test Certification Body", accreditation_id="ACB123")
+          Certification.objects.create(
+              organization=org,
+              cert_body=cert_body,
+              certificate_number="CERT123",
+              standard="ISO 9001",
+              issue_date="2025-01-01",
+              expiry_date="2026-01-01",
+              is_active=True
+          )
+          EOF
+
+      # Step 6: Run tests for all user roles
+      - name: Run tests for all user roles
+        env:
+          DJANGO_SETTINGS_MODULE: scopewatch.settings
+        run: |
+          python manage.py test apps.public.tests.PublicAppTest
+          python manage.py test apps.certification_bodies.tests.CertBodyModelTest
+          python manage.py test apps.consultants.tests.ConsultantsModelTest
+          python manage.py test apps.organizations.tests.OrganizationModelTest
+          python manage.py test apps.audits.tests.AuditModelTest
+
+      # Step 7: List all issues
+      - name: List all issues
+        run: |
+          echo "Listing all issues found during testing:"
+          cat test-results.log || echo "No issues found."
