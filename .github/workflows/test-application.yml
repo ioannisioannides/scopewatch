@@ -94,6 +94,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
         run: |
+          source venv/bin/activate  # Activate the virtual environment
           python manage.py test apps.public.tests.PublicAppTest
           python manage.py test apps.certification_bodies.tests.CertBodyModelTest
           python manage.py test apps.consultants.tests.ConsultantsModelTest
