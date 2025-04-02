@@ -8,6 +8,7 @@ which represents organizations that may request certifications or be audited.
 """
 
 from django.db import models
+from apps.certification_bodies.models import CertBody
 
 class Organization(models.Model):
     """
@@ -36,3 +37,27 @@ class Organization(models.Model):
             str: The name of the organization.
         """
         return self.name
+
+class Certification(models.Model):
+    """
+    Represents a certification issued to an organization.
+
+    Attributes:
+        organization (ForeignKey): The organization receiving the certification.
+        cert_body (ForeignKey): The certification body issuing the certification.
+        certificate_number (str): Unique identifier for the certification.
+        standard (str): The standard for which the certification is issued (e.g., ISO 9001).
+        issue_date (date): The date the certification was issued.
+        expiry_date (date): The date the certification expires.
+        is_active (bool): Indicates whether the certification is currently active.
+    """
+    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name='certifications')
+    cert_body = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name='certifications')
+    certificate_number = models.CharField(max_length=100, unique=True)
+    standard = models.CharField(max_length=255)
+    issue_date = models.DateField()
+    expiry_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.organization.name} - {self.standard} ({self.certificate_number})"

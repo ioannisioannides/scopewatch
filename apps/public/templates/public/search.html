@@ -5,11 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Certified Organizations</title>
-    <!-- Django Admin CSS -->
     <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
 </head>
 <body>
     <div id="container">
@@ -20,21 +16,34 @@
             <form method="GET" action="">
                 <fieldset>
                     <div class="form-row">
-                        <label for="organization">Organization Name:</label>
-                        <input type="text" id="organization" name="organization" class="vTextField" placeholder="Enter organization name">
+                        <label for="query">Organization Name:</label>
+                        <input type="text" id="query" name="query" class="vTextField" value="{{ query }}" placeholder="Enter organization name">
                     </div>
                     <div class="form-row">
-                        <label for="certbody">Certifying Body:</label>
-                        <input type="text" id="certbody" name="certbody" class="vTextField" placeholder="Enter certifying body">
+                        <label for="cert_body">Certifying Body:</label>
+                        <input type="text" id="cert_body" name="cert_body" class="vTextField" value="{{ cert_body }}" placeholder="Enter certifying body">
                     </div>
                     <div class="buttons">
                         <button type="submit" class="button">Search</button>
                     </div>
                 </fieldset>
             </form>
-        </div>
-        <div id="footer">
-            <p>&copy; 2025 Scopewatch. All rights reserved.</p>
+            {% if results %}
+                <h2>Search Results</h2>
+                <ul>
+                    {% for result in results %}
+                        <li>
+                            {{ result.organization.name }} - {{ result.standard }} ({{ result.certificate_number }})
+                            <br>
+                            Issued by: {{ result.cert_body.name }}
+                            <br>
+                            Valid until: {{ result.expiry_date }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No results found.</p>
+            {% endif %}
         </div>
     </div>
 </body>
