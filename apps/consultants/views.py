@@ -8,7 +8,9 @@ These views can be expanded to include logic for rendering templates or returnin
 """
 
 from django.shortcuts import render
-from .models import Consultant, ConsultancyFirm
+
+from .models import ConsultancyFirm, Consultant
+
 
 def consultant_list_view(request):
     """

@@ -6,6 +6,7 @@ including routes for the homepage, search, and certificate verification.
 """
 
 from django.urls import path
+
 from . import views
 
 urlpatterns = [

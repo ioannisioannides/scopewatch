@@ -6,6 +6,7 @@ including routes for listing consultants and consultancy firms.
 """
 
 from django.urls import path
+
 from . import views
 
 urlpatterns = [

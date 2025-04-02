@@ -6,6 +6,7 @@ including routes for listing and viewing details of certification bodies.
 """
 
 from django.urls import path
+
 from . import views
 
 urlpatterns = [

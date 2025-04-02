@@ -9,6 +9,7 @@ which is responsible for managing certification bodies and their related data.
 
 from django.apps import AppConfig
 
+
 class CertificationBodiesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.certification_bodies'

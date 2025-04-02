@@ -10,6 +10,7 @@ The CertBody model represents certification bodies that conduct audits and issue
 
 from django.db import models
 
+
 class CertBody(models.Model):
     """
     Represents a Certification Body, which can conduct audits and issue certificates.

@@ -6,8 +6,10 @@ Views for the Certification Bodies app.
 This module contains views for listing certification bodies and displaying their details.
 """
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
+
 from .models import CertBody
+
 
 def certbody_list_view(request):
     """

@@ -7,10 +7,12 @@ This module contains test cases for the Consultant and ConsultancyFirm models.
 These tests ensure that the models behave as expected when creating and validating instances.
 """
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
-from .models import Consultant, ConsultancyFirm
+
+from .models import ConsultancyFirm, Consultant
+
 
 class ConsultantsModelTest(TestCase):
     """

@@ -2,7 +2,9 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render
-from apps.organizations.models import Organization, Certification
+
+from apps.organizations.models import Certification, Organization
+
 
 def public_home_view(request):
     """

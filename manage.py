@@ -10,7 +10,10 @@ applying migrations, and other administrative tasks.
 
 import os
 import sys
-from django.core.management import execute_from_command_line  # Moved to the top-level
+
+from django.core.management import \
+    execute_from_command_line  # Moved to the top-level
+
 
 def main():
     """Run administrative tasks."""

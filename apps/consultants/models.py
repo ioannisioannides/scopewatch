@@ -7,8 +7,9 @@ This module defines the database models for the Consultants app, including the C
 which represent individual consultants and consultancy firms, respectively.
 """
 
-from django.db import models
 from django.conf import settings
+from django.db import models
+
 
 class Consultant(models.Model):
     """

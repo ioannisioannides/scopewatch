@@ -9,7 +9,9 @@ certification bodies can be created and validated correctly.
 
 from django.test import TestCase
 from django.urls import reverse
+
 from .models import CertBody
+
 
 class CertBodyModelTest(TestCase):
     """
