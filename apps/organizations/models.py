@@ -41,15 +41,6 @@ class Organization(models.Model):
 class Certification(models.Model):
     """
     Represents a certification issued to an organization.
-
-    Attributes:
-        organization (ForeignKey): The organization receiving the certification.
-        cert_body (ForeignKey): The certification body issuing the certification.
-        certificate_number (str): Unique identifier for the certification.
-        standard (str): The standard for which the certification is issued (e.g., ISO 9001).
-        issue_date (date): The date the certification was issued.
-        expiry_date (date): The date the certification expires.
-        is_active (bool): Indicates whether the certification is currently active.
     """
     organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name='certifications')
     cert_body = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name='certifications')
