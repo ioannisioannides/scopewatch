@@ -1,6 +1,7 @@
 # apps/public/views.py
 
 from django.http import HttpResponse
+from django.shortcuts import render
 
 def public_home_view(request):
     """
@@ -19,6 +20,15 @@ def home_view(request):
     View for the root URL (homepage).
 
     Returns:
-        HttpResponse: A simple welcome message.
+        HttpResponse: Renders the homepage template.
     """
-    return HttpResponse("<h1>Welcome to Scopewatch!</h1><p>This is the homepage.</p>")
+    return render(request, 'public/home.html')
+
+def search_certified_organizations_view(request):
+    """
+    View for searching certified organizations.
+
+    Returns:
+        HttpResponse: Renders the search page template.
+    """
+    return render(request, 'public/search.html')

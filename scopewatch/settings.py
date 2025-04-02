@@ -96,5 +96,9 @@ STATIC_URL = '/static/'
 # For production, run "python manage.py collectstatic" to gather static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Redirect URLs after login/logout
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
