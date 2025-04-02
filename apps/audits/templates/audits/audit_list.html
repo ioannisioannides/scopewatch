@@ -1,14 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Audits</title>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit List</title>
+    <!-- Django Admin CSS -->
+    <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
 </head>
 <body>
-    <h1>Audit List</h1>
-    <ul>
-        {% for audit in audits %}
-            <li><a href="{{ audit.id }}/">{{ audit.audit_type }} - {{ audit.status }}</a></li>
-        {% endfor %}
-    </ul>
+    <div id="container">
+        <div id="header">
+            <h1>Audit List</h1>
+        </div>
+        <div id="content" class="module">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Audit Type</th>
+                        <th>Status</th>
+                        <th>Organization</th>
+                        <th>Certifying Body</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for audit in audits %}
+                    <tr>
+                        <td>{{ audit.id }}</td>
+                        <td>{{ audit.audit_type }}</td>
+                        <td>{{ audit.status }}</td>
+                        <td>{{ audit.organization.name }}</td>
+                        <td>{{ audit.certifying_body }}</td>
+                        <td>{{ audit.start_date }}</td>
+                        <td>{{ audit.end_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="footer">
+            <p>&copy; 2025 Scopewatch. All rights reserved.</p>
+        </div>
+    </div>
 </body>
 </html>

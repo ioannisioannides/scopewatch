@@ -9,6 +9,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.audit_list_view, name='audit_list'),  # List view
-    path('<int:audit_id>/', views.audit_detail_view, name='audit_detail'),  # Detail view
+    path('', views.audit_list_view, name='audit_list'),  # List view for audits
+    path('<int:audit_id>/', views.audit_detail_view, name='audit_detail'),  # Detail view for a specific audit
 ]

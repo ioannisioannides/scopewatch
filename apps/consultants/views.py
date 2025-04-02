@@ -7,22 +7,19 @@ This module contains placeholder views for listing consultants and consultancy f
 These views can be expanded to include logic for rendering templates or returning JSON responses.
 """
 
-from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Consultant, ConsultancyFirm
 
 def consultant_list_view(request):
     """
     View for listing all consultants.
-
-    Returns:
-        HttpResponse: A placeholder response for the consultant list.
     """
-    return HttpResponse("Consultant List Placeholder")
+    consultants = Consultant.objects.all()
+    return render(request, 'consultants/consultant_list.html', {'consultants': consultants})
 
 def consultancy_firm_list_view(request):
     """
     View for listing all consultancy firms.
-
-    Returns:
-        HttpResponse: A placeholder response for the consultancy firm list.
     """
-    return HttpResponse("Consultancy Firm List Placeholder")
+    firms = ConsultancyFirm.objects.all()
+    return render(request, 'consultants/consultancy_firm_list.html', {'firms': firms})

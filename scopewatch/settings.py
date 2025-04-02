@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'apps.audits.apps.AuditsConfig',
     'apps.certification_bodies.apps.CertificationBodiesConfig',
     'apps.organizations.apps.OrganizationsConfig',
-    'apps.consultants.apps.ConsultantsConfig',  # Add the missing comma here
+    'apps.consultants.apps.ConsultantsConfig',
     'apps.public.apps.PublicConfig',
 ]
 
@@ -92,9 +92,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory to collect static files
 
 # For production, run "python manage.py collectstatic" to gather static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Redirect URLs after login/logout
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

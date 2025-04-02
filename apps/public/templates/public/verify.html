@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification</title>
+    <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <h1>Certificate Verification</h1>
+        </div>
+        <div id="content" class="module">
+            <form method="GET" action="">
+                <fieldset>
+                    <div class="form-row">
+                        <label for="certificate_number">Certificate Number:</label>
+                        <input type="text" id="certificate_number" name="certificate_number" class="vTextField" value="{{ certificate_number }}" placeholder="Enter certificate number">
+                    </div>
+                    <div class="buttons">
+                        <button type="submit" class="button">Verify</button>
+                    </div>
+                </fieldset>
+            </form>
+            {% if certificate %}
+                <h2>Certificate Details</h2>
+                <p>Organization: {{ certificate.organization.name }}</p>
+                <p>Standard: {{ certificate.standard }}</p>
+                <p>Issued by: {{ certificate.cert_body.name }}</p>
+                <p>Valid until: {{ certificate.expiry_date }}</p>
+            {% elif certificate_number %}
+                <p>No certificate found with the provided number.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

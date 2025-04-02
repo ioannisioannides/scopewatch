@@ -8,6 +8,7 @@ certification bodies can be created and validated correctly.
 """
 
 from django.test import TestCase
+from django.urls import reverse
 from .models import CertBody
 
 class CertBodyModelTest(TestCase):
@@ -29,3 +30,17 @@ class CertBodyModelTest(TestCase):
         self.assertEqual(cert_body.name, "QualityCert")
         self.assertEqual(cert_body.accreditation_id, "ACB123")
         self.assertTrue(cert_body.is_active)
+
+class CertBodyViewTest(TestCase):
+    def setUp(self):
+        self.cert_body = CertBody.objects.create(name="Test Cert Body")
+
+    def test_certbody_list_view(self):
+        response = self.client.get(reverse('certbody_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Test Cert Body")
+
+    def test_certbody_detail_view(self):
+        response = self.client.get(reverse('certbody_detail', args=[self.cert_body.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Test Cert Body")
