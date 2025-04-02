@@ -9,9 +9,11 @@ Expand these tests to cover additional scenarios and edge cases.
 
 from django.test import TestCase
 from django.urls import reverse
+
 from apps.audits.models import Audit
-from apps.organizations.models import Organization
 from apps.certification_bodies.models import CertBody
+from apps.organizations.models import Organization
+
 
 class AuditModelTest(TestCase):
     """

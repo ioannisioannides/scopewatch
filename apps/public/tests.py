@@ -3,6 +3,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
+
 class PublicAppTest(TestCase):
     """
     Basic placeholder test class for the Public app.

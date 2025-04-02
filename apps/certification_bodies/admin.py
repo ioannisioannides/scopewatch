@@ -1,7 +1,9 @@
 # apps/certification_bodies/admin.py
 
 from django.contrib import admin
+
 from .models import CertBody
+
 
 @admin.register(CertBody)
 class CertBodyAdmin(admin.ModelAdmin):

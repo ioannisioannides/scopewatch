@@ -1,7 +1,9 @@
 # apps/consultants/admin.py
 
 from django.contrib import admin
-from .models import Consultant, ConsultancyFirm
+
+from .models import ConsultancyFirm, Consultant
+
 
 @admin.register(Consultant)
 class ConsultantAdmin(admin.ModelAdmin):

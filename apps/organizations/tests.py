@@ -9,7 +9,9 @@ Expand these tests to cover additional scenarios and edge cases.
 
 from django.test import TestCase
 from django.urls import reverse
+
 from .models import Organization
+
 
 class OrganizationModelTest(TestCase):
     """

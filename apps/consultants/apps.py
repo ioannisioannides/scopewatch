@@ -9,6 +9,7 @@ which manages consultants and consultancy firms.
 
 from django.apps import AppConfig
 
+
 class ConsultantsConfig(AppConfig):
     """
     Configuration class for the Consultants app.

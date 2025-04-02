@@ -3,8 +3,10 @@ URL configuration for the Scopewatch project.
 """
 
 from django.contrib import admin
-from django.urls import path, include
-from apps.public.views import home_view, search_certified_organizations_view, certificate_verification_view
+from django.urls import include, path
+
+from apps.public.views import (certificate_verification_view, home_view,
+                               search_certified_organizations_view)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

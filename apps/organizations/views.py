@@ -6,8 +6,10 @@ Views for the Organizations app.
 This module contains views for listing organizations and displaying organization details.
 """
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
+
 from .models import Organization
+
 
 def organization_list_view(request):
     """

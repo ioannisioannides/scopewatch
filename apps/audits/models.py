@@ -8,8 +8,10 @@ which represents audit records linking organizations and certification bodies.
 """
 
 from django.db import models
-from apps.organizations.models import Organization
+
 from apps.certification_bodies.models import CertBody
+from apps.organizations.models import Organization
+
 
 class Audit(models.Model):
     """

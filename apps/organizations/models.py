@@ -8,7 +8,9 @@ which represents organizations that may request certifications or be audited.
 """
 
 from django.db import models
+
 from apps.certification_bodies.models import CertBody
+
 
 class Organization(models.Model):
     """
