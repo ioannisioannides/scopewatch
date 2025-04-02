@@ -24,7 +24,8 @@ def audit_list_view(request):
         HttpResponse: The rendered HTML response containing the list of audits.
     """
     audits = Audit.objects.all()
-    return render(request, 'audits/audit_list.html', {'audits': audits})
+    return render(request, "audits/audit_list.html", {"audits": audits})
+
 
 def audit_detail_view(request, audit_id):
     """
@@ -40,4 +41,4 @@ def audit_detail_view(request, audit_id):
         HttpResponse: The rendered HTML response containing the audit details.
     """
     audit = get_object_or_404(Audit, id=audit_id)
-    return render(request, 'audits/audit_detail.html', {'audit': audit})
+    return render(request, "audits/audit_detail.html", {"audit": audit})

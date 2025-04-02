@@ -17,6 +17,7 @@ class ConsultantsConfig(AppConfig):
     This class sets the default primary key field type and specifies
     the app name and verbose name for the Consultants app.
     """
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.consultants'
-    verbose_name = 'Consultants'
+
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.consultants"
+    verbose_name = "Consultants"

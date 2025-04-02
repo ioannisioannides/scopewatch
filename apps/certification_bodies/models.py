@@ -3,7 +3,7 @@
 """
 Models for the Certification Bodies app.
 
-This module defines the database models for the Certification Bodies app, 
+This module defines the database models for the Certification Bodies app,
 including the CertBody model.
 The CertBody model represents certification bodies that conduct audits and issue certificates.
 """
@@ -23,6 +23,7 @@ class CertBody(models.Model):
         created_at (datetime): The timestamp when the certification body was created.
         is_active (bool): Indicates whether the certification body is active.
     """
+
     name = models.CharField(max_length=255)
     accreditation_id = models.CharField(max_length=100, blank=True, null=True)
     address = models.TextField(blank=True)

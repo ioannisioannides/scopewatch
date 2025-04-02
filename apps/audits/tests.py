@@ -19,20 +19,19 @@ class AuditModelTest(TestCase):
     """
     Basic tests for the Audit model. Expand with real scenarios.
     """
+
     def setUp(self):
         """
         Set up test data for the Audit model.
         """
         # Create a test organization
         self.organization = Organization.objects.create(
-            name="Test Organization",
-            contact_email="test@organization.com"
+            name="Test Organization", contact_email="test@organization.com"
         )
 
         # Create a test certification body
         self.cert_body = CertBody.objects.create(
-            name="Test Certification Body",
-            accreditation_id="ACB123"
+            name="Test Certification Body", accreditation_id="ACB123"
         )
 
     def test_create_audit(self):
@@ -43,12 +42,13 @@ class AuditModelTest(TestCase):
             audit_type="Stage1",
             status="In Progress",
             organization=self.organization,
-            certbody=self.cert_body  # Assign the certbody
+            certbody=self.cert_body,  # Assign the certbody
         )
         self.assertEqual(audit.audit_type, "Stage1")
         self.assertEqual(audit.status, "In Progress")
         self.assertEqual(audit.organization.name, "Test Organization")
         self.assertEqual(audit.certbody.name, "Test Certification Body")
+
 
 class AuditViewTest(TestCase):
     def setUp(self):
@@ -58,15 +58,15 @@ class AuditViewTest(TestCase):
             audit_type="Stage1",
             status="Scheduled",
             organization=self.organization,
-            certbody=self.cert_body
+            certbody=self.cert_body,
         )
 
     def test_audit_list_view(self):
-        response = self.client.get(reverse('audit_list'))
+        response = self.client.get(reverse("audit_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Stage1")
 
     def test_audit_detail_view(self):
-        response = self.client.get(reverse('audit_detail', args=[self.audit.id]))
+        response = self.client.get(reverse("audit_detail", args=[self.audit.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Stage1")

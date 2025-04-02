@@ -10,7 +10,7 @@ for the public app, such as public certificate access logs, you can define model
 from django.db import models  # Keeping this import for potential future use
 
 # Example model for tracking public certificate access logs:
-# 
+#
 # class CertificateAccessLog(models.Model):
 #     """
 #     Represents a log entry for public access to a certificate.
