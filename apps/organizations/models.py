@@ -33,13 +33,7 @@ class Organization(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        """
-        Returns a string representation of the organization.
-
-        Returns:
-            str: The name of the organization.
-        """
-        return self.name
+        return self.name  # Ensure this returns a string
 
 
 class Certification(models.Model):
@@ -58,4 +52,4 @@ class Certification(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.organization.name} - {self.standard} ({self.certificate_number})"
+        return str(f"{self.organization.name} - {self.standard} ({self.certificate_number})")
