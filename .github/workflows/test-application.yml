@@ -49,17 +49,17 @@ jobs:
 
       # Step 4: Set up the database
       - name: Set up the database
-        env:
-          DJANGO_SETTINGS_MODULE: scopewatch.settings
         run: |
+          source venv/bin/activate  # Activate the virtual environment
           python manage.py makemigrations
           python manage.py migrate
+        env:
+          DJANGO_SETTINGS_MODULE: scopewatch.settings
 
       # Step 5: Seed the database with test data
       - name: Seed the database
-        env:
-          DJANGO_SETTINGS_MODULE: scopewatch.settings
         run: |
+          source venv/bin/activate  # Activate the virtual environment
           python manage.py shell <<EOF
           from apps.organizations.models import Organization, Certification
           from apps.certification_bodies.models import CertBody
@@ -86,6 +86,8 @@ jobs:
               is_active=True
           )
           EOF
+        env:
+          DJANGO_SETTINGS_MODULE: scopewatch.settings
 
       # Step 6: Run tests for all user roles
       - name: Run tests for all user roles
