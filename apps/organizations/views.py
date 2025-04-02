@@ -6,27 +6,19 @@ Views for the Organizations app.
 This module contains views for listing organizations and displaying organization details.
 """
 
-from django.http import HttpResponse
-from django.utils.html import escape
+from django.shortcuts import render, get_object_or_404
+from .models import Organization
 
 def organization_list_view(request):
     """
     View for listing all organizations.
-
-    Returns:
-        HttpResponse: A placeholder response for the organization list.
     """
-    return HttpResponse("Organization List Placeholder")
+    organizations = Organization.objects.all()
+    return render(request, 'organizations/organization_list.html', {'organizations': organizations})
 
 def organization_detail_view(request, org_id):
     """
     View for displaying the details of a specific organization.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-        org_id (int): The ID of the organization to retrieve.
-
-    Returns:
-        HttpResponse: A placeholder response for the organization details.
     """
-    return HttpResponse(f"Detail of Organization ID: {escape(org_id)}")
+    organization = get_object_or_404(Organization, id=org_id)
+    return render(request, 'organizations/organization_detail.html', {'organization': organization})

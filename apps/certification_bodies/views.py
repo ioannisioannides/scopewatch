@@ -6,27 +6,19 @@ Views for the Certification Bodies app.
 This module contains views for listing certification bodies and displaying their details.
 """
 
-from django.http import HttpResponse
-from django.utils.html import escape
+from django.shortcuts import render, get_object_or_404
+from .models import CertBody
 
 def certbody_list_view(request):
     """
     View for listing all certification bodies.
-
-    Returns:
-        HttpResponse: A placeholder response for the certification body list.
     """
-    return HttpResponse("Cert Bodies Placeholder")
+    cert_bodies = CertBody.objects.all()
+    return render(request, 'certification_bodies/certbody_list.html', {'cert_bodies': cert_bodies})
 
 def certbody_detail_view(request, cb_id):
     """
     View for displaying the details of a specific certification body.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-        cb_id (int): The ID of the certification body to retrieve.
-
-    Returns:
-        HttpResponse: A placeholder response for the certification body details.
     """
-    return HttpResponse(f"Detail of Certification Body ID: {escape(cb_id)}")
+    cert_body = get_object_or_404(CertBody, id=cb_id)
+    return render(request, 'certification_bodies/certbody_detail.html', {'cert_body': cert_body})

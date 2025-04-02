@@ -6,7 +6,7 @@ Views for the Audits app.
 This module contains views for listing audits and displaying audit details.
 """
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Audit
 
 def audit_list_view(request):
@@ -37,5 +37,5 @@ def audit_detail_view(request, audit_id):
     Returns:
         HttpResponse: The rendered HTML response containing the audit details.
     """
-    audit = Audit.objects.get(id=audit_id)
+    audit = get_object_or_404(Audit, id=audit_id)
     return render(request, 'audits/audit_detail.html', {'audit': audit})

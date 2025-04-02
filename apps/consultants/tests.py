@@ -8,6 +8,7 @@ These tests ensure that the models behave as expected when creating and validati
 """
 
 from django.test import TestCase
+from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Consultant, ConsultancyFirm
 
@@ -46,3 +47,19 @@ class ConsultantsModelTest(TestCase):
         firm = ConsultancyFirm.objects.create(name="Global Consulting")
         self.assertEqual(firm.name, "Global Consulting")
         self.assertTrue(firm.is_active)
+
+class ConsultantViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="consultant_user")
+        self.consultant = Consultant.objects.create(user=self.user, specialty="ISO 9001")
+        self.firm = ConsultancyFirm.objects.create(name="Test Firm")
+
+    def test_consultant_list_view(self):
+        response = self.client.get(reverse('consultant_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "ISO 9001")
+
+    def test_consultancy_firm_list_view(self):
+        response = self.client.get(reverse('consultancy_firm_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Test Firm")
