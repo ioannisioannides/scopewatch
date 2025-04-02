@@ -9,6 +9,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('consultants/', views.consultant_list_view, name='consultant_list'),  # List view for consultants
-    path('firms/', views.consultancy_firm_list_view, name='consultancy_firm_list'),  # List view for consultancy firms
+    path(
+        'consultants/',
+        views.consultant_list_view,
+        name='consultant_list'
+    ),  # List view for consultants
+    path(
+        'firms/',
+        views.consultancy_firm_list_view,
+        name='consultancy_firm_list'
+    ),  # List view for consultancy firms
 ]
