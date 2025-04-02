@@ -92,6 +92,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory to collect static files
 
 # For production, run "python manage.py collectstatic" to gather static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'
