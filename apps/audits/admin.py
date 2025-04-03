@@ -12,5 +12,12 @@ class AuditAdmin(admin.ModelAdmin):
     Adjust list display, search fields, etc. as needed.
     """
 
-    list_display = ("id", "audit_type", "organization", "certbody", "start_date", "end_date")
+    list_display = (
+        "id",
+        "audit_type",
+        "organization",
+        "certbody",
+        "start_date",
+        "end_date",
+    )
     search_fields = ("audit_type",)

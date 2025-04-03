@@ -28,7 +28,9 @@ class CertBodyModelTest(TestCase):
         This test ensures that a CertBody instance can be created with valid data
         and that its attributes are correctly set.
         """
-        cert_body = CertBody.objects.create(name="QualityCert", accreditation_id="ACB123")
+        cert_body = CertBody.objects.create(
+            name="QualityCert", accreditation_id="ACB123"
+        )
         self.assertEqual(cert_body.name, "QualityCert")
         self.assertEqual(cert_body.accreditation_id, "ACB123")
         self.assertTrue(cert_body.is_active)
