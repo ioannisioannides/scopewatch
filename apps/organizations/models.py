@@ -6,8 +6,9 @@ Models for the Organizations app.
 This module defines the database models for the Organizations app.
 """
 
-from django.db import models
 from typing import Type
+
+from django.db import models
 
 
 class Organization(models.Model):

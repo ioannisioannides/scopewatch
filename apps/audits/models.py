@@ -6,10 +6,12 @@ Models for the Audits app.
 This module defines the database models for the Audits app.
 """
 
+from typing import Type
+
 from django.db import models
+
 from apps.certification_bodies.models import CertBody
 from apps.organizations.models import Organization
-from typing import Type
 
 
 class Audit(models.Model):
