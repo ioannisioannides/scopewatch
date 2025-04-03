@@ -21,10 +21,9 @@ class Consultant(models.Model):
         is_active (bool): Indicates whether the consultant is active.
         created_at (datetime): The timestamp when the consultant was created.
     """
+
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='consultant_profile'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="consultant_profile"
     )
     specialty = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
@@ -32,6 +31,7 @@ class Consultant(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.specialty}"
+
 
 class ConsultancyFirm(models.Model):
     """
@@ -44,6 +44,7 @@ class ConsultancyFirm(models.Model):
         is_active (bool): Indicates whether the consultancy firm is active.
         created_at (datetime): The timestamp when the consultancy firm was created.
     """
+
     name = models.CharField(max_length=255)
     address = models.TextField(blank=True)
     contact_email = models.EmailField(blank=True, null=True)

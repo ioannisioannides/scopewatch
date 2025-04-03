@@ -29,13 +29,9 @@ class ConsultantsModelTest(TestCase):
         This test ensures that a Consultant instance can be created with valid data
         and that its attributes are correctly set.
         """
-        user = User.objects.create_user(username='consultant_user')
-        consultant = Consultant.objects.create(
-            user=user,
-            specialty="ISO 9001",
-            is_active=True
-        )
-        self.assertEqual(consultant.user.username, 'consultant_user')
+        user = User.objects.create_user(username="consultant_user")
+        consultant = Consultant.objects.create(user=user, specialty="ISO 9001", is_active=True)
+        self.assertEqual(consultant.user.username, "consultant_user")
         self.assertEqual(consultant.specialty, "ISO 9001")
         self.assertTrue(consultant.is_active)
 
@@ -50,6 +46,7 @@ class ConsultantsModelTest(TestCase):
         self.assertEqual(firm.name, "Global Consulting")
         self.assertTrue(firm.is_active)
 
+
 class ConsultantViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="consultant_user")
@@ -57,11 +54,11 @@ class ConsultantViewTest(TestCase):
         self.firm = ConsultancyFirm.objects.create(name="Test Firm")
 
     def test_consultant_list_view(self):
-        response = self.client.get(reverse('consultant_list'))
+        response = self.client.get(reverse("consultant_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ISO 9001")
 
     def test_consultancy_firm_list_view(self):
-        response = self.client.get(reverse('consultancy_firm_list'))
+        response = self.client.get(reverse("consultancy_firm_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Firm")

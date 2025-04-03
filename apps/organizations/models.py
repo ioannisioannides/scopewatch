@@ -24,6 +24,7 @@ class Organization(models.Model):
         created_at (datetime): The timestamp when the organization was created.
         is_active (bool): Indicates whether the organization is active.
     """
+
     name = models.CharField(max_length=255)
     address = models.TextField(blank=True)
     contact_email = models.EmailField(blank=True, null=True)
@@ -32,20 +33,18 @@ class Organization(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        """
-        Returns a string representation of the organization.
+        return self.name  # Ensure this returns a string
 
-        Returns:
-            str: The name of the organization.
-        """
-        return self.name
 
 class Certification(models.Model):
     """
     Represents a certification issued to an organization.
     """
-    organization = models.ForeignKey('Organization', on_delete=models.CASCADE, related_name='certifications')
-    cert_body = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name='certifications')
+
+    organization = models.ForeignKey(
+        "Organization", on_delete=models.CASCADE, related_name="certifications"
+    )
+    cert_body = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name="certifications")
     certificate_number = models.CharField(max_length=100, unique=True)
     standard = models.CharField(max_length=255)
     issue_date = models.DateField()
@@ -53,4 +52,4 @@ class Certification(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.organization.name} - {self.standard} ({self.certificate_number})"
+        return str(f"{self.organization.name} - {self.standard} ({self.certificate_number})")

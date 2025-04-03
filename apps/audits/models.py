@@ -27,12 +27,13 @@ class Audit(models.Model):
         created_at (datetime): The timestamp when the audit was created.
         updated_at (datetime): The timestamp when the audit was last updated.
     """
+
     audit_type = models.CharField(max_length=100)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    status = models.CharField(max_length=50, default='Scheduled')
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='audits')
-    certbody = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name='audits')
+    status = models.CharField(max_length=50, default="Scheduled")
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="audits")
+    certbody = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name="audits")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
