@@ -1,16 +1,18 @@
 # apps/certification_bodies/admin.py
 
-from django.contrib import admin
+"""
+Admin configuration for the Certification Bodies app.
+"""
 
+from django.contrib import admin
 from .models import CertBody
 
 
 @admin.register(CertBody)
 class CertBodyAdmin(admin.ModelAdmin):
     """
-    Admin configuration for the CertBody model.
-    Adjust list display, filters, etc., as needed.
+    Admin interface for the CertBody model.
     """
 
-    list_display = ("id", "name", "accreditation_id", "address", "created_at")
+    list_display = ("name", "accreditation_id", "address", "created_at")  # Ensure fields exist
     search_fields = ("name", "accreditation_id")
