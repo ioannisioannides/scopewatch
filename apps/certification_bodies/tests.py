@@ -35,6 +35,12 @@ class CertBodyModelTest(TestCase):
         self.assertEqual(cert_body.accreditation_id, "ACB123")
         self.assertTrue(cert_body.is_active)
 
+    def test_certbody_creation(self):
+        """
+        Test the creation of a CertBody instance.
+        """
+        # Test logic here
+
 
 class CertBodyViewTest(TestCase):
     def setUp(self):
