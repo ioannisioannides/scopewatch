@@ -2,7 +2,7 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from apps.organizations.models import Certification  # Fix import
+from apps.organizations.models import Certification, Organization  # Fix import
 
 def public_home_view(request):
     """

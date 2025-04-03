@@ -6,8 +6,6 @@ Models for the Certification Bodies app.
 This module defines the database models for the Certification Bodies app.
 """
 
-from typing import Type
-
 from django.db import models
 
 
@@ -18,12 +16,14 @@ class CertBody(models.Model):
     Attributes:
         name (str): The name of the certification body.
         accreditation_id (str): The accreditation ID of the certification body.
+        address (str): The address of the certification body.
+        created_at (datetime): The timestamp when the certification body was created.
     """
 
     name = models.CharField(max_length=255)
     accreditation_id = models.CharField(max_length=100)
-
-    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
+    address = models.TextField(blank=True)  # Add the address field
+    created_at = models.DateTimeField(auto_now_add=True)  # Add the created_at field
 
     def __str__(self):
         """
@@ -32,4 +32,4 @@ class CertBody(models.Model):
         Returns:
             str: The name of the certification body.
         """
-        return str(self.name)  # Ensure the return value is a string
+        return self.name
