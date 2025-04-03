@@ -52,4 +52,4 @@ class Certification(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(f"{self.organization.name} - {self.standard} ({self.certificate_number})")
+        return f"{self.organization.name} - {self.standard} ({self.certificate_number})"
