@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consultants</title>
+</head>
+<body>
+    <h1>Consultants</h1>
+    <ul>
+        {% for consultant in consultants %}
+            <li>{{ consultant.user.username }} - {{ consultant.specialty }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

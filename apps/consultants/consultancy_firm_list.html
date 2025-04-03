@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consultancy Firms</title>
+</head>
+<body>
+    <h1>Consultancy Firms</h1>
+    <ul>
+        {% for firm in firms %}
+            <li>{{ firm.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
