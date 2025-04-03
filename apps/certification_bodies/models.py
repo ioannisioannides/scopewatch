@@ -32,4 +32,4 @@ class CertBody(models.Model):
         Returns:
             str: The name of the certification body.
         """
-        return self.name
+        return str(self.name)  # Ensure the return value is a string

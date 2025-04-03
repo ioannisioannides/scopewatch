@@ -3,7 +3,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from apps.organizations.models import Certification, Organization
+from apps.certification_bodies.models import CertBody  # Correct import
+from apps.organizations.models import Certification  # Remove unused import
 
 
 def public_home_view(request):
@@ -70,3 +71,10 @@ def certificate_verification_view(request):
         "public/verify.html",
         {"certificate": certificate, "certificate_number": certificate_number},
     )
+
+
+def some_view(request):
+    """
+    Example view function.
+    """
+    # Use CertBody or Organization as needed

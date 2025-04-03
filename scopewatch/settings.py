@@ -4,7 +4,7 @@ Django settings for the Scopewatch project.
 This module contains the settings configuration for the Scopewatch project.
 """
 
-import os  # Placeholder for potential future use
+# import os  # Placeholder for potential future use
 from pathlib import Path
 
 # Build paths inside the project

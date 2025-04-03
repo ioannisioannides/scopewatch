@@ -54,9 +54,15 @@ class Consultant(models.Model):
     """
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="consultant_profile"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="consultant_profile"
     )
-    specialty = models.CharField(max_length=255, blank=True)
+    specialty = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="The consultant's area of expertise."
+    )
     firm = models.ForeignKey(
         ConsultancyFirm, on_delete=models.SET_NULL, null=True, blank=True, related_name="consultants"
     )
@@ -71,4 +77,4 @@ class Consultant(models.Model):
         Returns:
             str: The username of the consultant's user.
         """
-        return self.user.username
+        return str(self.user.username)  # Ensure the return value is a string

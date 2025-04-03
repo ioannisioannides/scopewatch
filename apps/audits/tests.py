@@ -49,6 +49,18 @@ class AuditModelTest(TestCase):
         self.assertEqual(audit.organization.name, "Test Organization")
         self.assertEqual(audit.certbody.name, "Test Certification Body")
 
+    def test_audit_creation(self):
+        """
+        Test the creation of an Audit instance.
+        """
+        # Test logic here
+
+    def test_audit_update(self):
+        """
+        Test updating an Audit instance.
+        """
+        # Test logic here
+
 
 class AuditViewTest(TestCase):
     def setUp(self):

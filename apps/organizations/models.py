@@ -32,4 +32,4 @@ class Organization(models.Model):
         Returns:
             str: The name of the organization.
         """
-        return self.name
+        return str(self.name)  # Ensure the return value is a string
