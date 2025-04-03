@@ -43,15 +43,31 @@ class CertBodyModelTest(TestCase):
 
 
 class CertBodyViewTest(TestCase):
+    """
+    Test suite for the Certification Body views.
+    """
+
     def setUp(self):
         self.cert_body = CertBody.objects.create(name="Test Cert Body")
 
     def test_certbody_list_view(self):
+        """
+        Test the certification body list view.
+
+        This test ensures that the certification body list view returns a 200 status code
+        and contains the expected certification body data.
+        """
         response = self.client.get(reverse("certbody_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Cert Body")
 
     def test_certbody_detail_view(self):
+        """
+        Test the certification body detail view.
+
+        This test ensures that the certification body detail view returns a 200 status code
+        and contains the expected certification body data.
+        """
         response = self.client.get(reverse("certbody_detail", args=[self.cert_body.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Cert Body")

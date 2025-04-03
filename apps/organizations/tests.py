@@ -49,15 +49,31 @@ class OrganizationModelTest(TestCase):
 
 
 class OrganizationViewTest(TestCase):
+    """
+    Test suite for the Organization views.
+    """
+
     def setUp(self):
         self.organization = Organization.objects.create(name="Test Org")
 
     def test_organization_list_view(self):
+        """
+        Test the organization list view.
+
+        This test ensures that the organization list view returns a 200 status code
+        and contains the expected organization data.
+        """
         response = self.client.get(reverse("organization_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Org")
 
     def test_organization_detail_view(self):
+        """
+        Test the organization detail view.
+
+        This test ensures that the organization detail view returns a 200 status code
+        and contains the expected organization data.
+        """
         response = self.client.get(
             reverse("organization_detail", args=[self.organization.id])
         )

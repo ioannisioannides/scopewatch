@@ -63,6 +63,10 @@ class AuditModelTest(TestCase):
 
 
 class AuditViewTest(TestCase):
+    """
+    Test suite for the Audit views.
+    """
+
     def setUp(self):
         self.organization = Organization.objects.create(name="Test Org")
         self.cert_body = CertBody.objects.create(name="Test Cert Body")
@@ -74,11 +78,23 @@ class AuditViewTest(TestCase):
         )
 
     def test_audit_list_view(self):
+        """
+        Test the audit list view.
+
+        This test ensures that the audit list view returns a 200 status code
+        and contains the expected audit data.
+        """
         response = self.client.get(reverse("audit_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Stage1")
 
     def test_audit_detail_view(self):
+        """
+        Test the audit detail view.
+
+        This test ensures that the audit detail view returns a 200 status code
+        and contains the expected audit data.
+        """
         response = self.client.get(reverse("audit_detail", args=[self.audit.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Stage1")

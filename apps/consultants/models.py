@@ -45,27 +45,11 @@ class ConsultancyFirm(models.Model):
 class Consultant(models.Model):
     """
     Represents a consultant in the system.
-
-    Attributes:
-        user (ForeignKey): The user associated with the consultant.
-        specialty (str): The specialty of the consultant.
-        firm (ForeignKey): The consultancy firm the consultant belongs to (optional).
-        is_active (bool): Indicates whether the consultant is active.
     """
-
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="consultant_profile"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="consultant_profile"
     )
-    specialty = models.CharField(
-        max_length=255,
-        blank=True,
-        help_text="The consultant's area of expertise."
-    )
-    firm = models.ForeignKey(
-        ConsultancyFirm, on_delete=models.SET_NULL, null=True, blank=True, related_name="consultants"
-    )
+    specialty = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
 
     objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
