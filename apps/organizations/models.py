@@ -44,7 +44,9 @@ class Certification(models.Model):
     organization = models.ForeignKey(
         "Organization", on_delete=models.CASCADE, related_name="certifications"
     )
-    cert_body = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name="certifications")
+    cert_body = models.ForeignKey(
+        CertBody, on_delete=models.CASCADE, related_name="certifications"
+    )
     certificate_number = models.CharField(max_length=100, unique=True)
     standard = models.CharField(max_length=255)
     issue_date = models.DateField()
@@ -52,4 +54,4 @@ class Certification(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(f"{self.organization.name} - {self.standard} ({self.certificate_number})")
+        return f"{self.organization.name} - {self.standard} ({self.certificate_number})"

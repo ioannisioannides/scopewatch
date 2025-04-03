@@ -7,9 +7,10 @@ This module defines the database models for the Consultants app, including the C
 which represent individual consultants and consultancy firms, respectively.
 """
 
-from django.db import models
-from django.contrib.auth.models import User
 from typing import Type
+
+from django.contrib.auth.models import User
+from django.db import models
 
 
 class Consultant(models.Model):
@@ -22,7 +23,10 @@ class Consultant(models.Model):
         is_active (bool): Indicates whether the consultant is active.
         created_at (datetime): The timestamp when the consultant was created.
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="consultant_profile")
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="consultant_profile"
+    )
     specialty = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -44,6 +48,7 @@ class ConsultancyFirm(models.Model):
         is_active (bool): Indicates whether the consultancy firm is active.
         created_at (datetime): The timestamp when the consultancy firm was created.
     """
+
     name = models.CharField(max_length=255)
     address = models.TextField(blank=True)
     contact_email = models.EmailField(blank=True, null=True)

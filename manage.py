@@ -17,7 +17,7 @@ from django.core.management import \
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scopewatch.settings')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "scopewatch.settings")
     try:
         execute_from_command_line(sys.argv)
     except ImportError as exc:
@@ -28,5 +28,5 @@ def main():
         ) from exc
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

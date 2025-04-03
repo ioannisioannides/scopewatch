@@ -41,11 +41,15 @@ def search_certified_organizations_view(request):
     cert_body = request.GET.get("cert_body", "")
 
     results = Certification.objects.filter(
-        organization__name__icontains=query, cert_body__name__icontains=cert_body, is_active=True
+        organization__name__icontains=query,
+        cert_body__name__icontains=cert_body,
+        is_active=True,
     )
 
     return render(
-        request, "public/search.html", {"results": results, "query": query, "cert_body": cert_body}
+        request,
+        "public/search.html",
+        {"results": results, "query": query, "cert_body": cert_body},
     )
 
 
@@ -57,7 +61,9 @@ def certificate_verification_view(request):
         HttpResponse: Renders the certificate verification page with the result.
     """
     certificate_number = request.GET.get("certificate_number", "")
-    certificate = Certification.objects.filter(certificate_number=certificate_number).first()
+    certificate = Certification.objects.filter(
+        certificate_number=certificate_number
+    ).first()
 
     return render(
         request,
