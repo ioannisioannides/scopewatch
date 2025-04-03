@@ -1,17 +1,10 @@
 ************* Module organizations.models
-apps/organizations/models.py:24:4: E0307: __str__ does not return str (invalid-str-returned)
-************* Module organizations.apps
-apps/organizations/apps.py:13:0: C0115: Missing class docstring (missing-class-docstring)
-************* Module organizations.admin
-apps/organizations/admin.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+apps/organizations/models.py:27:4: E0307: __str__ does not return str (invalid-str-returned)
+apps/organizations/models.py:10:0: C0411: standard import "typing.Type" should be placed before third party import "django.db.models" (wrong-import-order)
 ************* Module organizations.tests
-apps/organizations/tests.py:31:14: E1101: Class 'Organization' has no 'objects' member (no-member)
 apps/organizations/tests.py:39:0: C0115: Missing class docstring (missing-class-docstring)
-apps/organizations/tests.py:41:28: E1101: Class 'Organization' has no 'objects' member (no-member)
 apps/organizations/tests.py:43:4: C0116: Missing function or method docstring (missing-function-docstring)
 apps/organizations/tests.py:48:4: C0116: Missing function or method docstring (missing-function-docstring)
-************* Module organizations.views
-apps/organizations/views.py:18:20: E1101: Class 'Organization' has no 'objects' member (no-member)
 ************* Module organizations.migrations.0002_certification
 apps/organizations/migrations/0002_certification.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 apps/organizations/migrations/0002_certification.py:1:0: C0103: Module name "0002_certification" doesn't conform to snake_case naming style (invalid-name)
@@ -20,33 +13,24 @@ apps/organizations/migrations/0002_certification.py:7:0: C0115: Missing class do
 apps/organizations/migrations/0001_initial.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 apps/organizations/migrations/0001_initial.py:1:0: C0103: Module name "0001_initial" doesn't conform to snake_case naming style (invalid-name)
 apps/organizations/migrations/0001_initial.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module audits.models
+apps/audits/models.py:12:0: C0411: standard import "typing.Type" should be placed before third party import "django.db.models" and first party imports "apps.certification_bodies.models.CertBody", "apps.organizations.models.Organization"  (wrong-import-order)
 ************* Module audits.apps
 apps/audits/apps.py:13:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module audits.admin
 apps/audits/admin.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module audits.tests
-apps/audits/tests.py:28:28: E1101: Class 'Organization' has no 'objects' member (no-member)
 apps/audits/tests.py:33:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:41:16: E1101: Class 'Audit' has no 'objects' member (no-member)
 apps/audits/tests.py:53:0: C0115: Missing class docstring (missing-class-docstring)
-apps/audits/tests.py:55:28: E1101: Class 'Organization' has no 'objects' member (no-member)
 apps/audits/tests.py:56:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:57:21: E1101: Class 'Audit' has no 'objects' member (no-member)
 apps/audits/tests.py:64:4: C0116: Missing function or method docstring (missing-function-docstring)
 apps/audits/tests.py:69:4: C0116: Missing function or method docstring (missing-function-docstring)
-************* Module audits.views
-apps/audits/views.py:26:13: E1101: Class 'Audit' has no 'objects' member (no-member)
 ************* Module audits.migrations.0001_initial
 apps/audits/migrations/0001_initial.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 apps/audits/migrations/0001_initial.py:1:0: C0103: Module name "0001_initial" doesn't conform to snake_case naming style (invalid-name)
 apps/audits/migrations/0001_initial.py:7:0: C0115: Missing class docstring (missing-class-docstring)
-************* Module public.models
-apps/public/models.py:10:0: W0611: Unused models imported from django.db (unused-import)
 ************* Module public.apps
 apps/public/apps.py:13:0: C0115: Missing class docstring (missing-class-docstring)
-************* Module public.admin
-apps/public/admin.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-apps/public/admin.py:3:0: W0611: Unused admin imported from django.contrib (unused-import)
 ************* Module public.tests
 apps/public/tests.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 apps/public/tests.py:12:4: C0116: Missing function or method docstring (missing-function-docstring)
@@ -78,17 +62,14 @@ apps/certification_bodies/migrations/0001_initial.py:1:0: C0114: Missing module 
 apps/certification_bodies/migrations/0001_initial.py:1:0: C0103: Module name "0001_initial" doesn't conform to snake_case naming style (invalid-name)
 apps/certification_bodies/migrations/0001_initial.py:6:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module consultants.models
-apps/consultants/models.py:36:15: E1101: Instance of 'ForeignKey' has no 'username' member (no-member)
-apps/consultants/models.py:55:4: E0307: __str__ does not return str (invalid-str-returned)
+apps/consultants/models.py:59:4: E0307: __str__ does not return str (invalid-str-returned)
+apps/consultants/models.py:11:0: C0411: standard import "typing.Type" should be placed before third party imports "django.conf.settings", "django.db.models" (wrong-import-order)
 ************* Module consultants.admin
 apps/consultants/admin.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module consultants.tests
-apps/consultants/tests.py:27:21: E1101: Class 'Consultant' has no 'objects' member (no-member)
 apps/consultants/tests.py:38:15: E1101: Class 'ConsultancyFirm' has no 'objects' member (no-member)
-apps/consultants/tests.py:53:26: E1101: Class 'Consultant' has no 'objects' member (no-member)
 apps/consultants/tests.py:56:20: E1101: Class 'ConsultancyFirm' has no 'objects' member (no-member)
 ************* Module consultants.views
-apps/consultants/views.py:19:18: E1101: Class 'Consultant' has no 'objects' member (no-member)
 apps/consultants/views.py:29:12: E1101: Class 'ConsultancyFirm' has no 'objects' member (no-member)
 ************* Module consultants.migrations.0001_initial
 apps/consultants/migrations/0001_initial.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -96,88 +77,7 @@ apps/consultants/migrations/0001_initial.py:1:0: C0103: Module name "0001_initia
 apps/consultants/migrations/0001_initial.py:8:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module scopewatch.settings
 scopewatch/settings.py:5:0: W0611: Unused import os (unused-import)
-************* Module manage
-manage.py:1:0: R0801: Similar lines in 2 files
-==consultants.migrations.0001_initial:[18:34]
-==organizations.migrations.0001_initial:[14:30]
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("name", models.CharField(max_length=255)),
-                ("address", models.TextField(blank=True)),
-                (
-                    "contact_email",
-                    models.EmailField(blank=True, max_length=254, null=True),
-                ), (duplicate-code)
-manage.py:1:0: R0801: Similar lines in 2 files
-==certification_bodies.migrations.0001_initial:[14:25]
-==organizations.migrations.0001_initial:[14:25]
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("name", models.CharField(max_length=255)), (duplicate-code)
-manage.py:1:0: R0801: Similar lines in 2 files
-==audits.migrations.0001_initial:[18:28]
-==certification_bodies.migrations.0001_initial:[14:24]
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ), (duplicate-code)
-manage.py:1:0: R0801: Similar lines in 2 files
-==organizations.migrations.0001_initial:[14:24]
-==organizations.migrations.0002_certification:[16:26]
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ), (duplicate-code)
-manage.py:1:0: R0801: Similar lines in 2 files
-==audits.migrations.0001_initial:[10:17]
-==organizations.migrations.0002_certification:[8:15]
-    dependencies = [
-        ("certification_bodies", "0001_initial"),
-        ("organizations", "0001_initial"),
-    ]
-
-    operations = [
-        migrations.CreateModel( (duplicate-code)
-manage.py:1:0: R0801: Similar lines in 2 files
-==certification_bodies.migrations.0001_initial:[5:13]
-==organizations.migrations.0001_initial:[5:13]
-class Migration(migrations.Migration):
-
-    initial = True
-
-    dependencies = []
-
-    operations = [
-        migrations.CreateModel( (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 4.83/10 (previous run: 8.66/10, -3.82)
+Your code has been rated at 6.91/10 (previous run: 4.83/10, +2.07)
 
