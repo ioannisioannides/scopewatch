@@ -3,55 +3,32 @@
 """
 Models for the Organizations app.
 
-This module defines the database models for the Organizations app, including the Organization model,
-which represents organizations that may request certifications or be audited.
+This module defines the database models for the Organizations app.
 """
 
 from django.db import models
-
-from apps.certification_bodies.models import CertBody
+from typing import Type
 
 
 class Organization(models.Model):
     """
-    Represents an organization that may request certifications or be audited.
+    Represents an organization in the system.
 
     Attributes:
         name (str): The name of the organization.
-        address (str): The address of the organization.
         contact_email (str): The contact email of the organization.
-        contact_phone (str): The contact phone number of the organization.
-        created_at (datetime): The timestamp when the organization was created.
-        is_active (bool): Indicates whether the organization is active.
     """
 
     name = models.CharField(max_length=255)
-    address = models.TextField(blank=True)
-    contact_email = models.EmailField(blank=True, null=True)
-    contact_phone = models.CharField(max_length=50, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
+    contact_email = models.EmailField()
+
+    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
 
     def __str__(self):
-        return self.name  # Ensure this returns a string
+        """
+        Returns a string representation of the organization.
 
-
-class Certification(models.Model):
-    """
-    Represents a certification issued to an organization.
-    """
-
-    organization = models.ForeignKey(
-        "Organization", on_delete=models.CASCADE, related_name="certifications"
-    )
-    cert_body = models.ForeignKey(
-        CertBody, on_delete=models.CASCADE, related_name="certifications"
-    )
-    certificate_number = models.CharField(max_length=100, unique=True)
-    standard = models.CharField(max_length=255)
-    issue_date = models.DateField()
-    expiry_date = models.DateField()
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"{self.organization.name} - {self.standard} ({self.certificate_number})"
+        Returns:
+            str: The name of the organization.
+        """
+        return self.name
