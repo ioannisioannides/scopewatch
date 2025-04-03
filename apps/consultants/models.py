@@ -8,6 +8,7 @@ This module defines the database models for the Consultants app.
 
 from django.conf import settings
 from django.db import models
+from typing import Type
 
 
 class Consultant(models.Model):
@@ -26,6 +27,8 @@ class Consultant(models.Model):
     specialty = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
 
+    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
+
     def __str__(self):
         """
         Returns a string representation of the consultant.
@@ -33,7 +36,8 @@ class Consultant(models.Model):
         Returns:
             str: The username of the consultant's user.
         """
-        return self.user.username
+        # pylint: disable=no-member
+        return self.user.username  # Suppress false positive for ForeignKey attribute
 
 
 class ConsultancyFirm(models.Model):

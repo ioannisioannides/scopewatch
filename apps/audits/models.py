@@ -9,6 +9,7 @@ This module defines the database models for the Audits app.
 from django.db import models
 from apps.certification_bodies.models import CertBody
 from apps.organizations.models import Organization
+from typing import Type
 
 
 class Audit(models.Model):
@@ -34,6 +35,8 @@ class Audit(models.Model):
     certbody = models.ForeignKey(
         CertBody, on_delete=models.CASCADE, related_name="audits"
     )
+
+    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
 
     def __str__(self):
         """

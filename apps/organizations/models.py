@@ -7,6 +7,7 @@ This module defines the database models for the Organizations app.
 """
 
 from django.db import models
+from typing import Type
 
 
 class Organization(models.Model):
@@ -20,6 +21,8 @@ class Organization(models.Model):
 
     name = models.CharField(max_length=255)
     contact_email = models.EmailField()
+
+    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
 
     def __str__(self):
         """
