@@ -15,15 +15,17 @@ class PublicAppTest(TestCase):
 
 
 class PublicViewTest(TestCase):
+    """
+    Test suite for the Public views.
+    """
+
     def test_home_view(self):
         """
-        Test the home view for the public app.
-        """
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
+        Test the home view.
 
-    def test_public_view(self):
+        This test ensures that the home view returns a 200 status code
+        and contains the expected content.
         """
-        Test the public view functionality.
-        """
-        # Test logic here
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Welcome to Scopewatch")
