@@ -5,6 +5,7 @@ This module contains the settings configuration for the Scopewatch project.
 """
 
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project
@@ -16,9 +17,22 @@ if not SECRET_KEY:
     raise ValueError("The DJANGO_SECRET_KEY environment variable is not set. Please configure it for production.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+# Security settings for production
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True
+
+# Disable SSL redirection during testing
+if 'test' in sys.argv:
+    SECURE_SSL_REDIRECT = False
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -33,6 +47,7 @@ INSTALLED_APPS = [
     "apps.organizations",
     "apps.consultants.apps.ConsultantsConfig",
     "apps.public.apps.PublicConfig",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [

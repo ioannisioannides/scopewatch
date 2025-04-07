@@ -1,0 +1,6 @@
+<h1>Consultant List</h1>
+<ul>
+    {% for consultant in consultants %}
+        <li>{{ consultant.user.username }} - {{ consultant.specialty }}</li>
+    {% endfor %}
+</ul>
