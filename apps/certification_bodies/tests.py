@@ -71,3 +71,14 @@ class CertBodyViewTest(TestCase):
         response = self.client.get(reverse("certbody_detail", args=[self.cert_body.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Cert Body")
+
+    def test_home_view(self):
+        """
+        Test the home view for the public app.
+
+        This test ensures that the home view returns a 200 status code
+        and contains the expected content.
+        """
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Welcome to Scopewatch")

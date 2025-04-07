@@ -27,8 +27,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apps.audits.apps.AuditsConfig",
-    "apps.certification_bodies.apps.CertificationBodiesConfig",
-    "apps.organizations.apps.OrganizationsConfig",
+    "apps.certification_bodies",
+    "apps.organizations",
     "apps.consultants.apps.ConsultantsConfig",
     "apps.public.apps.PublicConfig",
 ]

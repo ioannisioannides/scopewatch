@@ -19,11 +19,10 @@ class CertBody(models.Model):
         address (str): The address of the certification body.
         created_at (datetime): The timestamp when the certification body was created.
     """
-
     name = models.CharField(max_length=255)
     accreditation_id = models.CharField(max_length=100)
-    address = models.TextField(blank=True)  # Add the address field
-    created_at = models.DateTimeField(auto_now_add=True)  # Add the created_at field
+    address = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         """
@@ -32,4 +31,4 @@ class CertBody(models.Model):
         Returns:
             str: The name of the certification body.
         """
-        return self.name
+        return str(self.name)  # Ensure the return value is a string

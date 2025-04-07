@@ -21,7 +21,7 @@ class PublicViewTest(TestCase):
 
     def test_home_view(self):
         """
-        Test the home view.
+        Test the home view for the public app.
 
         This test ensures that the home view returns a 200 status code
         and contains the expected content.

@@ -1,8 +1,14 @@
 # apps/public/views.py
 
+"""
+Views for the Public app.
+
+This module contains views for the public-facing pages of the Scopewatch project.
+"""
+
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from apps.organizations.models import Certification, Organization  # Fix import
+from django.shortcuts import render
+
 
 def public_home_view(request):
     """
@@ -28,22 +34,34 @@ def home_view(request):
     return render(request, "public/home.html")
 
 
-def search_certified_organizations_view(request):
+def search_certified_organizations_view(request):  # noqa: W0613
     """
     View for searching certified organizations.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered HTML response for the search page.
     """
-    # Logic here
+    return render(request, "public/search.html")
 
 
-def certificate_verification_view(request):
+def certificate_verification_view(request):  # noqa: W0613
     """
     View for verifying a certificate.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered HTML response for the certificate verification page.
     """
-    # Logic here
+    return render(request, "public/verify.html")
 
 
 def some_view(request):
     """
     Example view function.
     """
-    # Use CertBody or Organization as needed
+    pass

@@ -70,3 +70,29 @@ class ConsultantViewTest(TestCase):
         response = self.client.get(reverse("consultancy_firm_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Firm")
+
+
+class ConsultantTests(TestCase):
+    """
+    Additional test suite for Consultant objects.
+    """
+
+    def setUp(self):
+        """
+        Set up test data for Consultant objects.
+        """
+        self.user = User.objects.create_user(username="test_user")
+
+    def test_consultant_objects(self):
+        """
+        Test that Consultant objects can be accessed correctly.
+        """
+        consultant = Consultant.objects.create(user=self.user, specialty="Test Specialty")
+        self.assertIsNotNone(consultant)
+
+    def test_consultant_objects_again(self):
+        """
+        Test Consultant objects in another scenario.
+        """
+        consultant = Consultant.objects.create(user=self.user, specialty="Another Specialty")
+        self.assertEqual(consultant.specialty, "Another Specialty")
