@@ -80,10 +80,8 @@ jobs:
               organization=org,
               cert_body=cert_body,
               certificate_number="CERT123",
-              standard="ISO 9001",
               issue_date="2025-01-01",
-              expiry_date="2026-01-01",
-              is_active=True
+              expiry_date="2026-01-01"
           )
           EOF
         env:
