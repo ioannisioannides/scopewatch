@@ -8,7 +8,10 @@ Consultant and ConsultancyFirm, which represent individuals and firms
 helping organizations comply with standards or regulations.
 """
 
-from typing import Type
+from typing import Type, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import User
 
 from django.conf import settings
 from django.db import models
@@ -47,12 +50,10 @@ class Consultant(models.Model):
     Represents a consultant in the system.
     """
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="consultant_profile"
+        "auth.User", on_delete=models.CASCADE, related_name="consultant_profile"
     )
     specialty = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
-
-    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
 
     def __str__(self):
         """
@@ -61,4 +62,4 @@ class Consultant(models.Model):
         Returns:
             str: The username of the consultant's user.
         """
-        return str(self.user.username)  # Ensure the return value is a string
+        return str(self.user.username)
