@@ -18,11 +18,13 @@ def public_home_view(request):
     return HttpResponse("Welcome to the Public Portal")
 
 
-def certificate_search_view(request):
+def certificate_search_view():
     """
     Example placeholder for a certificate search page.
+
+    Returns:
+        HttpResponse: Placeholder response for certificate search.
     """
-    _ = request  # Explicitly mark 'request' as used
     return HttpResponse("Certificate Search Placeholder")
 
 
@@ -36,27 +38,21 @@ def home_view(request):
     return render(request, "public/home.html")
 
 
-def search_certified_organizations_view(request):  # noqa: W0613
+def search_certified_organizations_view():
     """
     View for searching certified organizations.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
 
     Returns:
         HttpResponse: The rendered HTML response for the search page.
     """
-    return render(request, "public/search.html")
+    return render(None, "public/search.html")
 
 
-def certificate_verification_view(request):  # noqa: W0613
+def certificate_verification_view():
     """
     View for verifying a certificate.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
 
     Returns:
         HttpResponse: The rendered HTML response for the certificate verification page.
     """
-    return render(request, "public/verify.html")
+    return render(None, "public/verify.html")

@@ -10,6 +10,9 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import CertBody
 
+# Suppress pylint no-member warnings for CertBody
+# pylint: disable=no-member
+
 
 def certbody_list_view(request):
     """

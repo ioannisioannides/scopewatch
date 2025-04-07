@@ -1,4 +1,4 @@
-Django==5.1.8  # Update to the latest secure version
-django-environ==0.10.0
+Django==5.2  # Updated to the latest secure version
+django-environ==0.12.0  # Updated to the latest secure version
 psycopg2-binary==2.9.10
 gunicorn==23.0.0
