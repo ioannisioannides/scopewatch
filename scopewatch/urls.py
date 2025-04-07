@@ -4,9 +4,13 @@ URL configuration for the Scopewatch project.
 
 from django.contrib import admin
 from django.urls import include, path
+from django.http import HttpResponse
 
 from apps.public.views import (certificate_verification_view, home_view,
                                search_certified_organizations_view)
+
+def index(request):
+    return HttpResponse("Welcome to Scopewatch!")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,4 +32,5 @@ urlpatterns = [
     path("verify/", certificate_verification_view, name="certificate_verification"),
     # Certificate verification page
     path("", home_view, name="home"),  # Root URL for the public homepage
+    path("", index, name="index"),  # Index page
 ]

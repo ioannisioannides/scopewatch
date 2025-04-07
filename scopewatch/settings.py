@@ -7,14 +7,13 @@ This module contains the settings configuration for the Scopewatch project.
 import os
 import sys
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-if not SECRET_KEY:
-    raise ValueError("The DJANGO_SECRET_KEY environment variable is not set. Please configure it for production.")
+SECRET_KEY = config('DJANGO_SECRET_KEY', default='fallback-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -33,6 +32,8 @@ if 'test' in sys.argv:
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+APPEND_SLASH = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -85,12 +86,11 @@ ASGI_APPLICATION = "scopewatch.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "scopewatch",  # Replace with your PostgreSQL database name
-        "USER": "scopewatch_user",  # Replace with your PostgreSQL username
-        "PASSWORD": os.getenv("DB_PASSWORD", ""),  # Fetch password from environment variable
-        # Replace with your PostgreSQL host (e.g., localhost)
-        "HOST": "127.0.0.1",
-        "PORT": "5432",  # Default PostgreSQL port
+        "NAME": config("DB_NAME", default="scopewatch"),
+        "USER": config("DB_USER", default="scopewatch_user"),
+        "PASSWORD": config("DB_PASSWORD", default=""),
+        "HOST": config("DB_HOST", default="127.0.0.1"),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
 
@@ -123,3 +123,18 @@ LOGOUT_REDIRECT_URL = "/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
