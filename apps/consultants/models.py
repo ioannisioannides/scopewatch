@@ -8,7 +8,6 @@ Consultant and ConsultancyFirm, which represent individuals and firms
 helping organizations comply with standards or regulations.
 """
 
-from django.conf import settings
 from django.db import models
 
 
@@ -37,7 +36,7 @@ class ConsultancyFirm(models.Model):
         Returns:
             str: The name of the consultancy firm.
         """
-        return self.name
+        return str(self.name)
 
 
 class Consultant(models.Model):
@@ -55,6 +54,6 @@ class Consultant(models.Model):
         Returns a string representation of the consultant.
 
         Returns:
-            str: The username of the consultant's user.
+            str: The username of the consultant's user, or 'Unknown User' if not available.
         """
-        return str(self.user.username)  # Ensure the return value is a string
+        return str(self.user.username) if hasattr(self.user, 'username') else 'Unknown User'

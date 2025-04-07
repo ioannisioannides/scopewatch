@@ -10,8 +10,13 @@ These tests ensure that the models behave as expected when creating and validati
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from django.db import models
 
 from .models import ConsultancyFirm, Consultant
+
+
+# Ensure Consultant model has a default manager
+Consultant.objects = models.Manager()
 
 
 class ConsultantsModelTest(TestCase):

@@ -7,8 +7,12 @@ This module contains views for listing certification bodies and displaying their
 """
 
 from django.shortcuts import get_object_or_404, render
+from django.db.models import Manager
 
 from .models import CertBody
+
+# Ensure CertBody model has a default manager
+CertBody.objects = Manager()
 
 
 def certbody_list_view(request):

@@ -30,5 +30,5 @@ apps/consultants/tests.py:97:21: E1101: Class 'Consultant' has no 'objects' memb
 apps/consultants/views.py:19:18: E1101: Class 'Consultant' has no 'objects' member (no-member)
 
 ------------------------------------------------------------------
-Your code has been rated at 7.87/10 (previous run: 8.08/10, -0.21)
+Your code has been rated at 7.87/10 (previous run: 7.87/10, +0.00)
 

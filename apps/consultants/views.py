@@ -8,8 +8,12 @@ These views can be expanded to include logic for rendering templates or returnin
 """
 
 from django.shortcuts import render
+from django.db import models
 
 from .models import ConsultancyFirm, Consultant
+
+# Ensure Consultant model has a default manager
+Consultant.objects = models.Manager()
 
 
 def consultant_list_view(request):
