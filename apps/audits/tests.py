@@ -17,6 +17,9 @@ from apps.audits.models import Audit
 from apps.certification_bodies.models import CertBody
 from apps.organizations.models import Organization
 
+import pytest
+from django.test import Client
+
 
 class AuditModelTest(TestCase):
     """
@@ -121,3 +124,34 @@ class AuditTests(TestCase):
         """
         cert_body = CertBody.objects.create(name="Another CertBody")
         self.assertEqual(cert_body.name, "Another CertBody")
+
+
+@pytest.mark.django_db
+def test_example():
+    client = Client()
+    url = reverse('index')  # Replace 'index' with an actual view name
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_audit_creation():
+    audit = Audit.objects.create(audit_type="Stage1", status="In Progress")
+    assert audit.audit_type == "Stage1"
+    assert audit.status == "In Progress"
+
+@pytest.mark.django_db
+def test_audit_list_view():
+    client = Client()
+    url = reverse('audit_list')  # Replace 'audit_list' with the actual view name
+    response = client.get(url)
+    assert response.status_code == 200
+    assert "Audit List" in response.content.decode()
+
+@pytest.mark.django_db
+def test_audit_detail_view():
+    audit = Audit.objects.create(audit_type="Stage1", status="In Progress")
+    client = Client()
+    url = reverse('audit_detail', args=[audit.id])  # Replace 'audit_detail' with the actual view name
+    response = client.get(url)
+    assert response.status_code == 200
+    assert "Stage1" in response.content.decode()
