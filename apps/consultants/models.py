@@ -30,13 +30,7 @@ class ConsultancyFirm(models.Model):
     objects = models.Manager()  # Add type hint for objects manager
 
     def __str__(self):
-        """
-        Returns a string representation of the consultancy firm.
-
-        Returns:
-            str: The name of the consultancy firm.
-        """
-        return str(self.name)
+        return str(self.name)  # Ensure it returns a string
 
 
 class Consultant(models.Model):

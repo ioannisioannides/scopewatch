@@ -25,10 +25,4 @@ class CertBody(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        """
-        Returns a string representation of the certification body.
-
-        Returns:
-            str: The name of the certification body.
-        """
-        return str(self.name)  # Ensure the return value is a string
+        return str(self.name)  # Ensure it returns a string

@@ -6,8 +6,8 @@ Views for the Public app.
 This module contains views for the public-facing pages of the Scopewatch project.
 """
 
-from django.http import HttpResponse
 from django.shortcuts import render
+from django.http import HttpResponse
 
 
 def public_home_view(request):
@@ -58,10 +58,3 @@ def certificate_verification_view(request):  # noqa: W0613
         HttpResponse: The rendered HTML response for the certificate verification page.
     """
     return render(request, "public/verify.html")
-
-
-def some_view(request):
-    """
-    Example view function.
-    """
-    pass

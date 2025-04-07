@@ -12,23 +12,7 @@ apps/public/views.py:13:21: W0613: Unused argument 'request' (unused-argument)
 apps/public/views.py:20:28: W0613: Unused argument 'request' (unused-argument)
 apps/public/views.py:67:4: W0107: Unnecessary pass statement (unnecessary-pass)
 apps/public/views.py:63:14: W0613: Unused argument 'request' (unused-argument)
-************* Module certification_bodies.tests
-apps/certification_bodies/tests.py:31:20: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/certification_bodies/tests.py:51:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-************* Module certification_bodies.views
-apps/certification_bodies/views.py:18:18: E1101: Class 'CertBody' has no 'objects' member (no-member)
-************* Module consultants.models
-apps/consultants/models.py:33:4: E0307: __str__ does not return str (invalid-str-returned)
-apps/consultants/models.py:60:19: E1101: Instance of 'ForeignKey' has no 'username' member (no-member)
-apps/consultants/models.py:11:0: W0611: Unused settings imported from django.conf (unused-import)
-************* Module consultants.tests
-apps/consultants/tests.py:27:21: E1101: Class 'Consultant' has no 'objects' member (no-member)
-apps/consultants/tests.py:53:26: E1101: Class 'Consultant' has no 'objects' member (no-member)
-apps/consultants/tests.py:90:21: E1101: Class 'Consultant' has no 'objects' member (no-member)
-apps/consultants/tests.py:97:21: E1101: Class 'Consultant' has no 'objects' member (no-member)
-************* Module consultants.views
-apps/consultants/views.py:19:18: E1101: Class 'Consultant' has no 'objects' member (no-member)
 
 ------------------------------------------------------------------
-Your code has been rated at 7.87/10 (previous run: 7.87/10, +0.00)
+Your code has been rated at 9.22/10 (previous run: 7.87/10, +1.35)
 
