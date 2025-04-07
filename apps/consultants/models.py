@@ -8,7 +8,6 @@ Consultant and ConsultancyFirm, which represent individuals and firms
 helping organizations comply with standards or regulations.
 """
 
-from django.conf import settings
 from django.db import models
 
 
@@ -31,13 +30,7 @@ class ConsultancyFirm(models.Model):
     objects = models.Manager()  # Add type hint for objects manager
 
     def __str__(self):
-        """
-        Returns a string representation of the consultancy firm.
-
-        Returns:
-            str: The name of the consultancy firm.
-        """
-        return self.name
+        return str(self.name)  # Ensure it returns a string
 
 
 class Consultant(models.Model):
@@ -55,6 +48,6 @@ class Consultant(models.Model):
         Returns a string representation of the consultant.
 
         Returns:
-            str: The username of the consultant's user.
+            str: The username of the consultant's user, or 'Unknown User' if not available.
         """
-        return str(self.user.username)  # Ensure the return value is a string
+        return str(self.user.username) if hasattr(self.user, 'username') else 'Unknown User'

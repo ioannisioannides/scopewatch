@@ -41,10 +41,4 @@ class Audit(models.Model):
     objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
 
     def __str__(self):
-        """
-        Returns a string representation of the audit.
-
-        Returns:
-            str: A string containing the audit type and status.
-        """
-        return f"{self.audit_type} - {self.status}"
+        return str(self.audit_type)  # Ensure it returns a string

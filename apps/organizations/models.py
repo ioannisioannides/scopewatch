@@ -32,7 +32,7 @@ class Organization(models.Model):
         Returns:
             str: The name of the organization.
         """
-        return str(self.name)  # Ensure the return value is a string
+        return str(self.name)  # Ensure it returns a string
 
 
 class Certification(models.Model):
@@ -57,4 +57,4 @@ class Certification(models.Model):
     expiry_date = models.DateField()
 
     def __str__(self):
-        return self.certificate_number
+        return str(self.certificate_number)  # Ensure it returns a string
