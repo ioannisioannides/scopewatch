@@ -7,6 +7,9 @@ This module contains test cases for the Audit model and its functionality.
 Expand these tests to cover additional scenarios and edge cases.
 """
 
+# Suppress pylint no-member warnings for CertBody
+# pylint: disable=no-member
+
 from django.test import TestCase
 from django.urls import reverse
 

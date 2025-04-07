@@ -7,6 +7,9 @@ This module contains test cases for the CertBody model, ensuring that
 certification bodies can be created and validated correctly.
 """
 
+# Suppress pylint no-member warnings for CertBody
+# pylint: disable=no-member
+
 from django.test import TestCase
 from django.urls import reverse
 

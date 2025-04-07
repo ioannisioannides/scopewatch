@@ -28,7 +28,9 @@ class ConsultantsModelTest(TestCase):
         """
         Test the creation of a Consultant instance.
         """
-        user = User.objects.create_user(username="consultant_user", password="password")  # Ensure user is created with a password
+        user = User.objects.create_user(
+            username="consultant_user", password="password"
+        )  # Ensure user is created with a password
         consultant = Consultant.objects.create(
             user=user, specialty="ISO 9001", is_active=True
         )
