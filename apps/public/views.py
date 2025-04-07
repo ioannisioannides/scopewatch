@@ -36,7 +36,7 @@ def home_view(request):
     return render(request, "public/home.html")
 
 
-def search_certified_organizations_view(request):
+def search_certified_organizations_view(request):  # noqa: W0613
     """
     View for searching certified organizations.
 
@@ -46,11 +46,10 @@ def search_certified_organizations_view(request):
     Returns:
         HttpResponse: The rendered HTML response for the search page.
     """
-    # Logic for searching certified organizations
     return render(request, "public/search.html")
 
 
-def certificate_verification_view(request):
+def certificate_verification_view(request):  # noqa: W0613
     """
     View for verifying a certificate.
 
@@ -60,7 +59,6 @@ def certificate_verification_view(request):
     Returns:
         HttpResponse: The rendered HTML response for the certificate verification page.
     """
-    # Logic for verifying certificates
     return render(request, "public/verify.html")
 
 

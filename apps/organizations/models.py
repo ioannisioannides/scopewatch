@@ -47,22 +47,15 @@ class Certification(models.Model):
         issue_date (date): The date the certification was issued.
         expiry_date (date): The date the certification expires.
     """
-
     organization = models.ForeignKey(
         "Organization", on_delete=models.CASCADE, related_name="certifications"
     )
     cert_body = models.ForeignKey(
-        CertBody, on_delete=models.CASCADE, related_name="certifications"
-    )
+        "certification_bodies.CertBody", on_delete=models.CASCADE, related_name="certifications"
+    )  # Fix the model reference
     certificate_number = models.CharField(max_length=100, unique=True)
     issue_date = models.DateField()
     expiry_date = models.DateField()
 
     def __str__(self):
-        """
-        Returns a string representation of the certification.
-
-        Returns:
-            str: The certificate number.
-        """
         return self.certificate_number
