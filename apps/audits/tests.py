@@ -135,23 +135,27 @@ def test_example():
 
 @pytest.mark.django_db
 def test_audit_creation():
-    audit = Audit.objects.create(audit_type="Stage1", status="In Progress")
+    organization = Organization.objects.create(name="Test Organization")
+    cert_body = CertBody.objects.create(name="Test CertBody")
+    audit = Audit.objects.create(audit_type="Stage1", status="In Progress", certbody=cert_body, organization=organization)
     assert audit.audit_type == "Stage1"
     assert audit.status == "In Progress"
 
 @pytest.mark.django_db
 def test_audit_list_view():
     client = Client()
-    url = reverse('audit_list')  # Replace 'audit_list' with the actual view name
+    url = reverse('audit_list') + '/'  # Ensure trailing slash
     response = client.get(url)
     assert response.status_code == 200
     assert "Audit List" in response.content.decode()
 
 @pytest.mark.django_db
 def test_audit_detail_view():
-    audit = Audit.objects.create(audit_type="Stage1", status="In Progress")
+    organization = Organization.objects.create(name="Test Organization")
+    cert_body = CertBody.objects.create(name="Test CertBody")
+    audit = Audit.objects.create(audit_type="Stage1", status="In Progress", certbody=cert_body, organization=organization)
     client = Client()
-    url = reverse('audit_detail', args=[audit.id])  # Replace 'audit_detail' with the actual view name
+    url = reverse('audit_detail', args=[audit.id]) + '/'  # Ensure trailing slash
     response = client.get(url)
     assert response.status_code == 200
     assert "Stage1" in response.content.decode()

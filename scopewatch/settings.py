@@ -33,6 +33,8 @@ if 'test' in sys.argv:
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
+APPEND_SLASH = True
+
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -121,3 +123,18 @@ LOGOUT_REDIRECT_URL = "/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}

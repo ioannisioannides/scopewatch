@@ -8,10 +8,10 @@ including routes for listing and viewing details of audits.
 from django.urls import path
 
 from . import views
+from .views import debug_view
 
 urlpatterns = [
-    path("", views.audit_list_view, name="audit_list"),  # List view for audits
-    path(
-        "<int:audit_id>/", views.audit_detail_view, name="audit_detail"
-    ),  # Detail view for a specific audit
+    path('audit_list/', views.audit_list, name='audit_list'),
+    path('audit_detail/<int:id>/', views.audit_detail, name='audit_detail'),
+    path('debug/', debug_view, name='debug_view'),
 ]

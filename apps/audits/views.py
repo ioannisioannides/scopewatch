@@ -7,11 +7,12 @@ This module contains views for listing audits and displaying audit details.
 """
 
 from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
 
 from .models import Audit
 
 
-def audit_list_view(request):
+def audit_list(request):
     """
     View for listing all audits.
 
@@ -27,7 +28,7 @@ def audit_list_view(request):
     return render(request, "audits/audit_list.html", {"audits": audits})
 
 
-def audit_detail_view(request, audit_id):
+def audit_detail(request, id):
     """
     View for displaying the details of a specific audit.
 
@@ -35,10 +36,25 @@ def audit_detail_view(request, audit_id):
 
     Args:
         request (HttpRequest): The HTTP request object.
-        audit_id (int): The ID of the audit to retrieve.
+        id (int): The ID of the audit to retrieve.
 
     Returns:
         HttpResponse: The rendered HTML response containing the audit details.
     """
-    audit = get_object_or_404(Audit, id=audit_id)
+    audit = get_object_or_404(Audit, id=id)
     return render(request, "audits/audit_detail.html", {"audit": audit})
+
+
+def debug_view(request):
+    """
+    View for debugging the request path.
+
+    Logs the request path and returns it in the response.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The response containing the request path.
+    """
+    return HttpResponse(f"Debugging: {request.path}")
