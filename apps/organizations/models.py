@@ -9,6 +9,7 @@ This module defines the database models for the Organizations app.
 from typing import Type
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 
 class Organization(models.Model):
@@ -27,7 +28,7 @@ class Organization(models.Model):
     contact_email = models.EmailField()
     address = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add to default
 
     objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
 
