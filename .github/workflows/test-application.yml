@@ -56,6 +56,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       # Step 5: Seed the database with test data
       - name: Seed the database
@@ -88,12 +89,14 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       # Step 6: Run tests for all user roles
       - name: Run tests for all user roles
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           source venv/bin/activate  # Activate the virtual environment
           python manage.py test apps.public.tests.PublicAppTest
