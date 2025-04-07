@@ -57,4 +57,10 @@ class Certification(models.Model):
     expiry_date = models.DateField()
 
     def __str__(self):
+        """
+        Returns a string representation of the certification.
+
+        Returns:
+            str: The certificate number.
+        """
         return str(self.certificate_number)  # Ensure it returns a string

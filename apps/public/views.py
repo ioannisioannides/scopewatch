@@ -14,6 +14,7 @@ def public_home_view(request):
     """
     Example view for a public homepage or search form.
     """
+    _ = request  # Explicitly mark 'request' as used
     return HttpResponse("Welcome to the Public Portal")
 
 
@@ -21,6 +22,7 @@ def certificate_search_view(request):
     """
     Example placeholder for a certificate search page.
     """
+    _ = request  # Explicitly mark 'request' as used
     return HttpResponse("Certificate Search Placeholder")
 
 
