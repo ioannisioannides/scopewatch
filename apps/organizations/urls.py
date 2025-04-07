@@ -11,5 +11,5 @@ from . import views
 
 urlpatterns = [
     path('', views.organization_list_view, name='organization_list'),  # List view for organizations
-    path('<int:org_id>/', views.organization_detail_view, name='organization_detail'),  # Detail view for a specific organization
+    path('<int:org_id>', views.organization_detail_view, name='organization_detail'),  # Detail view for a specific organization
 ]

@@ -47,7 +47,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Set up the database
+      # Step 4: Create necessary directories
+      - name: Create logs directory
+        run: |
+          mkdir -p logs
+
+      # Step 5: Set up the database
       - name: Set up the database
         run: |
           source venv/bin/activate  # Activate the virtual environment
@@ -56,9 +61,14 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: scopewatch
+          DB_USER: scopewatch_user
+          DB_PASSWORD: mypassword
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DEBUG: true
 
-      # Step 5: Seed the database with test data
+      # Step 6: Seed the database with test data
       - name: Seed the database
         run: |
           source venv/bin/activate  # Activate the virtual environment
@@ -89,23 +99,33 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: scopewatch
+          DB_USER: scopewatch_user
+          DB_PASSWORD: mypassword
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DEBUG: true
 
-      # Step 6: Run tests for all user roles
+      # Step 7: Run tests for all user roles
       - name: Run tests for all user roles
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: scopewatch
+          DB_USER: scopewatch_user
+          DB_PASSWORD: mypassword
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DEBUG: true
         run: |
           source venv/bin/activate  # Activate the virtual environment
-          python manage.py test apps.public.tests.PublicAppTest
-          python manage.py test apps.certification_bodies.tests.CertBodyModelTest
-          python manage.py test apps.consultants.tests.ConsultantsModelTest
-          python manage.py test apps.organizations.tests.OrganizationModelTest
-          python manage.py test apps.audits.tests.AuditModelTest
+          python -m pytest apps/public/tests.py
+          python -m pytest apps/certification_bodies/tests.py
+          python -m pytest apps/consultants/tests.py
+          python -m pytest apps/organizations/tests.py
+          python -m pytest apps/audits/tests.py
 
-      # Step 7: List all issues
+      # Step 8: List all issues
       - name: List all issues
         run: |
           echo "Listing all issues found during testing:"
