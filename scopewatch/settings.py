@@ -87,7 +87,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "scopewatch",  # Replace with your PostgreSQL database name
         "USER": "scopewatch_user",  # Replace with your PostgreSQL username
-        "PASSWORD": "mypassword",  # Replace with your PostgreSQL password
+        "PASSWORD": os.getenv("DB_PASSWORD", ""),  # Fetch password from environment variable
         # Replace with your PostgreSQL host (e.g., localhost)
         "HOST": "127.0.0.1",
         "PORT": "5432",  # Default PostgreSQL port

@@ -1,33 +1,53 @@
-************* Module public.tests
-apps/public/tests.py:12:4: C0116: Missing function or method docstring (missing-function-docstring)
-************* Module public.views
-apps/public/views.py:5:0: E0611: No name 'Certification' in module 'apps.organizations.models' (no-name-in-module)
-apps/public/views.py:7:21: W0613: Unused argument 'request' (unused-argument)
-apps/public/views.py:14:28: W0613: Unused argument 'request' (unused-argument)
-apps/public/views.py:31:40: W0613: Unused argument 'request' (unused-argument)
-apps/public/views.py:38:34: W0613: Unused argument 'request' (unused-argument)
-apps/public/views.py:45:14: W0613: Unused argument 'request' (unused-argument)
-apps/public/views.py:4:0: W0611: Unused get_object_or_404 imported from django.shortcuts (unused-import)
-apps/public/views.py:5:0: W0611: Unused Certification imported from apps.organizations.models (unused-import)
-************* Module consultants.models
-apps/consultants/models.py:35:4: E0307: __str__ does not return str (invalid-str-returned)
-apps/consultants/models.py:64:19: E1101: Instance of 'ForeignKey' has no 'username' member (no-member)
+************* Module scopewatch.settings
+scopewatch/settings.py:17:0: C0301: Line too long (114/100) (line-too-long)
 
-------------------------------------------------------------------
-Your code has been rated at 9.32/10 (previous run: 9.32/10, +0.00)
+-----------------------------------
+Your code has been rated at 9.97/10
 
-Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:48
-Run started:2025-04-03 22:08:20.813665
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:51
+Run started:2025-04-07 11:46:15.059896
 
 Test results:
->> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'REPLACE_ME_WITH_A_REAL_SECRET_KEY'
+>> Issue: [B106:hardcoded_password_funcarg] Possible hardcoded password: 'password'
    Severity: Low   Confidence: Medium
    CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
-   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b105_hardcoded_password_string.html
-   Location: ./scopewatch/settings.py:14:13
-13	# SECURITY WARNING: keep the secret key used in production secret!
-14	SECRET_KEY = "REPLACE_ME_WITH_A_REAL_SECRET_KEY"
-15	
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b106_hardcoded_password_funcarg.html
+   Location: ./apps/consultants/tests.py:26:15
+25	        """
+26	        user = User.objects.create_user(
+27	            username="consultant_user", password="password"
+28	        )  # Ensure user is created with a password
+29	        consultant = Consultant.objects.create(
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/OpenSSL/SSL.py:2475:12
+2474	            self._raise_ssl_error(self._ssl, result)
+2475	            assert False, "unreachable"
+2476	        else:
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/OpenSSL/SSL.py:2504:12
+2503	            self._raise_ssl_error(self._ssl, result)
+2504	            assert False, "unreachable"
+2505	        elif result > 0:
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/OpenSSL/crypto.py:2267:16
+2266	            else:
+2267	                assert self._passphrase is not None
+2268	                result = self._passphrase
 
 --------------------------------------------------
 >> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
@@ -16874,6 +16894,486 @@ Test results:
 5	import re
 6	from xml.sax.saxutils import XMLGenerator
 7	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/admin/__init__.py:116:16
+115	                    obj = queryset.get(pk=object_pk)
+116	                except Exception:  # FIXME: use stricter exception checking
+117	                    pass
+118	                else:
+
+--------------------------------------------------
+>> Issue: [B703:django_mark_safe] Potential XSS on mark_safe function.
+   Severity: Medium   Confidence: High
+   CWE: CWE-80 (https://cwe.mitre.org/data/definitions/80.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b703_django_mark_safe.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/admin/widgets.py:90:15
+89	
+90	        return mark_safe(''.join(output))
+
+--------------------------------------------------
+>> Issue: [B308:blacklist] Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.
+   Severity: Medium   Confidence: High
+   CWE: CWE-79 (https://cwe.mitre.org/data/definitions/79.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b308-mark-safe
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/admin/widgets.py:90:15
+89	
+90	        return mark_safe(''.join(output))
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:48:8
+47	    def resolve_collisions(self, namespace):
+48	        assert self.APP_PRIORITIES is not None, "You must define APP_PRIORITIES in your resolver class!"
+49	        result = {}
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:101:16
+100	                new_name = self.transform_import(model)
+101	                assert isinstance(new_name, str), "result of transform_import must be str!"
+102	                base_imports[new_name] = model
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:130:8
+129	    def transform_import(self, module_path):
+130	        assert self.MODIFICATION_STRING is not None, "You must define MODIFICATION_STRING in your resolver class!"
+131	        app_name, model_name = self.get_app_name_and_model(module_path)
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:195:8
+194	    def transform_import(self, module_path):
+195	        assert self.MODIFICATION_STRING is not None, "You must define MODIFICATION_STRING in your resolver class!"
+196	        model_class = import_string(module_path)
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:244:8
+243	    def _assert_is_collision_resolver_result_correct(cls, result):
+244	        assert isinstance(result, dict), "Result of resolve_collisions function must be a dict!"
+245	        for key, value in result.items():
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:246:12
+245	        for key, value in result.items():
+246	            assert isinstance(key, str), "key in collision resolver result should be str not %s" % key
+247	            assert isinstance(value, str), "value in collision resolver result should be str not %s" % value
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:247:12
+246	            assert isinstance(key, str), "key in collision resolver result should be str not %s" % key
+247	            assert isinstance(value, str), "value in collision resolver result should be str not %s" % value
+248	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:251:8
+250	    def _assert_is_collision_resolver_class_correct(cls, collision_resolver_class):
+251	        assert inspect.isclass(collision_resolver_class) and issubclass(
+252	            collision_resolver_class, BaseCR), "SHELL_PLUS_MODEL_IMPORTS_RESOLVER " \
+253	                                               "must be subclass of BaseCR!"
+254	        assert len(inspect.getfullargspec(collision_resolver_class.resolve_collisions).args) == 2, \
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/collision_resolvers.py:254:8
+253	                                               "must be subclass of BaseCR!"
+254	        assert len(inspect.getfullargspec(collision_resolver_class.resolve_collisions).args) == 2, \
+255	            "resolve_collisions function must take one argument!"
+256	
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b324_hashlib.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/logging/filters.py:19:39
+18	        subject = record.getMessage()
+19	        cache_key = "%s:%s" % (prefix, md5(subject).hexdigest())
+20	        cache_count_key = "%s:count" % cache_key
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: ''
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b105_hardcoded_password_string.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/drop_test_database.py:63:74
+62	
+63	        user = password = database_name = database_host = database_port = ''
+64	        if engine == 'mysql':
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b608_hardcoded_sql_expressions.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/drop_test_database.py:161:20
+160	                exists_query = \
+161	                    "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME='%s';" \
+162	                    % db_name
+163	                row_count = cursor.execute(exists_query)
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b608_hardcoded_sql_expressions.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/drop_test_database.py:195:31
+194	            for db_name in get_database_names('{}_{}'.format):
+195	                exists_query = "SELECT datname FROM pg_catalog.pg_database WHERE datname='%s';" \
+196	                    % db_name
+197	                try:
+
+--------------------------------------------------
+>> Issue: [B411:blacklist] Using ServerProxy to parse untrusted XML data is known to be vulnerable to XML attacks. Use defusedxml.xmlrpc.monkey_patch() function to monkey-patch xmlrpclib and mitigate XML vulnerabilities.
+   Severity: High   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_imports.html#b411-import-xmlrpclib
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/pipchecker.py:9:0
+8	from urllib.request import Request, urlopen
+9	from xmlrpc.client import ServerProxy, Fault
+10	
+
+--------------------------------------------------
+>> Issue: [B310:blacklist] Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-22 (https://cwe.mitre.org/data/definitions/22.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b310-urllib-urlopen
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/pipchecker.py:146:26
+145	        req = Request(url, headers=headers)
+146	        return json.loads(urlopen(req).read())
+147	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b113_request_without_timeout.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/pipchecker.py:287:28
+286	            try:
+287	                test_auth = requests.get("https://api.github.com/django/", headers=headers).json()
+288	            except HTTPError as e:
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b113_request_without_timeout.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/pipchecker.py:312:30
+311	                branch_url = "https://api.github.com/repos/{0}/{1}/branches".format(user, repo_name)
+312	                branch_data = requests.get(branch_url, headers=headers).json()
+313	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b113_request_without_timeout.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/pipchecker.py:317:37
+316	                )
+317	                frozen_commit_data = requests.get(frozen_commit_url, headers=headers).json()
+318	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: ''
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b105_hardcoded_password_string.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/reset_db.py:85:74
+84	
+85	        user = password = database_name = database_host = database_port = ''
+86	        if engine == 'mysql':
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b608_hardcoded_sql_expressions.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/reset_db.py:169:39
+168	            if options['close_sessions']:
+169	                close_sessions_query = """
+170	                    SELECT pg_terminate_backend(pg_stat_activity.pid)
+171	                    FROM pg_stat_activity
+172	                    WHERE pg_stat_activity.datname = '%s';
+173	                """ % database_name
+174	                logging.info('Executing... "%s"', close_sessions_query.strip())
+
+--------------------------------------------------
+>> Issue: [B108:hardcoded_tmp_directory] Probable insecure usage of temp file/directory.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-377 (https://cwe.mitre.org/data/definitions/377.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b108_hardcoded_tmp_directory.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/runprofileserver.py:110:53
+109	        parser.add_argument(
+110	            '--prof-path', dest='prof_path', default='/tmp',
+111	            help='Specifies the directory which to save profile information '
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'password'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b105_hardcoded_password_string.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/set_fake_passwords.py:18:24
+17	
+18	DEFAULT_FAKE_PASSWORD = 'password'
+19	
+
+--------------------------------------------------
+>> Issue: [B112:try_except_continue] Try, Except, Continue detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b112_try_except_continue.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/shell_plus.py:187:12
+186	                break
+187	            except Exception:
+188	                continue
+189	        if not ks:
+
+--------------------------------------------------
+>> Issue: [B102:exec_used] Use of exec detected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b102_exec_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/shell_plus.py:371:20
+370	                try:
+371	                    exec(compile(pythonrc_code, pythonrc, 'exec'), imported_objects)
+372	                except Exception:
+
+--------------------------------------------------
+>> Issue: [B102:exec_used] Use of exec detected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b102_exec_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/shell_plus.py:579:16
+578	                imported_objects = self.get_imported_objects(options)
+579	                exec(options['command'], imported_objects)
+580	                return None
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/sqldiff.py:252:8
+251	    def add_difference(self, diff_type, *args):
+252	        assert diff_type in self.DIFF_TYPES, 'Unknown difference type'
+253	        self.differences[-1][-1].append((diff_type, args))
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: ''
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b105_hardcoded_password_string.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/commands/sync_s3.py:85:28
+84	    AWS_ACCESS_KEY_ID = ''
+85	    AWS_SECRET_ACCESS_KEY = ''
+86	    AWS_BUCKET_NAME = ''
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/jobs.py:110:4
+109	            sys.path.append(ppath)
+110	    except Exception:
+111	        pass
+112	    _jobs = {}
+
+--------------------------------------------------
+>> Issue: [B308:blacklist] Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.
+   Severity: Medium   Confidence: High
+   CWE: CWE-79 (https://cwe.mitre.org/data/definitions/79.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b308-mark-safe
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/management/modelviz.py:401:58
+400	        elif isinstance(field, GenericRelation):
+401	            relation = self.add_relation(field, newmodel, mark_safe('[style="dotted", arrowhead=normal, arrowtail=normal, dir=both]'))
+402	        if relation is not None:
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/mongodb/fields/__init__.py:237:12
+236	        if self.primary_key:
+237	            assert not cls._meta.has_auto_field, "A model can't have more than one AutoField: %s %s %s; have %s" % (self, cls, name, cls._meta.auto_field)
+238	            super().contribute_to_class(cls, name)
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/mongodb/fields/json.py:27:12
+26	        elif isinstance(obj, datetime.datetime):
+27	            assert settings.TIME_ZONE == 'UTC'
+28	            return obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/mongodb/fields/json.py:33:4
+32	def dumps(value):
+33	    assert isinstance(value, dict)
+34	    return JSONEncoder().encode(value)
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/mongodb/fields/json.py:39:4
+38	    value = json.loads(txt, parse_float=Decimal)
+39	    assert isinstance(value, dict)
+40	    return value
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/mongodb/fields/json.py:70:12
+69	            res = loads(value)
+70	            assert isinstance(res, dict)
+71	            return JSONDict(**res)
+
+--------------------------------------------------
+>> Issue: [B703:django_mark_safe] Potential XSS on mark_safe function.
+   Severity: Medium   Confidence: High
+   CWE: CWE-80 (https://cwe.mitre.org/data/definitions/80.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b703_django_mark_safe.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/highlighting.py:50:11
+49	def parse_template(value):
+50	    return mark_safe(Template(value).render(Context()))
+51	
+
+--------------------------------------------------
+>> Issue: [B308:blacklist] Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.
+   Severity: Medium   Confidence: High
+   CWE: CWE-79 (https://cwe.mitre.org/data/definitions/79.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b308-mark-safe
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/highlighting.py:50:11
+49	def parse_template(value):
+50	    return mark_safe(Template(value).render(Context()))
+51	
+
+--------------------------------------------------
+>> Issue: [B703:django_mark_safe] Potential XSS on mark_safe function.
+   Severity: Medium   Confidence: High
+   CWE: CWE-80 (https://cwe.mitre.org/data/definitions/80.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b703_django_mark_safe.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/syntax_color.py:89:15
+88	    try:
+89	        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter()))
+90	    except ClassNotFound:
+
+--------------------------------------------------
+>> Issue: [B308:blacklist] Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.
+   Severity: Medium   Confidence: High
+   CWE: CWE-79 (https://cwe.mitre.org/data/definitions/79.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b308-mark-safe
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/syntax_color.py:89:15
+88	    try:
+89	        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter()))
+90	    except ClassNotFound:
+
+--------------------------------------------------
+>> Issue: [B703:django_mark_safe] Potential XSS on mark_safe function.
+   Severity: Medium   Confidence: High
+   CWE: CWE-80 (https://cwe.mitre.org/data/definitions/80.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b703_django_mark_safe.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/syntax_color.py:99:15
+98	    try:
+99	        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter(linenos='table')))
+100	    except ClassNotFound:
+
+--------------------------------------------------
+>> Issue: [B308:blacklist] Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.
+   Severity: Medium   Confidence: High
+   CWE: CWE-79 (https://cwe.mitre.org/data/definitions/79.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b308-mark-safe
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/syntax_color.py:99:15
+98	    try:
+99	        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter(linenos='table')))
+100	    except ClassNotFound:
+
+--------------------------------------------------
+>> Issue: [B703:django_mark_safe] Potential XSS on mark_safe function.
+   Severity: Medium   Confidence: High
+   CWE: CWE-80 (https://cwe.mitre.org/data/definitions/80.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b703_django_mark_safe.html
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/syntax_color.py:109:15
+108	    try:
+109	        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter(noclasses=True)))
+110	    except ClassNotFound:
+
+--------------------------------------------------
+>> Issue: [B308:blacklist] Use of mark_safe() may expose cross-site scripting vulnerabilities and should be reviewed.
+   Severity: Medium   Confidence: High
+   CWE: CWE-79 (https://cwe.mitre.org/data/definitions/79.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b308-mark-safe
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/templatetags/syntax_color.py:109:15
+108	    try:
+109	        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter(noclasses=True)))
+110	    except ClassNotFound:
+
+--------------------------------------------------
+>> Issue: [B408:blacklist] Using Node to parse untrusted XML data is known to be vulnerable to XML attacks. Replace Node with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+   Severity: Low   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_imports.html#b408-import-xml-minidom
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/utils/dia2django.py:18:0
+17	import sys
+18	from xml.dom.minidom import Node, parseString
+19	
+
+--------------------------------------------------
+>> Issue: [B318:blacklist] Using xml.dom.minidom.parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.minidom.parseString with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+   Severity: Medium   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b313-b320-xml-bad-minidom
+   Location: ./venv/lib/python3.13/site-packages/django_extensions/utils/dia2django.py:75:11
+74	    data = gzip.GzipFile(fileobj=f).read()
+75	    ppal = parseString(data)
+76	    # diagram -> layer -> object -> UML - Class -> name, (attribs : composite -> name,type)
 
 --------------------------------------------------
 >> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
@@ -77713,6 +78213,26 @@ Test results:
 17	    except OSError as e:  # Python 2-compatible FileNotFoundError.
 
 --------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: ./venv/lib/python3.13/site-packages/socks.py:361:31
+360	        super(socksocket, self).settimeout(self._timeout)
+361	        self.proxy_sockname = ("0.0.0.0", 0)  # Unknown
+362	
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: ./venv/lib/python3.13/site-packages/socks.py:754:28
+753	            # address so that packets are received from any peer
+754	            if dest_addr == "0.0.0.0" and not dest_port:
+755	                self.proxy_peername = None
+
+--------------------------------------------------
 >> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
    Severity: Low   Confidence: High
    CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
@@ -78700,6 +79220,298 @@ Test results:
    Severity: Low   Confidence: High
    CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
    More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/_internal.py:39:4
+38	    env = getattr(obj, "environ", obj)
+39	    assert isinstance(
+40	        env, dict
+41	    ), f"{type(obj).__name__!r} is not a WSGI environment (has to be a dict)"
+42	    return env
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/_reloader.py:5:0
+4	import os
+5	import subprocess
+6	import sys
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/_reloader.py:275:24
+274	            new_environ["WERKZEUG_RUN_MAIN"] = "true"
+275	            exit_code = subprocess.call(args, env=new_environ, close_fds=False)
+276	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/datastructures/file_storage.py:142:8
+141	            self.stream.close()
+142	        except Exception:
+143	            pass
+144	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/datastructures/range.py:178:8
+177	        """Simple method to update the ranges."""
+178	        assert http.is_byte_range_valid(start, stop, length), "Bad range provided"
+179	        self._units: str | None = units
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak SHA1 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b324_hashlib.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/__init__.py:45:11
+44	def hash_pin(pin: str) -> str:
+45	    return hashlib.sha1(f"{pin} added salt".encode("utf-8", "replace")).hexdigest()[:12]
+46	
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/__init__.py:88:12
+87	            # https://github.com/pallets/werkzeug/issues/925
+88	            from subprocess import PIPE
+89	            from subprocess import Popen
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/__init__.py:89:12
+88	            from subprocess import PIPE
+89	            from subprocess import Popen
+90	
+
+--------------------------------------------------
+>> Issue: [B607:start_process_with_partial_path] Starting a process with a partial executable path
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b607_start_process_with_partial_path.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/__init__.py:91:19
+90	
+91	            dump = Popen(
+92	                ["ioreg", "-c", "IOPlatformExpertDevice", "-d", "2"], stdout=PIPE
+93	            ).communicate()[0]
+94	            match = re.search(b'"serial-number" = <([^>]+)', dump)
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/__init__.py:91:19
+90	
+91	            dump = Popen(
+92	                ["ioreg", "-c", "IOPlatformExpertDevice", "-d", "2"], stdout=PIPE
+93	            ).communicate()[0]
+94	            match = re.search(b'"serial-number" = <([^>]+)', dump)
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak SHA1 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b324_hashlib.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/__init__.py:196:8
+195	
+196	    h = hashlib.sha1()
+197	    for bit in chain(probably_public_bits, private_bits):
+
+--------------------------------------------------
+>> Issue: [B102:exec_used] Use of exec detected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b102_exec_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/console.py:177:12
+176	        try:
+177	            exec(code, self.locals)
+178	        except Exception:
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/debug/repr.py:260:16
+259	                    items.append((key, self.repr(getattr(obj, key))))
+260	                except Exception:
+261	                    pass
+262	            title = "Details for"
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak SHA1 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b324_hashlib.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/http.py:981:11
+980	    """
+981	    return sha1(data).hexdigest()
+982	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/middleware/lint.py:223:12
+222	                )
+223	            except Exception:
+224	                pass
+225	
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/routing/map.py:729:8
+728	        """
+729	        assert self.map.redirect_defaults
+730	        for r in self.map._rules_by_endpoint[rule.endpoint]:
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/routing/map.py:784:8
+783	            url += f"?{self.encode_query_args(query_args)}"
+784	        assert url != path, "detected invalid alias setting. No canonical URL found"
+785	        return url
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/routing/rules.py:701:8
+700	        """Compiles the regular expression and stores it."""
+701	        assert self.map is not None, "rule not bound"
+702	
+
+--------------------------------------------------
+>> Issue: [B102:exec_used] Use of exec detected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b102_exec_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/routing/rules.py:737:8
+736	        locs: dict[str, t.Any] = {}
+737	        exec(code, globs, locs)
+738	        return locs[name]  # type: ignore
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/serving.py:261:12
+260	            nonlocal status_sent, headers_sent, chunk_response
+261	            assert status_set is not None, "write() before start_response"
+262	            assert headers_set is not None, "write() before start_response"
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/serving.py:262:12
+261	            assert status_set is not None, "write() before start_response"
+262	            assert headers_set is not None, "write() before start_response"
+263	            if status_sent is None:
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/serving.py:302:12
+301	
+302	            assert isinstance(data, bytes), "applications must write bytes"
+303	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/serving.py:387:12
+386	                execute(InternalServerError())
+387	            except Exception:
+388	                pass
+389	
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/serving.py:848:29
+847	
+848	            if self.host in {"0.0.0.0", "::"}:
+849	                messages.append(f" * Running on all addresses ({self.host})")
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/serving.py:851:32
+850	
+851	                if self.host == "0.0.0.0":
+852	                    localhost = "127.0.0.1"
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b311-random
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/test.py:68:62
+67	    if boundary is None:
+68	        boundary = f"---------------WerkzeugFormPart_{time()}{random()}"
+69	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/test.py:646:8
+645	            self.close()
+646	        except Exception:
+647	            pass
+648	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b110_try_except_pass.html
+   Location: ./venv/lib/python3.13/site-packages/werkzeug/test.py:663:12
+662	                f.close()
+663	            except Exception:
+664	                pass
+665	        self.closed = True
+
+--------------------------------------------------
+>> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.3/plugins/b101_assert_used.html
    Location: ./venv/lib/python3.13/site-packages/yaml/parser.py:185:12
 184	            event = StreamEndEvent(token.start_mark, token.end_mark)
 185	            assert not self.states
@@ -78718,122 +79530,19 @@ Test results:
 --------------------------------------------------
 
 Code scanned:
-	Total lines of code: 955707
+	Total lines of code: 988247
 	Total lines skipped (#nosec): 12
 	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 11
 
 Run metrics:
 	Total issues (by severity):
 		Undefined: 0
-		Low: 7082
-		Medium: 493
-		High: 62
+		Low: 7129
+		Medium: 521
+		High: 67
 	Total issues (by confidence):
 		Undefined: 0
-		Low: 29
-		Medium: 188
-		High: 7420
+		Low: 35
+		Medium: 197
+		High: 7485
 Files skipped (0):
-
-
-[33m[1m+===========================================================================================================================================================================================+[0m
-
-
-[31m[1mDEPRECATED: [0m[33m[1mthis command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.[0m
-
-
-[32mWe highly encourage switching to the new [0m[32m[1m`scan`[0m[32m command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.[0m
-
-
-[33m[1m+===========================================================================================================================================================================================+[0m
-
-
-+==============================================================================+
-
-                               /$$$$$$            /$$
-                              /$$__  $$          | $$
-           /$$$$$$$  /$$$$$$ | $$  \__//$$$$$$  /$$$$$$   /$$   /$$
-          /$$_____/ |____  $$| $$$$   /$$__  $$|_  $$_/  | $$  | $$
-         |  $$$$$$   /$$$$$$$| $$_/  | $$$$$$$$  | $$    | $$  | $$
-          \____  $$ /$$__  $$| $$    | $$_____/  | $$ /$$| $$  | $$
-          /$$$$$$$/|  $$$$$$$| $$    |  $$$$$$$  |  $$$$/|  $$$$$$$
-         |_______/  \_______/|__/     \_______/   \___/   \____  $$
-                                                          /$$  | $$
-                                                         |  $$$$$$/
-  by safetycli.com                                        \______/
-
-+==============================================================================+
-
- [1mREPORT[0m 
-
-  Safety [1mv3.3.1[0m is scanning for [1mVulnerabilities[0m[1m...[0m
-[1m  Scanning dependencies[0m in your [1menvironment:[0m
-
-  -> /opt/homebrew/opt/python-tk@3.13/libexec
-  -> /Users/ioannis/Documents/GitHub/scopewatch/venv/lib/python3.13/site-
-  packages/setuptools/_vendor
-  -> /Users/ioannis/Documents/GitHub/scopewatch/venv/bin
-  -> /opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Version
-  s/3.13/lib/python3.13
-  -> /opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Version
-  s/3.13/lib/python313.zip
-  -> /Users/ioannis/Documents/GitHub/scopewatch/venv/lib/python3.13/site-
-  packages
-  -> /opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Version
-  s/3.13/lib/python3.13/lib-dynload
-
-  Using [1mopen-source vulnerability database[0m
-[1m  Found and scanned 79 packages[0m
-  Timestamp [1m2025-04-04 01:08:25[0m
-[1m  0[0m[1m vulnerabilities reported[0m
-[1m  0[0m[1m vulnerabilities ignored[0m
-+==============================================================================+
-
- [32m[1mNo known security vulnerabilities reported.[0m 
-
-+==============================================================================+[0m
-
-
-[33m[1m+===========================================================================================================================================================================================+[0m
-
-
-[31m[1mDEPRECATED: [0m[33m[1mthis command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.[0m
-
-
-[32mWe highly encourage switching to the new [0m[32m[1m`scan`[0m[32m command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.[0m
-
-
-[33m[1m+===========================================================================================================================================================================================+[0m
-
-
-Name                                    Stmts   Miss  Cover   Missing
----------------------------------------------------------------------
-apps/audits/__init__.py                     0      0   100%
-apps/audits/admin.py                        6      0   100%
-apps/audits/apps.py                         5      0   100%
-apps/audits/models.py                      14      1    93%   50
-apps/certification_bodies/__init__.py       0      0   100%
-apps/certification_bodies/admin.py          6      0   100%
-apps/certification_bodies/apps.py           5      0   100%
-apps/certification_bodies/models.py         8      1    88%   35
-apps/consultants/__init__.py                0      0   100%
-apps/consultants/admin.py                  10      0   100%
-apps/consultants/apps.py                    5      0   100%
-apps/consultants/models.py                 18      2    89%   42, 64
-apps/organizations/__init__.py              0      0   100%
-apps/organizations/admin.py                 5      0   100%
-apps/organizations/apps.py                  5      0   100%
-apps/organizations/models.py                8      1    88%   35
-apps/public/__init__.py                     0      0   100%
-apps/public/admin.py                        0      0   100%
-apps/public/apps.py                         5      0   100%
-apps/public/models.py                       0      0   100%
-apps/public/views.py                       12      9    25%   7-45
-manage.py                                  11      0   100%
-scopewatch/__init__.py                      0      0   100%
-scopewatch/asgi.py                          4      4     0%   8-14
-scopewatch/settings.py                     19      0   100%
-scopewatch/urls.py                          4      1    75%   11
-scopewatch/wsgi.py                          4      4     0%   8-14
----------------------------------------------------------------------
-TOTAL                                     154     23    85%
