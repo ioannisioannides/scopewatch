@@ -90,6 +90,7 @@ class AuditViewTest(TestCase):
         This test ensures that the audit list view returns a 200 status code
         and contains the expected audit data.
         """
+        # Modified to not expect a trailing slash
         response = self.client.get(reverse("audit_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Stage1")
@@ -101,6 +102,7 @@ class AuditViewTest(TestCase):
         This test ensures that the audit detail view returns a 200 status code
         and contains the expected audit data.
         """
+        # Modified to not expect a trailing slash
         response = self.client.get(reverse("audit_detail", args=[self.audit.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Stage1")
@@ -129,7 +131,7 @@ class AuditTests(TestCase):
 @pytest.mark.django_db
 def test_example():
     client = Client()
-    url = reverse('index')  # Replace 'index' with an actual view name
+    url = reverse('index')  # Using index view without trailing slash
     response = client.get(url)
     assert response.status_code == 200
 
@@ -144,7 +146,7 @@ def test_audit_creation():
 @pytest.mark.django_db
 def test_audit_list_view():
     client = Client()
-    url = reverse('audit_list') + '/'  # Ensure trailing slash
+    url = reverse('audit_list')  # Removed the trailing slash
     response = client.get(url)
     assert response.status_code == 200
     assert "Audit List" in response.content.decode()
@@ -155,7 +157,7 @@ def test_audit_detail_view():
     cert_body = CertBody.objects.create(name="Test CertBody")
     audit = Audit.objects.create(audit_type="Stage1", status="In Progress", certbody=cert_body, organization=organization)
     client = Client()
-    url = reverse('audit_detail', args=[audit.id]) + '/'  # Ensure trailing slash
+    url = reverse('audit_detail', args=[audit.id])  # Removed the trailing slash
     response = client.get(url)
     assert response.status_code == 200
     assert "Stage1" in response.content.decode()

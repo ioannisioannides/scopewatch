@@ -5,6 +5,8 @@ URL configuration for the Scopewatch project.
 from django.contrib import admin
 from django.urls import include, path
 from django.http import HttpResponse
+from django.conf import settings
+from django.conf.urls.static import static
 
 from apps.public.views import (certificate_verification_view, home_view,
                                search_certified_organizations_view)
@@ -13,7 +15,7 @@ def index(request):
     return HttpResponse("Welcome to Scopewatch!")
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("admin", admin.site.urls),
     # Include URLs for the Audits app
     path("audits/", include("apps.audits.urls")),
     # Include URLs for Certification Bodies app
@@ -24,13 +26,17 @@ urlpatterns = [
     path("organizations/", include("apps.organizations.urls")),
     # Include URLs for the Public app
     path("public/", include("apps.public.urls")),
-    path(
-        "search/",
-        search_certified_organizations_view,
-        name="search_certified_organizations",
-    ),  # Search page
-    path("verify/", certificate_verification_view, name="certificate_verification"),
-    # Certificate verification page
+    
+    # API URLs
+    path("api/v1/", include("scopewatch.api_urls")),
+    
+    # Direct view mappings 
+    path("search", search_certified_organizations_view, name="search_certified_organizations"),
+    path("verify", certificate_verification_view, name="certificate_verification"),
     path("", home_view, name="home"),  # Root URL for the public homepage
-    path("", index, name="index"),  # Index page
+    path("index", index, name="index"),  # Index page
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

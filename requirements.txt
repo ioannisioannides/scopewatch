@@ -1,6 +1,21 @@
 Django==5.2  # Updated to the latest secure version
-django-environ==0.12.0  # Updated to the latest secure version
-psycopg2-binary==2.9.10
-gunicorn==23.0.0
-django-extensions==3.2.3  # Added to resolve missing module error
-pytest
+django-environ==0.12.0  # For better environment variable management
+psycopg2-binary==2.9.10  # PostgreSQL database adapter
+gunicorn==23.0.0  # WSGI server for production
+django-extensions==3.2.3  # Useful development tools
+
+# Added for API Development
+djangorestframework==3.15.0  # REST API framework
+django-filter==24.1  # Filtering for REST API
+drf-spectacular==0.27.0  # OpenAPI schema generation
+
+# Security packages
+django-debug-toolbar==4.3.0  # For development debugging
+django-storages==1.14.2  # For cloud storage support
+django-cors-headers==4.3.1  # For handling CORS
+python-decouple==3.8  # For configuration management
+
+# Testing
+pytest==8.3.5
+pytest-django==4.11.1
+coverage==7.4.3

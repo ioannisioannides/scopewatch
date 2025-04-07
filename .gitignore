@@ -202,3 +202,14 @@ cython_debug/
 
 # Ignore macOS system files
 .DS_Store
+
+# -------------- #
+#   Security     #
+# -------------- #
+# Certificate and key files
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
