@@ -7,6 +7,7 @@ This module contains views for listing audits and displaying audit details.
 """
 
 from django.shortcuts import get_object_or_404, render
+import html
 from django.http import HttpResponse
 
 from .models import Audit
@@ -57,4 +58,5 @@ def debug_view(request):
     Returns:
         HttpResponse: The response containing the request path.
     """
-    return HttpResponse(f"Debugging: {request.path}")
+    escaped_path = html.escape(request.path)
+    return HttpResponse(f"Debugging: {escaped_path}")
