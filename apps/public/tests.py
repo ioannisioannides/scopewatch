@@ -10,6 +10,11 @@ class PublicAppTest(TestCase):
     """
 
     def test_placeholder(self):
+        """
+        Placeholder test for the Public app.
+
+        This test ensures that the home view returns a 200 status code.
+        """
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
 
