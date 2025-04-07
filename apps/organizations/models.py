@@ -18,10 +18,12 @@ class Organization(models.Model):
     Attributes:
         name (str): The name of the organization.
         contact_email (str): The contact email of the organization.
+        is_active (bool): Indicates whether the organization is active.
     """
 
     name = models.CharField(max_length=255)
     contact_email = models.EmailField()
+    is_active = models.BooleanField(default=True)
 
     objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
 

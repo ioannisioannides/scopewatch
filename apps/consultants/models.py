@@ -43,6 +43,9 @@ class Consultant(models.Model):
     specialty = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
 
+    # Ensure the objects manager is explicitly defined
+    objects = models.Manager()
+
     def __str__(self):
         """
         Returns a string representation of the consultant.

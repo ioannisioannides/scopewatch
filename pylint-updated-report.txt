@@ -1,16 +1,6 @@
-************* Module apps.audits.tests
-apps/audits/tests.py:33:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:72:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:112:20: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:119:20: E1101: Class 'CertBody' has no 'objects' member (no-member)
-************* Module apps.certification_bodies.tests
-apps/certification_bodies/tests.py:31:20: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/certification_bodies/tests.py:50:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-************* Module apps.certification_bodies.views
-apps/certification_bodies/views.py:18:18: E1101: Class 'CertBody' has no 'objects' member (no-member)
 ************* Module apps.consultants.tests
-apps/consultants/tests.py:31:0: C0301: Line too long (130/100) (line-too-long)
+apps/consultants/tests.py:13:0: W0611: Unused models imported from django.db (unused-import)
 
-------------------------------------------------------------------
-Your code has been rated at 8.93/10 (previous run: 4.57/10, +4.37)
+-------------------------------------------------------------------
+Your code has been rated at 9.97/10 (previous run: 10.00/10, -0.03)
 
