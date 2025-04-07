@@ -1,0 +1,32 @@
+# Ignore sensitive files and directories
+.env
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Ignore Git files
+.git
+.gitignore
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Development environment
+.venv
+venv/
+ENV/
+.idea/
+.vscode/
+
+# Project-specific
+logs/
+media/
+staticfiles/

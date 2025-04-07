@@ -1,41 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audit Detail</title>
-    <!-- Django Admin CSS -->
-    <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
-</head>
-<body>
-    <div id="container">
-        <div id="header">
-            <h1>Audit Detail</h1>
-        </div>
-        <div id="content" class="module">
-            <fieldset>
-                <legend>{{ audit.audit_type }}</legend>
-                <div class="form-row">
-                    <strong>Status:</strong> {{ audit.status }}
-                </div>
-                <div class="form-row">
-                    <strong>Start Date:</strong> {{ audit.start_date }}
-                </div>
-                <div class="form-row">
-                    <strong>End Date:</strong> {{ audit.end_date }}
-                </div>
-            </fieldset>
-            <div class="buttons">
-                <a href="/audits/" class="button">Back to Audit List</a>
-            </div>
-        </div>
-        <div id="footer">
-            <p>&copy; 2025 Scopewatch. All rights reserved.</p>
-        </div>
+{% extends "base.html" %}
+
+{% block title %}Audit Detail{% endblock %}
+
+{% block header %}Audit Detail{% endblock %}
+
+{% block content %}
+<fieldset>
+    <legend>{{ audit.get_audit_type_display }}</legend>
+    <div class="form-row">
+        <strong>Status:</strong> {{ audit.get_status_display }}
     </div>
-</body>
-</html>
+    <div class="form-row">
+        <strong>Start Date:</strong> {{ audit.start_date }}
+    </div>
+    <div class="form-row">
+        <strong>End Date:</strong> {{ audit.end_date }}
+    </div>
+</fieldset>
+<div class="buttons">
+    <a href="{% url 'audit_list' %}" class="button">Back to Audit List</a>
+</div>
+{% endblock %}

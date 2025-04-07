@@ -90,7 +90,9 @@ ROOT_URLCONF = "scopewatch.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],  # Add template directories if needed
+        "DIRS": [
+            BASE_DIR / "templates",  # Global templates directory
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

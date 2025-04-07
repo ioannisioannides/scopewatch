@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Scopewatch{% endblock %}</title>
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <h1>{% block header %}Scopewatch{% endblock %}</h1>
+            <div id="nav">
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'search_certified_organizations' %}">Search</a></li>
+                    <li><a href="{% url 'certificate_verification' %}">Verify Certificate</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="content" class="module">
+            {% block content %}{% endblock %}
+        </div>
+        
+        <div id="footer">
+            <p>&copy; {% now "Y" %} Scopewatch. All rights reserved.</p>
+        </div>
+    </div>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

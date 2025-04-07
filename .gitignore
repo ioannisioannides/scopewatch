@@ -64,7 +64,7 @@ cover/
 *.log
 local_settings.py
 
-# SQLite (Django’s default dev DB if ever used)
+# SQLite (Django's default dev DB if ever used)
 # db.sqlite3
 # db.sqlite3-journal
 
@@ -206,10 +206,16 @@ cython_debug/
 # -------------- #
 #   Security     #
 # -------------- #
-# Certificate and key files
+# Certificate and key files - ensuring both uppercase and lowercase extensions
 *.pem
+*.PEM
 *.key
+*.KEY
 *.crt
+*.CRT
 *.cer
+*.CER
 *.p12
+*.P12
 *.pfx
+*.PFX
