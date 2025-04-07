@@ -7,9 +7,7 @@ This module contains views for the public-facing pages of the Scopewatch project
 """
 
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from apps.organizations.models import Organization  # Fix import
-from apps.certification_bodies.models import CertBody
+from django.shortcuts import render
 
 
 def public_home_view(request):
@@ -66,4 +64,4 @@ def some_view(request):
     """
     Example view function.
     """
-    # Use CertBody or Organization as needed
+    pass

@@ -98,3 +98,23 @@ class AuditViewTest(TestCase):
         response = self.client.get(reverse("audit_detail", args=[self.audit.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Stage1")
+
+
+class AuditTests(TestCase):
+    """
+    Additional tests for the Audit functionality.
+    """
+
+    def test_cert_body_objects(self):
+        """
+        Test that CertBody objects can be accessed correctly.
+        """
+        cert_body = CertBody.objects.create(name="Test CertBody")
+        self.assertIsNotNone(cert_body)
+
+    def test_cert_body_objects_again(self):
+        """
+        Test CertBody objects in another scenario.
+        """
+        cert_body = CertBody.objects.create(name="Another CertBody")
+        self.assertEqual(cert_body.name, "Another CertBody")

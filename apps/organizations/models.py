@@ -9,7 +9,6 @@ This module defines the database models for the Organizations app.
 from typing import Type
 
 from django.db import models
-from apps.certification_bodies.models import CertBody
 
 
 class Organization(models.Model):
