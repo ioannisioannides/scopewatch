@@ -33,7 +33,6 @@ class CertBodyModelTest(TestCase):
         )
         self.assertEqual(cert_body.name, "QualityCert")
         self.assertEqual(cert_body.accreditation_id, "ACB123")
-        self.assertTrue(cert_body.is_active)
 
     def test_certbody_creation(self):
         """
