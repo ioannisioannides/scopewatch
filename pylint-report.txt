@@ -1,18 +1,4 @@
-************* Module organizations.models
-apps/organizations/models.py:59:4: E0307: __str__ does not return str (invalid-str-returned)
-************* Module audits.tests
-apps/audits/tests.py:33:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:72:25: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:112:20: E1101: Class 'CertBody' has no 'objects' member (no-member)
-apps/audits/tests.py:119:20: E1101: Class 'CertBody' has no 'objects' member (no-member)
-************* Module public.tests
-apps/public/tests.py:12:4: C0116: Missing function or method docstring (missing-function-docstring)
-************* Module public.views
-apps/public/views.py:13:21: W0613: Unused argument 'request' (unused-argument)
-apps/public/views.py:20:28: W0613: Unused argument 'request' (unused-argument)
-apps/public/views.py:67:4: W0107: Unnecessary pass statement (unnecessary-pass)
-apps/public/views.py:63:14: W0613: Unused argument 'request' (unused-argument)
 
-------------------------------------------------------------------
-Your code has been rated at 9.22/10 (previous run: 7.87/10, +1.35)
+-------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 9.97/10, +0.03)
 

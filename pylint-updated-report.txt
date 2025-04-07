@@ -1,6 +1,0 @@
-************* Module apps.consultants.tests
-apps/consultants/tests.py:13:0: W0611: Unused models imported from django.db (unused-import)
-
--------------------------------------------------------------------
-Your code has been rated at 9.97/10 (previous run: 10.00/10, -0.03)
-
