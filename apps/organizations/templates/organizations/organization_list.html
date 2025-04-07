@@ -1,6 +1,14 @@
-<h1>Organization List</h1>
+{% extends "base.html" %}
+
+{% block title %}Organization List{% endblock %}
+
+{% block header %}Organization List{% endblock %}
+
+{% block content %}
+<h2>Organizations</h2>
 <ul>
     {% for organization in organizations %}
-        <li>{{ organization.name }}</li>
+        <li><a href="{% url 'organization_detail' org_id=organization.id %}">{{ organization.name }}</a></li>
     {% endfor %}
 </ul>
+{% endblock %}

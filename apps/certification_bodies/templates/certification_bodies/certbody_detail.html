@@ -1,2 +1,19 @@
-<h1>{{ cert_body.name }}</h1>
-<p>Details about the certification body: {{ cert_body.contact_email }}</p>
+{% extends "base.html" %}
+
+{% block title %}{{ cert_body.name }}{% endblock %}
+
+{% block header %}{{ cert_body.name }}{% endblock %}
+
+{% block content %}
+<div class="details">
+    <h3>Certification Body Details</h3>
+    <p><strong>Accreditation ID:</strong> {{ cert_body.accreditation_id }}</p>
+    <p><strong>Address:</strong> {{ cert_body.address }}</p>
+    <p><strong>Contact Email:</strong> {{ cert_body.contact_email }}</p>
+    <p><strong>Status:</strong> {% if cert_body.is_active %}Active{% else %}Inactive{% endif %}</p>
+</div>
+
+<div class="buttons">
+    <a href="{% url 'certbody_list' %}" class="button">Back to Certification Bodies</a>
+</div>
+{% endblock %}

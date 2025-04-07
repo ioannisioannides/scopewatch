@@ -4,6 +4,9 @@ FROM python:3.13-alpine
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+# Create a non-root user to run the application
+RUN adduser --disabled-password --gecos "" appuser
+
 # Set the working directory
 WORKDIR /app
 
@@ -17,6 +20,12 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # Copy the rest of the application code
 COPY . /app/
+
+# Change ownership of the application code to the non-root user
+RUN chown -R appuser:appuser /app
+
+# Switch to the non-root user
+USER appuser
 
 # Expose the application port
 EXPOSE 8000

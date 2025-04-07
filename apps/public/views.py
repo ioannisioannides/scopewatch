@@ -9,6 +9,8 @@ This module contains views for the public-facing pages of the Scopewatch project
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from apps.organizations.models import Certification, Organization
+
 
 def public_home_view(request):
     """
@@ -18,12 +20,15 @@ def public_home_view(request):
     return HttpResponse("Welcome to the Public Portal")
 
 
-def certificate_search_view():
+def certificate_search_view(request):
     """
-    Example placeholder for a certificate search page.
+    View for certificate search page.
+
+    Args:
+        request (HttpRequest): The HTTP request.
 
     Returns:
-        HttpResponse: Placeholder response for certificate search.
+        HttpResponse: Rendered certificate search page.
     """
     return HttpResponse("Certificate Search Placeholder")
 
@@ -32,27 +37,68 @@ def home_view(request):
     """
     View for the root URL (homepage).
 
+    Args:
+        request (HttpRequest): The HTTP request.
+
     Returns:
-        HttpResponse: Renders the homepage template.
+        HttpResponse: Rendered homepage.
     """
     return render(request, "public/home.html")
 
 
-def search_certified_organizations_view():
+def search_certified_organizations_view(request):
     """
     View for searching certified organizations.
 
+    Args:
+        request (HttpRequest): The HTTP request.
+
     Returns:
-        HttpResponse: The rendered HTML response for the search page.
+        HttpResponse: Rendered search page with results if query parameters are present.
     """
-    return render(None, "public/search.html")
+    query = request.GET.get('query', '')
+    cert_body = request.GET.get('cert_body', '')
+    
+    results = []
+    if query or cert_body:
+        # Filter certifications based on query parameters
+        certifications = Certification.objects.all()
+        
+        if query:
+            certifications = certifications.filter(organization__name__icontains=query)
+        
+        if cert_body:
+            certifications = certifications.filter(cert_body__name__icontains=cert_body)
+        
+        results = certifications
+    
+    return render(request, "public/search.html", {
+        'query': query,
+        'cert_body': cert_body,
+        'results': results
+    })
 
 
-def certificate_verification_view():
+def certificate_verification_view(request):
     """
     View for verifying a certificate.
 
+    Args:
+        request (HttpRequest): The HTTP request.
+
     Returns:
-        HttpResponse: The rendered HTML response for the certificate verification page.
+        HttpResponse: Rendered certificate verification page with results if certificate number is provided.
     """
-    return render(None, "public/verify.html")
+    certificate_number = request.GET.get('certificate_number', '')
+    certificate = None
+    
+    if certificate_number:
+        try:
+            certificate = Certification.objects.get(certificate_number=certificate_number)
+        except Certification.DoesNotExist:
+            pass
+    
+    return render(request, "public/verify.html", {
+        'certificate_number': certificate_number,
+        'certificate': certificate
+    })

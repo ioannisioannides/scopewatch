@@ -1,11 +1,11 @@
 Django==5.2  # Updated to the latest secure version
-django-environ==0.12.0  # For better environment variable management
+python-decouple==3.8  # For configuration management
 psycopg2-binary==2.9.10  # PostgreSQL database adapter
 gunicorn==23.0.0  # WSGI server for production
 django-extensions==3.2.3  # Useful development tools
 
 # Added for API Development
-djangorestframework==3.15.0  # REST API framework
+djangorestframework>=3.15.2  # REST API framework (version 3.15.2 or higher)
 django-filter==24.1  # Filtering for REST API
 drf-spectacular==0.27.0  # OpenAPI schema generation
 
@@ -13,7 +13,6 @@ drf-spectacular==0.27.0  # OpenAPI schema generation
 django-debug-toolbar==4.3.0  # For development debugging
 django-storages==1.14.2  # For cloud storage support
 django-cors-headers==4.3.1  # For handling CORS
-python-decouple==3.8  # For configuration management
 
 # Testing
 pytest==8.3.5
