@@ -11,8 +11,8 @@ class ConsultantAdmin(admin.ModelAdmin):
     Admin configuration for the Consultant model.
     """
 
-    list_display = ("id", "user", "specialty", "is_active")
-    search_fields = ("user__username", "specialty")
+    list_display = ("id", "user", "specialties", "experience_years")
+    search_fields = ("user__username", "specialties")
 
 
 @admin.register(ConsultancyFirm)
@@ -21,7 +21,7 @@ class ConsultancyFirmAdmin(admin.ModelAdmin):
     Admin configuration for the ConsultancyFirm model.
     """
 
-    list_display = ("id", "name", "address", "is_active")
+    list_display = ("id", "name", "address", "website")
     search_fields = ("name",)
 
 

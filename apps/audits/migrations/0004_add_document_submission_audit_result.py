@@ -7,16 +7,11 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('consultants', '0001_initial'),
-        ('certification_bodies', '0001_initial'),
+        ('certification_bodies', '0003_certbody_contact_email_certbody_is_active_auditor_and_more'),
         ('audits', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='audit',
-            name='status',
-            field=models.CharField(choices=[('scheduled', 'Scheduled'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('closed', 'Closed'), ('certification_issued', 'Certification Issued')], default='Scheduled', max_length=50),
-        ),
         migrations.CreateModel(
             name='DocumentSubmission',
             fields=[
