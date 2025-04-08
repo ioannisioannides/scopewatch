@@ -5,32 +5,58 @@ This module defines the URL patterns for the API endpoints of the Scopewatch pro
 """
 
 from django.urls import path, include
+from django.http import JsonResponse
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-# Import API views here
-from apps.organizations.api.views import OrganizationViewSet, CertificationViewSet
-from apps.certification_bodies.api.views import CertBodyViewSet, AuditorViewSet
-from apps.consultants.api.views import ConsultantViewSet, ConsultancyFirmViewSet
-from apps.audits.api.views import AuditViewSet
-
-# API routers
-router = DefaultRouter(trailing_slash=False)  # Configure router without trailing slashes
-router.register(r'organizations', OrganizationViewSet)
-router.register(r'certifications', CertificationViewSet)
-router.register(r'certbodies', CertBodyViewSet)
-router.register(r'auditors', AuditorViewSet)
-router.register(r'consultants', ConsultantViewSet)
-router.register(r'consultancy-firms', ConsultancyFirmViewSet)
-router.register(r'audits', AuditViewSet)
+# Setup dummy view for API documentation
+@api_view(['GET'])
+def api_root(request):
+    """
+    API root view.
+    This endpoint serves as the API entry point with links to available resources.
+    """
+    return Response({
+        'message': 'Welcome to ScopeWatch API',
+        'version': '1.0',
+        'status': 'API is under development'
+    })
 
 # API URL patterns
 urlpatterns = [
-    # API schema and documentation
+    # API documentation schema
     path('schema', SpectacularAPIView.as_view(), name='schema'),
     path('schema/swagger', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('schema/redoc', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     
-    # Include API endpoints from router
-    path('', include(router.urls)),
+    # API root entry point
+    path('', api_root, name='api-root'),
+    
+    # Include the auth URLs
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+    
+    # Include default DRF browsable API
+    path('api-auth/', include('rest_framework.urls')),
 ]
+
+# Add a comment explaining the current state of the API implementation
+"""
+# Future API endpoints will be organized by app:
+# - /organizations/ - Organizations and certifications endpoints
+# - /certification_bodies/ - Certification bodies and auditors endpoints
+# - /consultants/ - Consultants and consultancy firms endpoints
+# - /audits/ - Audits, audit teams, and nonconformances endpoints
+
+# Example router setup (commented out until API views are implemented):
+# router = DefaultRouter(trailing_slash=False)
+# router.register(r'organizations', OrganizationViewSet)
+# router.register(r'certifications', CertificationViewSet)
+# router.register(r'certbodies', CertBodyViewSet)
+# router.register(r'auditors', AuditorViewSet)
+# router.register(r'consultants', ConsultantViewSet)
+# router.register(r'consultancy-firms', ConsultancyFirmViewSet)
+# router.register(r'audits', AuditViewSet)
+# urlpatterns += [path('', include(router.urls))]
+"""

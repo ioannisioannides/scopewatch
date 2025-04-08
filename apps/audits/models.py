@@ -9,11 +9,15 @@ This module defines the database models for the Audits app.
 from typing import Type
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from apps.certification_bodies.models import CertBody, Auditor
-from apps.organizations.models import Organization
+from apps.certification_bodies.models import CertBody, Auditor, CertBodyUser
+from apps.organizations.models import Organization, Certification
+from apps.consultants.models import Consultant
+
+# Get the User model
+User = get_user_model()
 
 
 class Audit(models.Model):
@@ -47,14 +51,22 @@ class Audit(models.Model):
     audit_type = models.CharField(max_length=100, choices=AUDIT_TYPE_CHOICES)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Scheduled")
+    status = models.CharField(
+        max_length=50, 
+        choices=STATUS_CHOICES, 
+        default="Scheduled"
+    )
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name="audits"
     )
     certbody = models.ForeignKey(
         CertBody, on_delete=models.CASCADE, related_name="audits"
     )
-    standard = models.CharField(max_length=255, help_text="The standard being audited against", default="ISO 9001:2015")
+    standard = models.CharField(
+        max_length=255, 
+        help_text="The standard being audited against", 
+        default="ISO 9001:2015"
+    )
     notes = models.TextField(blank=True)
 
     objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
@@ -75,8 +87,6 @@ class Audit(models.Model):
         Returns:
             The newly created Certification object
         """
-        from apps.organizations.models import Certification
-        
         # Check if a certification already exists for this audit
         try:
             if hasattr(self, 'resulting_certification'):
@@ -114,7 +124,11 @@ class AuditTeam(models.Model):
         audit (ForeignKey): The audit the team is assigned to.
         lead_auditor (ForeignKey): The lead auditor for this audit team.
     """
-    audit = models.OneToOneField(Audit, on_delete=models.CASCADE, related_name="audit_team")
+    audit = models.OneToOneField(
+        Audit, 
+        on_delete=models.CASCADE, 
+        related_name="audit_team"
+    )
     lead_auditor = models.ForeignKey(
         Auditor, 
         on_delete=models.PROTECT, 
@@ -223,7 +237,7 @@ class DocumentSubmission(models.Model):
     submitted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submitted_documents')
     submitted_at = models.DateTimeField(default=timezone.now)
     consultant = models.ForeignKey(
-        'consultants.Consultant', 
+        Consultant, 
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True,
@@ -275,7 +289,7 @@ class AuditResult(models.Model):
     decision = models.CharField(max_length=20, choices=DECISION_CHOICES)
     decision_date = models.DateField(default=timezone.now)
     decided_by = models.ForeignKey(
-        'certification_bodies.CertBodyUser',
+        CertBodyUser,
         on_delete=models.PROTECT,
         related_name='audit_decisions'
     )

@@ -6,8 +6,8 @@ from django.utils import timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('organizations', '0002_add_certification_scope_and_audit_link'),
-        ('audits', '0002_add_document_submission_audit_result'),
+        ('organizations', '0007_add_certification_scope_and_audit_link'),
+        ('audits', '0004_add_document_submission_audit_result'),
         ('consultants', '0001_initial'),
     ]
 

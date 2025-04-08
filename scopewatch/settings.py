@@ -18,6 +18,9 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='fallback-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+# Custom test runner to skip migrations during testing
+TEST_RUNNER = 'scopewatch.test_runner.NoMigrationsTestRunner'
+
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
 
 # Security settings for production

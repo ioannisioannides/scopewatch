@@ -3,125 +3,144 @@
 """
 Models for the Organizations app.
 
-This module defines the database models for the Organizations app.
+This module defines the database models for organizations and their certifications.
 """
 
-from typing import Type
-from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
+from apps.certification_bodies.models import CertBody
+
+# Use get_user_model() instead of directly importing User
+User = get_user_model()
 
 
 class Organization(models.Model):
     """
-    Represents an organization in the system.
+    Represents an organization in the ScopeWatch system.
 
     Attributes:
         name (str): The name of the organization.
-        contact_email (str): The contact email of the organization.
-        address (str): The address of the organization.
-        is_active (bool): Indicates whether the organization is active.
-        created_at (datetime): The timestamp when the organization was created.
+        address (str): The physical address of the organization.
+        contact_email (str): The contact email for the organization.
+        website (str): The website of the organization.
+        is_active (bool): Whether the organization is currently active in the system.
+        created_at (datetime): When the organization was first added.
+        updated_at (datetime): When the organization was last updated.
     """
-
     name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
     contact_email = models.EmailField()
-    address = models.TextField(blank=True)
+    website = models.URLField(blank=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add to default
-
-    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        """
-        Returns a string representation of the organization.
-
-        Returns:
-            str: The name of the organization.
-        """
-        return str(self.name)  # Ensure it returns a string
+        return self.name
 
 
 class OrganizationUser(models.Model):
     """
     Represents a user associated with an organization.
 
-    This model supports the business requirement for organizations to have
-    multiple users to communicate with certification bodies, consultants, etc.
+    This model supports the business requirement that users can be associated 
+    with specific organizations with different roles.
 
     Attributes:
-        user (User): The user associated with the organization.
-        organization (Organization): The organization the user is associated with.
-        role (str): The role of the user in the organization.
-        is_active (bool): Whether the user is currently active in this role.
-        joined_date (date): The date when the user joined the organization.
+        user (OneToOneField): The user account for this organization user.
+        organization (ForeignKey): The organization this user belongs to.
+        role (str): The role of the user within the organization.
+        is_active (bool): Whether the user is currently active for this organization.
     """
     ROLE_CHOICES = [
         ('admin', 'Administrator'),
-        ('editor', 'Editor'),
+        ('manager', 'Manager'),
+        ('staff', 'Staff'),
         ('viewer', 'Viewer'),
     ]
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organization_roles')
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='staff')
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    organization = models.ForeignKey(
+        Organization, 
+        on_delete=models.CASCADE, 
+        related_name='users'
+    )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
-    joined_date = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.user.username} ({self.get_role_display()} at {self.organization.name})"
+        return f"{self.user.username} ({self.role}) at {self.organization.name}"
 
 
 class Certification(models.Model):
     """
-    Represents a certification issued to an organization.
+    Represents a certification held by an organization.
 
     Attributes:
-        organization (ForeignKey): The organization that received the certification.
+        organization (ForeignKey): The organization holding the certification.
         cert_body (ForeignKey): The certification body that issued the certification.
-        standard (CharField): The standard or framework the certification is for.
+        standard (str): The standard the organization is certified against.
         certificate_number (str): The unique certificate number.
         issue_date (date): The date the certification was issued.
         expiry_date (date): The date the certification expires.
-        scope (TextField): The scope of certification - what activities, processes, or sites are covered.
-        audit (ForeignKey): The audit that resulted in this certification (can be null for legacy data).
+        scope (TextField): The scope of certification activities covered.
+        audit (OneToOneField): The audit that resulted in this certification.
+        is_valid (bool): Whether the certification is currently valid.
     """
     organization = models.ForeignKey(
-        "Organization", on_delete=models.CASCADE, related_name="certifications"
+        Organization, 
+        on_delete=models.CASCADE,
+        related_name='certifications'
     )
     cert_body = models.ForeignKey(
-        "certification_bodies.CertBody", on_delete=models.CASCADE, related_name="certifications"
+        CertBody, 
+        on_delete=models.PROTECT,
+        related_name='issued_certifications'
     )
-    standard = models.CharField(max_length=255, default="ISO 9001:2015")
-    certificate_number = models.CharField(max_length=100, unique=True)
+    standard = models.CharField(max_length=255)
+    certificate_number = models.CharField(
+        max_length=100, 
+        unique=True,
+        help_text="The unique certificate identifier"
+    )
     issue_date = models.DateField()
     expiry_date = models.DateField()
-    scope = models.TextField(blank=True, help_text="The scope of certification - what activities, processes, or sites are covered.")
+    scope = models.TextField(
+        blank=True,
+        help_text="The scope of certification - what activities, processes, or sites are covered."
+    )
     audit = models.OneToOneField(
-        "audits.Audit", 
+        'audits.Audit', 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True, 
-        related_name="resulting_certification"
+        blank=True,
+        related_name='resulting_certification'
     )
-
+    
     def __str__(self):
-        """
-        Returns a string representation of the certification.
-
-        Returns:
-            str: The certificate number.
-        """
-        return str(self.certificate_number)  # Ensure it returns a string
+        return f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
     
     @property
     def is_valid(self):
         """
-        Checks if the certification is currently valid based on its expiry date.
+        Checks if the certification is currently valid.
         
         Returns:
-            bool: True if the certification is valid, False otherwise.
+            bool: True if valid, False if expired
         """
-        from django.utils import timezone
-        
         return self.expiry_date >= timezone.now().date()
+    
+    def clean(self):
+        """
+        Validates certification dates.
+        """
+        if self.issue_date and self.expiry_date and self.expiry_date < self.issue_date:
+            raise ValidationError("Expiry date cannot be before issue date.")
+            
+    class Meta:
+        unique_together = ('organization', 'standard', 'cert_body', 'issue_date')
