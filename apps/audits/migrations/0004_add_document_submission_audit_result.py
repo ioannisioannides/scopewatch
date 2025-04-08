@@ -45,5 +45,4 @@ class Migration(migrations.Migration):
                 ('decided_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='audit_decisions', to='certification_bodies.certbodyuser')),
             ],
         ),
-    ],
-)
+    ]

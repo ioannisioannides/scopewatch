@@ -3,139 +3,126 @@
 """
 Models for the Consultants app.
 
-This module defines the database models for the Consultants app, including
-Consultant and ConsultancyFirm, which represent individuals and firms
-helping organizations comply with standards or regulations.
+This module defines the database models for consultants and consultancy firms.
 """
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.apps import apps
+
+from apps.organizations.models import Organization
+
+# Use get_user_model() instead of directly importing User
+User = get_user_model()
 
 
 class ConsultancyFirm(models.Model):
     """
-    Represents a consultancy firm in the system.
-
+    Represents a consultancy firm that prepares organizations for certification.
+    
     Attributes:
         name (str): The name of the consultancy firm.
-        address (str): The address of the consultancy firm.
-        contact_email (str): The contact email of the consultancy firm.
-        is_active (bool): Indicates whether the consultancy firm is active.
+        address (str): The physical address of the consultancy firm.
+        website (str): The website of the consultancy firm.
+        specialties (str): Areas of specialty for the consultancy firm.
     """
-
     name = models.CharField(max_length=255)
-    address = models.TextField(blank=True)
-    contact_email = models.EmailField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add to default
-
-    objects = models.Manager()  # Add type hint for objects manager
-
+    address = models.CharField(max_length=255, blank=True)
+    contact_email = models.EmailField(blank=True)
+    website = models.URLField(blank=True)
+    specialties = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        return str(self.name)  # Ensure it returns a string
+        return self.name
 
 
 class Consultant(models.Model):
     """
-    Represents a consultant in the system.
-
-    A consultant can either work independently or be affiliated with a consultancy firm.
-
+    Represents an individual consultant who prepares organizations for certification.
+    
     Attributes:
-        user (User): The user associated with this consultant profile.
-        specialty (str): The consultant's area of expertise.
-        firm (ConsultancyFirm): The consultancy firm the consultant belongs to (optional).
-        is_active (bool): Whether the consultant is currently active.
-        is_independent (bool): Whether the consultant works independently.
+        user (OneToOneField): The user account for this consultant.
+        firm (ForeignKey): The consultancy firm this consultant works for.
+        bio (str): Biographical information about the consultant.
+        specialties (str): The consultant's areas of specialty.
+        standards (str): The standards the consultant is familiar with.
     """
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="consultant_profile"
-    )
-    specialty = models.CharField(max_length=255, blank=True)
-    is_active = models.BooleanField(default=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     firm = models.ForeignKey(
         ConsultancyFirm, 
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True,
-        related_name="consultants"
+        related_name='consultants'
     )
-    is_independent = models.BooleanField(default=False)
-
-    # Ensure the objects manager is explicitly defined
-    objects = models.Manager()
-
+    bio = models.TextField(blank=True)
+    specialties = models.CharField(max_length=255, blank=True)
+    standards = models.CharField(max_length=255, blank=True)
+    experience_years = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        """
-        Returns a string representation of the consultant.
-
-        Returns:
-            str: The username of the consultant's user, or 'Unknown User' if not available.
-        """
-        return str(self.user.username) if hasattr(self.user, 'username') else 'Unknown User'
+        return self.user.get_full_name() or self.user.username
 
 
 class ConsultantEngagement(models.Model):
     """
     Represents an engagement between a consultant and an organization.
-
-    This model supports the business requirement that consultants help organizations
-    prepare documentation for certification bodies.
-
+    
+    This model supports the business requirement that consultants prepare 
+    organizations for certification.
+    
     Attributes:
-        consultant (Consultant): The consultant providing services.
-        organization (Organization): The organization receiving consulting services.
+        consultant (ForeignKey): The consultant engaged.
+        organization (ForeignKey): The organization being consulted for.
         start_date (date): When the engagement started.
-        end_date (date): When the engagement is scheduled to end (can be null for ongoing).
-        is_active (bool): Whether the engagement is currently active.
-        engagement_type (str): The type of engagement (project-based or long-term).
-        description (str): Description of the consulting work.
+        end_date (date): When the engagement ended (if applicable).
+        standards (str): The standards the consultant is helping with.
+        status (str): The current status of the engagement.
     """
-    ENGAGEMENT_TYPES = [
-        ('project', 'Project Based'),
-        ('long_term', 'Long Term Support'),
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+        ('on_hold', 'On Hold'),
+        ('cancelled', 'Cancelled'),
     ]
     
-    consultant = models.ForeignKey(
-        Consultant, 
-        on_delete=models.CASCADE,
-        related_name="engagements"
-    )
+    consultant = models.ForeignKey(Consultant, on_delete=models.CASCADE, related_name='engagements')
     organization = models.ForeignKey(
-        'organizations.Organization',
-        on_delete=models.CASCADE,
-        related_name="consultant_engagements"
+        Organization, 
+        on_delete=models.CASCADE, 
+        related_name='consultant_engagements'
     )
-    start_date = models.DateField()
+    start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    engagement_type = models.CharField(max_length=20, choices=ENGAGEMENT_TYPES)
-    description = models.TextField(blank=True)
+    standards = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    notes = models.TextField(blank=True)
     
     def __str__(self):
-        return f"{self.consultant} - {self.organization} ({self.get_engagement_type_display()})"
+        return f"{self.consultant} - {self.organization} ({self.get_status_display()})"
 
 
 class ConsultantDocument(models.Model):
     """
     Represents a document prepared by a consultant for an organization.
     
-    This model supports the business requirement that consultants help organizations
-    prepare documentation for certification bodies to issue certificates.
+    This model supports the business requirement of tracking documentation 
+    prepared by consultants to help organizations become certified.
     
     Attributes:
         consultant (ForeignKey): The consultant who prepared the document.
-        organization (ForeignKey): The organization the document is prepared for.
+        organization (ForeignKey): The organization the document is for.
+        engagement (ForeignKey): The consultant engagement this document belongs to.
         title (str): The title of the document.
         document_type (str): The type of document.
-        standard (str): The standard the document is related to.
-        engagement (ForeignKey): The consultant engagement this document is part of.
-        created_at (datetime): When the document was created.
-        updated_at (datetime): When the document was last updated.
+        standard (str): The standard this document is prepared for.
         status (str): The current status of the document.
         file (FileField): The actual document file.
-        submitted_to_audit (ForeignKey): The audit this document was submitted to (if any).
     """
     DOCUMENT_TYPES = [
         ('policy', 'Policy Document'),
@@ -156,28 +143,29 @@ class ConsultantDocument(models.Model):
         ('archived', 'Archived'),
     ]
     
-    consultant = models.ForeignKey(
-        'Consultant',
+    consultant = models.ForeignKey(Consultant, on_delete=models.CASCADE, related_name='documents')
+    organization = models.ForeignKey(
+        Organization, 
+        on_delete=models.CASCADE, 
+        related_name='consultant_documents'
+    )
+    engagement = models.ForeignKey(
+        ConsultantEngagement,
         on_delete=models.CASCADE,
         related_name='documents'
-    )
-    organization = models.ForeignKey(
-        'organizations.Organization',
-        on_delete=models.CASCADE,
-        related_name='consultant_documents'
     )
     title = models.CharField(max_length=255)
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
-    standard = models.CharField(max_length=255, help_text="The standard this document is prepared for")
-    engagement = models.ForeignKey(
-        'ConsultantEngagement',
-        on_delete=models.CASCADE,
-        related_name='documents'
+    standard = models.CharField(
+        max_length=255,
+        help_text="The standard this document is prepared for"
     )
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     file = models.FileField(upload_to='consultant_documents/')
+    notes = models.TextField(blank=True)
+    # Use the string reference to break circular dependency
     submitted_to_audit = models.ForeignKey(
         'audits.Audit',
         on_delete=models.SET_NULL,
@@ -185,39 +173,41 @@ class ConsultantDocument(models.Model):
         blank=True,
         related_name='submitted_consultant_documents'
     )
-    notes = models.TextField(blank=True)
     
     def __str__(self):
-        return f"{self.title} ({self.get_document_type_display()})"
+        return f"{self.title} - {self.organization.name}"
     
     def submit_to_audit(self, audit):
         """
-        Submit this document to a specific audit.
+        Submits this document to an audit.
         
         Args:
-            audit: The audit to submit this document to
-            
-        Returns:
-            The created DocumentSubmission object
-        """
-        from apps.audits.models import DocumentSubmission
+            audit (Audit): The audit to submit the document to
         
-        if self.status != 'approved':
-            raise ValueError("Only approved documents can be submitted to an audit")
+        Returns:
+            DocumentSubmission: The newly created document submission
+        """
+        # Use get_model to break circular dependency
+        DocumentSubmission = apps.get_model('audits', 'DocumentSubmission')
+        
+        # Update this document's status
+        self.status = 'submitted'
+        self.submitted_to_audit = audit
+        self.save()
+        
+        # Check if document type matches any in DocumentSubmission types
+        doc_types = [c[0] for c in DocumentSubmission.DOCUMENT_TYPES]
+        final_doc_type = self.document_type if self.document_type in doc_types else 'other'
         
         # Create a DocumentSubmission
         submission = DocumentSubmission.objects.create(
             audit=audit,
             title=self.title,
-            document_type='other',  # Default mapping
+            document_type=final_doc_type,
             submitted_by=self.consultant.user,
             consultant=self.consultant,
-            file=self.file
+            file=self.file,
+            notes=f"Submitted from consultant document: {self.title}"
         )
-        
-        # Update this document
-        self.submitted_to_audit = audit
-        self.status = 'submitted'
-        self.save()
         
         return submission
