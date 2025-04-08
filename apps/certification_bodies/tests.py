@@ -72,7 +72,7 @@ class CertBodyViewTest(TestCase):
         This test ensures that the certification body list view returns a 200 status code
         and contains the expected certification body data.
         """
-        response = self.client.get(reverse("certbody_list"))
+        response = self.client.get(reverse("certification_bodies:certbody_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Cert Body")
 
@@ -83,7 +83,7 @@ class CertBodyViewTest(TestCase):
         This test ensures that the certification body detail view returns a 200 status code
         and contains the expected certification body data.
         """
-        response = self.client.get(reverse("certbody_detail", args=[self.cert_body.id]))
+        response = self.client.get(reverse("certification_bodies:certbody_detail", args=[self.cert_body.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Cert Body")
 

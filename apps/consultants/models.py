@@ -26,13 +26,15 @@ class ConsultancyFirm(models.Model):
         address (str): The physical address of the consultancy firm.
         website (str): The website of the consultancy firm.
         specialties (str): Areas of specialty for the consultancy firm.
+        is_active (bool): Whether the consultancy firm is active.
     """
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255, blank=True)
-    contact_email = models.EmailField(blank=True)
+    contact_email = models.EmailField(null=True, blank=True)
     website = models.URLField(blank=True)
     specialties = models.CharField(max_length=255, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
@@ -68,7 +70,7 @@ class Consultant(models.Model):
     experience_years = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     is_independent = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
@@ -105,7 +107,7 @@ class ConsultantEngagement(models.Model):
     )
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(null=True, blank=True)
-    standards = models.CharField(max_length=255)
+    standards = models.CharField(max_length=255, default='ISO 9001')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
     notes = models.TextField(blank=True)
     

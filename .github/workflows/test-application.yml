@@ -17,13 +17,13 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: scopewatch_user
-          POSTGRES_PASSWORD: mypassword
-          POSTGRES_DB: scopewatch
+          POSTGRES_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
+          POSTGRES_DB: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U scopewatch_user -d scopewatch"
+          --health-cmd="pg_isready -U ${{ vars.TEST_DB_USER || 'scopewatch_user' }} -d ${{ vars.TEST_DB_NAME || 'scopewatch' }}"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -47,10 +47,11 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Create necessary directories
-      - name: Create logs directory
+      # Step 4: Create necessary directories and files
+      - name: Create logs directory and test results file
         run: |
           mkdir -p logs
+          touch test-results.log
 
       # Step 5: Set up the database
       - name: Set up the database
@@ -61,9 +62,9 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DB_NAME: scopewatch
-          DB_USER: scopewatch_user
-          DB_PASSWORD: mypassword
+          DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
+          DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
           DB_HOST: localhost
           DB_PORT: 5432
           DEBUG: true
@@ -99,9 +100,9 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DB_NAME: scopewatch
-          DB_USER: scopewatch_user
-          DB_PASSWORD: mypassword
+          DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
+          DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
           DB_HOST: localhost
           DB_PORT: 5432
           DEBUG: true
@@ -111,22 +112,18 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DB_NAME: scopewatch
-          DB_USER: scopewatch_user
-          DB_PASSWORD: mypassword
+          DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
+          DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
           DB_HOST: localhost
           DB_PORT: 5432
           DEBUG: true
         run: |
           source venv/bin/activate  # Activate the virtual environment
-          python -m pytest apps/public/tests.py
-          python -m pytest apps/certification_bodies/tests.py
-          python -m pytest apps/consultants/tests.py
-          python -m pytest apps/organizations/tests.py
-          python -m pytest apps/audits/tests.py
+          python -m pytest apps/ -v 2>&1 | tee -a test-results.log
 
       # Step 8: List all issues
       - name: List all issues
         run: |
           echo "Listing all issues found during testing:"
-          cat test-results.log || echo "No issues found."
+          cat test-results.log
