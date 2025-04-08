@@ -7,18 +7,22 @@ This module contains test cases for the Audit model and its functionality.
 Expand these tests to cover additional scenarios and edge cases.
 """
 
-from django.test import TestCase
+import sys
+from pathlib import Path
+import pytest
+from datetime import timedelta, date
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from datetime import timedelta, date
+from django.contrib.auth.models import User
 
+# Ensure that the parent directory is in the Python path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
+# Local imports - sorted alphabetically by app name
 from apps.audits.models import Audit, AuditTeam, AuditorAssignment, NonConformance, AuditResult
 from apps.certification_bodies.models import CertBody, Auditor, CertBodyUser
 from apps.organizations.models import Organization, Certification
-from django.contrib.auth.models import User
-
-import pytest
-from django.test import Client
 
 
 class AuditModelTest(TestCase):
