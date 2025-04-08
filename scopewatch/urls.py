@@ -28,8 +28,8 @@ urlpatterns = [
     path("organizations/", include("apps.organizations.urls")),
     # Include URLs for the Public app
     path("public/", include("apps.public.urls")),
-    # Include the public app URLs
-    path("verify/", include("apps.public.urls")),
+    # Include the verification URL under a different path but with unique namespace
+    path("verify/", include("apps.public.urls", namespace="verify")),
     
     # API URLs
     path("api/v1/", include("scopewatch.api_urls")),

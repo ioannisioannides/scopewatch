@@ -34,11 +34,11 @@ urlpatterns = [
     # API root entry point
     path('', api_root, name='api-root'),
     
-    # Include the auth URLs
-    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # Include the auth URLs with a unique namespace
+    path('auth/', include('rest_framework.urls', namespace='api_rest_framework')),
     
-    # Include default DRF browsable API
-    path('api-auth/', include('rest_framework.urls')),
+    # Include default DRF browsable API with a different namespace
+    path('api-auth/', include('rest_framework.urls', namespace='browsable_api')),
 ]
 
 # Add a comment explaining the current state of the API implementation
