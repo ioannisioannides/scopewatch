@@ -25,17 +25,15 @@ class PublicAppTest(TestCase):
         Set up test data for the Public app tests.
         """
         self.organization = Organization.objects.create(
-            name="Public Test Org",
-            contact_email="public@example.com"
+            name="Public Test Org", contact_email="public@example.com"
         )
         self.cert_body = CertBody.objects.create(
-            name="Public Certifier",
-            accreditation_id="PCB123"
+            name="Public Certifier", accreditation_id="PCB123"
         )
-        
+
         # Create certifications with different validity periods
         today = timezone.now().date()
-        
+
         # Valid certification
         self.valid_certification = Certification.objects.create(
             organization=self.organization,
@@ -43,9 +41,9 @@ class PublicAppTest(TestCase):
             certificate_number="VALID-12345",
             standard="ISO 9001:2015",
             issue_date=today - timedelta(days=30),
-            expiry_date=today + timedelta(days=335)
+            expiry_date=today + timedelta(days=335),
         )
-        
+
         # Expired certification
         self.expired_certification = Certification.objects.create(
             organization=self.organization,
@@ -53,7 +51,7 @@ class PublicAppTest(TestCase):
             certificate_number="EXPIRED-67890",
             standard="ISO 14001:2015",
             issue_date=today - timedelta(days=400),
-            expiry_date=today - timedelta(days=35)
+            expiry_date=today - timedelta(days=35),
         )
 
     def test_certification_validity(self):
@@ -74,14 +72,12 @@ class PublicViewTest(TestCase):
         Set up test data for the Public app view tests.
         """
         self.organization = Organization.objects.create(
-            name="ViewTest Organization",
-            contact_email="viewtest@example.com"
+            name="ViewTest Organization", contact_email="viewtest@example.com"
         )
         self.cert_body = CertBody.objects.create(
-            name="ViewTest Certifier",
-            accreditation_id="VTC456"
+            name="ViewTest Certifier", accreditation_id="VTC456"
         )
-        
+
         today = timezone.now().date()
         self.certification = Certification.objects.create(
             organization=self.organization,
@@ -89,7 +85,7 @@ class PublicViewTest(TestCase):
             certificate_number="VIEW-TEST-123",
             standard="ISO 27001:2022",
             issue_date=today - timedelta(days=60),
-            expiry_date=today + timedelta(days=305)
+            expiry_date=today + timedelta(days=305),
         )
 
     def test_home_view(self):
@@ -110,14 +106,14 @@ class PublicViewTest(TestCase):
         response = self.client.get(reverse("search_certified_organizations"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Search")
-        
+
         # Test search functionality
         response = self.client.get(
             reverse("search_certified_organizations") + "?query=ViewTest"
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ViewTest Organization")
-        
+
         # Test with no results
         response = self.client.get(
             reverse("search_certified_organizations") + "?query=NonExistentOrg"
@@ -133,7 +129,7 @@ class PublicViewTest(TestCase):
         response = self.client.get(reverse("certificate_verification"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Certificate Verification")
-        
+
         # Test with valid certificate number
         response = self.client.get(
             reverse("certificate_verification") + "?certificate_number=VIEW-TEST-123"
@@ -141,7 +137,7 @@ class PublicViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ViewTest Organization")
         self.assertContains(response, "ISO 27001:2022")
-        
+
         # Test with invalid certificate number
         response = self.client.get(
             reverse("certificate_verification") + "?certificate_number=INVALID-NUMBER"

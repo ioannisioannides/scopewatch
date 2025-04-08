@@ -10,11 +10,16 @@ from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from apps.public.views import (certificate_verification_view, home_view,
-                               search_certified_organizations_view)
+from apps.public.views import (
+    certificate_verification_view,
+    home_view,
+    search_certified_organizations_view,
+)
+
 
 def index(request):
     return HttpResponse("Welcome to Scopewatch!")
+
 
 urlpatterns = [
     path("admin", admin.site.urls),
@@ -30,24 +35,29 @@ urlpatterns = [
     path("public/", include("apps.public.urls")),
     # Include the verification URL under a different path but with unique namespace
     path("verify/", include("apps.public.urls", namespace="verify")),
-    
     # API URLs
     path("api/v1/", include("scopewatch.api_urls")),
-    
-    # Direct view mappings 
-    path("search", search_certified_organizations_view, name="search_certified_organizations"),
+    # Direct view mappings
+    path(
+        "search",
+        search_certified_organizations_view,
+        name="search_certified_organizations",
+    ),
     path("verify", certificate_verification_view, name="certificate_verification"),
     path("", home_view, name="home"),  # Root URL for the public homepage
     path("index", index, name="index"),  # Index page
-    
     # Non-namespaced URL patterns for certification bodies
-    path("certbody/<int:cb_id>", lambda request, cb_id: redirect(
-        reverse("certification_bodies:certbody_detail", args=[cb_id])), 
-        name="certbody_detail"
+    path(
+        "certbody/<int:cb_id>",
+        lambda request, cb_id: redirect(
+            reverse("certification_bodies:certbody_detail", args=[cb_id])
+        ),
+        name="certbody_detail",
     ),
-    path("certbody", lambda request: redirect(
-        reverse("certification_bodies:certbody_list")), 
-        name="certbody_list"
+    path(
+        "certbody",
+        lambda request: redirect(reverse("certification_bodies:certbody_list")),
+        name="certbody_list",
     ),
 ]
 

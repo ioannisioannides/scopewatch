@@ -45,10 +45,7 @@ class ConsultantsModelTest(TestCase):
             username="independent_consultant", password="password"
         )
         consultant = Consultant.objects.create(
-            user=user,
-            specialty="ISO 27001",
-            is_active=True,
-            is_independent=True
+            user=user, specialty="ISO 27001", is_active=True, is_independent=True
         )
         self.assertEqual(consultant.user.username, "independent_consultant")
         self.assertEqual(consultant.specialty, "ISO 27001")
@@ -61,9 +58,9 @@ class ConsultantsModelTest(TestCase):
         Test the creation of a ConsultancyFirm instance.
         """
         firm = ConsultancyFirm.objects.create(
-            name="Global Consulting", 
+            name="Global Consulting",
             contact_email="contact@globalconsulting.com",
-            address="123 Consulting Ave, Business District"
+            address="123 Consulting Ave, Business District",
         )
         self.assertEqual(firm.name, "Global Consulting")
         self.assertEqual(firm.contact_email, "contact@globalconsulting.com")
@@ -108,13 +105,17 @@ class ConsultantEngagementTest(TestCase):
     """
     Test suite for consultant engagements.
     """
-    
+
     def setUp(self):
         self.user = User.objects.create_user(username="engagement_consultant")
-        self.organization = Organization.objects.create(name="Client Organization", contact_email="client@example.com")
-        self.consultant = Consultant.objects.create(user=self.user, specialty="ISO 9001", is_independent=True)
+        self.organization = Organization.objects.create(
+            name="Client Organization", contact_email="client@example.com"
+        )
+        self.consultant = Consultant.objects.create(
+            user=self.user, specialty="ISO 9001", is_independent=True
+        )
         self.today = timezone.now().date()
-        
+
     def test_project_engagement(self):
         """
         Test creating a project-based engagement.
@@ -126,14 +127,14 @@ class ConsultantEngagementTest(TestCase):
             end_date=self.today + timedelta(days=30),
             standards="ISO 9001",
             status="active",
-            notes="Implementation of ISO 9001 quality management system"
+            notes="Implementation of ISO 9001 quality management system",
         )
-        
+
         self.assertEqual(engagement.consultant, self.consultant)
         self.assertEqual(engagement.organization, self.organization)
-        self.assertEqual(engagement.status, 'active')
+        self.assertEqual(engagement.status, "active")
         self.assertEqual(engagement.end_date, self.today + timedelta(days=30))
-    
+
     def test_long_term_engagement(self):
         """
         Test creating a long-term support engagement.
@@ -144,10 +145,10 @@ class ConsultantEngagementTest(TestCase):
             start_date=self.today,
             standards="ISO 9001",
             status="active",
-            notes="Ongoing quality management system maintenance"
+            notes="Ongoing quality management system maintenance",
         )
-        
+
         self.assertEqual(engagement.consultant, self.consultant)
         self.assertEqual(engagement.organization, self.organization)
-        self.assertEqual(engagement.status, 'active')
+        self.assertEqual(engagement.status, "active")
         self.assertIsNone(engagement.end_date)

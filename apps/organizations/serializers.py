@@ -16,26 +16,30 @@ class CertificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certification
         fields = [
-            'id', 'certificate_number', 'issue_date', 'expiry_date',
-            'organization', 'cert_body'
+            "id",
+            "certificate_number",
+            "issue_date",
+            "expiry_date",
+            "organization",
+            "cert_body",
         ]
-        read_only_fields = ['id']
+        read_only_fields = ["id"]
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
     """Serializer for Organization model."""
-    
+
     certifications = CertificationSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'contact_email', 'is_active', 'certifications']
-        read_only_fields = ['id']
+        fields = ["id", "name", "contact_email", "is_active", "certifications"]
+        read_only_fields = ["id"]
 
 
 class OrganizationDetailSerializer(OrganizationSerializer):
     """Detailed serializer for Organization model with additional fields."""
-    
+
     class Meta(OrganizationSerializer.Meta):
         # Include all fields from the parent serializer
         pass

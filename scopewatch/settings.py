@@ -12,13 +12,13 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('DJANGO_SECRET_KEY', default='fallback-secret-key')
+SECRET_KEY = config("DJANGO_SECRET_KEY", default="fallback-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 # Custom test runner to skip migrations during testing
-TEST_RUNNER = 'scopewatch.test_runner.NoMigrationsTestRunner'
+TEST_RUNNER = "scopewatch.test_runner.NoMigrationsTestRunner"
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
 
@@ -32,7 +32,7 @@ SECURE_SSL_REDIRECT = True
 
 # Disable SSL redirection during testing
 # The test runner activates the 'test' in sys.argv
-if 'test' in sys.argv or 'pytest' in sys.modules or DEBUG:
+if "test" in sys.argv or "pytest" in sys.modules or DEBUG:
     print("Test environment detected - disabling SSL redirect")
     SECURE_SSL_REDIRECT = False
     # Disable all security redirects during testing
@@ -177,26 +177,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Logging configuration
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'django.log',
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR / "logs" / "django.log",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': False,
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }

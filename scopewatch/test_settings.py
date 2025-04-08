@@ -8,9 +8,9 @@ from .settings import *  # Import everything from base settings
 
 # Use an SQLite in-memory database for testing instead of PostgreSQL
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
     }
 }
 
@@ -37,29 +37,29 @@ INSTALLED_APPS = [
 ]
 
 # Disable migrations completely for testing
-MIGRATION_MODULES = {app.split('.')[-1]: None for app in INSTALLED_APPS}
+MIGRATION_MODULES = {app.split(".")[-1]: None for app in INSTALLED_APPS}
 
 # Set this to True to avoid time-consuming password hashing
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
+    "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
 
 # Use our custom test runner that skips migrations
-TEST_RUNNER = 'scopewatch.test_runner.NoMigrationsTestRunner'
+TEST_RUNNER = "scopewatch.test_runner.NoMigrationsTestRunner"
 
 # Disable all logging during tests
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'handlers': {
-        'null': {
-            'class': 'logging.NullHandler',
+    "version": 1,
+    "disable_existing_loggers": True,
+    "handlers": {
+        "null": {
+            "class": "logging.NullHandler",
         },
     },
-    'loggers': {
-        '': {
-            'handlers': ['null'],
-            'level': 'CRITICAL',
+    "loggers": {
+        "": {
+            "handlers": ["null"],
+            "level": "CRITICAL",
         },
     },
 }
@@ -81,10 +81,13 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
             ],
             "loaders": [
-                ('django.template.loaders.cached.Loader', [
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader',
-                ]),
+                (
+                    "django.template.loaders.cached.Loader",
+                    [
+                        "django.template.loaders.filesystem.Loader",
+                        "django.template.loaders.app_directories.Loader",
+                    ],
+                ),
             ],
             "debug": False,
         },

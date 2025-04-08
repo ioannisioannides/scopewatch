@@ -14,7 +14,12 @@ class CertBodyAdmin(admin.ModelAdmin):
     Admin interface for the CertBody model.
     """
 
-    list_display = ("name", "accreditation_id", "address", "created_at")  # Ensure fields exist
+    list_display = (
+        "name",
+        "accreditation_id",
+        "address",
+        "created_at",
+    )  # Ensure fields exist
     search_fields = ("name", "accreditation_id")
 
 
@@ -23,8 +28,16 @@ class StandardQualificationAdmin(admin.ModelAdmin):
     """
     Admin interface for StandardQualification model.
     """
-    list_display = ('auditor', 'standard', 'cert_body', 'qualification_date', 'expiry_date', 'is_valid')
-    list_filter = ('standard', 'cert_body', 'qualification_date')
-    search_fields = ('auditor__user__username', 'standard', 'cert_body__name')
-    raw_id_fields = ('auditor', 'cert_body')
-    date_hierarchy = 'qualification_date'
+
+    list_display = (
+        "auditor",
+        "standard",
+        "cert_body",
+        "qualification_date",
+        "expiry_date",
+        "is_valid",
+    )
+    list_filter = ("standard", "cert_body", "qualification_date")
+    search_fields = ("auditor__user__username", "standard", "cert_body__name")
+    raw_id_fields = ("auditor", "cert_body")
+    date_hierarchy = "qualification_date"

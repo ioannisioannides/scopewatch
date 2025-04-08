@@ -25,6 +25,7 @@ class CertBody(models.Model):
         address (str): The physical address of the certification body.
         is_active (bool): Whether the certification body is active.
     """
+
     name = models.CharField(max_length=255)
     accreditation_id = models.CharField(max_length=100)
     address = models.CharField(max_length=255, blank=True)
@@ -47,6 +48,7 @@ class CertBodyUser(models.Model):
         cert_body (ForeignKey): The certification body this user works for.
         role (str): The role of the user at the certification body.
     """
+
     ROLE_CHOICES = [
         ("admin", "Administrator"),
         ("manager", "Manager"),
@@ -76,6 +78,7 @@ class Auditor(models.Model):
         cert_bodies (ManyToManyField): The certification bodies this auditor works for.
         specialties (str): The specialties of the auditor.
     """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     cert_bodies = models.ManyToManyField(CertBody, related_name="auditors")
     specialties = models.CharField(max_length=255, blank=True)
@@ -87,36 +90,36 @@ class Auditor(models.Model):
 
     def __str__(self):
         return self.user.get_full_name() or self.user.username
-    
+
     def can_audit_standard(self, standard, cert_body=None):
         """
         Checks if this auditor is qualified to audit a specific standard.
-        
+
         Args:
             standard (str): The standard to check qualifications for
             cert_body (CertBody, optional): The certification body to check for.
                 If None, checks across all certification bodies.
-                
+
         Returns:
             bool: True if qualified, False otherwise
         """
         qualifications = self.qualifications.filter(standard=standard)
-        
+
         if cert_body:
             qualifications = qualifications.filter(cert_body=cert_body)
-            
+
         valid_qualifications = [q for q in qualifications if q.is_valid]
-        
+
         return len(valid_qualifications) > 0
 
 
 class StandardQualification(models.Model):
     """
     Represents an auditor's qualification for a specific standard.
-    
-    This model supports the business requirement of tracking 
+
+    This model supports the business requirement of tracking
     auditor qualifications by standard.
-    
+
     Attributes:
         auditor (ForeignKey): The auditor who holds this qualification.
         standard (str): The standard this qualification is for.
@@ -126,49 +129,48 @@ class StandardQualification(models.Model):
         evidence_document (FileField): Supporting evidence for the qualification.
         notes (TextField): Additional information about the qualification.
     """
+
     auditor = models.ForeignKey(
-        Auditor, 
-        on_delete=models.CASCADE,
-        related_name='qualifications'
+        Auditor, on_delete=models.CASCADE, related_name="qualifications"
     )
     standard = models.CharField(max_length=255)
     cert_body = models.ForeignKey(
-        CertBody,
-        on_delete=models.CASCADE,
-        related_name='verified_qualifications'
+        CertBody, on_delete=models.CASCADE, related_name="verified_qualifications"
     )
     qualification_date = models.DateField()
     expiry_date = models.DateField(null=True, blank=True)
     evidence_document = models.FileField(
-        upload_to='auditor_qualifications/',
-        null=True,
-        blank=True
+        upload_to="auditor_qualifications/", null=True, blank=True
     )
     notes = models.TextField(blank=True)
-    
+
     class Meta:
-        unique_together = ('auditor', 'standard', 'cert_body')
-        
+        unique_together = ("auditor", "standard", "cert_body")
+
     def __str__(self):
         return f"{self.auditor} - {self.standard} qualification"
-        
+
     @property
     def is_valid(self):
         """
         Checks if the qualification is currently valid.
-        
+
         Returns:
             bool: True if valid, False if expired
         """
         if not self.expiry_date:
             return True
-            
+
         current_date = timezone.now().date()
         return self.expiry_date >= current_date
-        
+
     def clean(self):
         """
         Validates the qualification dates.
         """
-        if self.expiry_date and self.qualification_date and self.expiry_date < self.qualification_date:
+        if (
+            self.expiry_date
+            and self.qualification_date
+            and self.expiry_date < self.qualification_date
+        ):
             raise ValidationError("Expiry date cannot be before qualification date")

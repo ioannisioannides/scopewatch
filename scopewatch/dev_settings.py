@@ -21,11 +21,11 @@ CSRF_COOKIE_SECURE = False
 # }
 
 # Add Django Debug Toolbar for development
-INSTALLED_APPS += ['debug_toolbar']  # noqa
-MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE  # noqa
+INSTALLED_APPS += ["debug_toolbar"]  # noqa
+MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE  # noqa
 
 # Internal IPs for Django Debug Toolbar
-INTERNAL_IPS = ['127.0.0.1']
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Email backend for development (prints to console instead of sending)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

@@ -30,6 +30,7 @@ class Organization(models.Model):
         created_at (datetime): When the organization was first added.
         updated_at (datetime): When the organization was last updated.
     """
+
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255, blank=True)
     contact_email = models.EmailField()
@@ -37,7 +38,7 @@ class Organization(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return self.name
 
@@ -46,7 +47,7 @@ class OrganizationUser(models.Model):
     """
     Represents a user associated with an organization.
 
-    This model supports the business requirement that users can be associated 
+    This model supports the business requirement that users can be associated
     with specific organizations with different roles.
 
     Attributes:
@@ -55,24 +56,23 @@ class OrganizationUser(models.Model):
         role (str): The role of the user within the organization.
         is_active (bool): Whether the user is currently active for this organization.
     """
+
     ROLE_CHOICES = [
-        ('admin', 'Administrator'),
-        ('manager', 'Manager'),
-        ('staff', 'Staff'),
-        ('viewer', 'Viewer'),
+        ("admin", "Administrator"),
+        ("manager", "Manager"),
+        ("staff", "Staff"),
+        ("viewer", "Viewer"),
     ]
-    
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     organization = models.ForeignKey(
-        Organization, 
-        on_delete=models.CASCADE, 
-        related_name='users'
+        Organization, on_delete=models.CASCADE, related_name="users"
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return f"{self.user.username} ({self.role}) at {self.organization.name}"
 
@@ -92,55 +92,52 @@ class Certification(models.Model):
         audit (OneToOneField): The audit that resulted in this certification.
         is_valid (bool): Whether the certification is currently valid.
     """
+
     organization = models.ForeignKey(
-        Organization, 
-        on_delete=models.CASCADE,
-        related_name='certifications'
+        Organization, on_delete=models.CASCADE, related_name="certifications"
     )
     cert_body = models.ForeignKey(
-        CertBody, 
-        on_delete=models.PROTECT,
-        related_name='issued_certifications'
+        CertBody, on_delete=models.PROTECT, related_name="issued_certifications"
     )
     standard = models.CharField(max_length=255)
     certificate_number = models.CharField(
-        max_length=100, 
-        unique=True,
-        help_text="The unique certificate identifier"
+        max_length=100, unique=True, help_text="The unique certificate identifier"
     )
     issue_date = models.DateField()
     expiry_date = models.DateField()
     scope = models.TextField(
         blank=True,
-        help_text="The scope of certification - what activities, processes, or sites are covered."
+        help_text="The scope of certification - what activities, processes, or sites are covered.",
     )
     audit = models.OneToOneField(
-        'audits.Audit', 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        "audits.Audit",
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        related_name='resulting_certification'
+        related_name="resulting_certification",
     )
-    
+
     def __str__(self):
-        return f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
-    
+        return (
+            f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
+        )
+
     @property
     def is_valid(self):
         """
         Checks if the certification is currently valid.
-        
+
         Returns:
             bool: True if valid, False if expired
         """
         return self.expiry_date >= timezone.now().date()
-    
+
     def clean(self):
         """
         Validates certification dates.
         """
         if self.issue_date and self.expiry_date and self.expiry_date < self.issue_date:
             raise ValidationError("Expiry date cannot be before issue date.")
-            
+
     class Meta:
-        unique_together = ('organization', 'standard', 'cert_body', 'issue_date')
+        unique_together = ("organization", "standard", "cert_body", "issue_date")

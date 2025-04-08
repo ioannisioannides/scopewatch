@@ -6,39 +6,48 @@ This module defines the URL patterns for the API endpoints of the Scopewatch pro
 
 from django.urls import path, include
 from django.http import JsonResponse
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 from rest_framework.routers import DefaultRouter
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+
 # Setup dummy view for API documentation
-@api_view(['GET'])
+@api_view(["GET"])
 def api_root(request):
     """
     API root view.
     This endpoint serves as the API entry point with links to available resources.
     """
-    return Response({
-        'message': 'Welcome to ScopeWatch API',
-        'version': '1.0',
-        'status': 'API is under development'
-    })
+    return Response(
+        {
+            "message": "Welcome to ScopeWatch API",
+            "version": "1.0",
+            "status": "API is under development",
+        }
+    )
+
 
 # API URL patterns
 urlpatterns = [
     # API documentation schema
-    path('schema', SpectacularAPIView.as_view(), name='schema'),
-    path('schema/swagger', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('schema/redoc', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    
+    path("schema", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "schema/swagger",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path("schema/redoc", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     # API root entry point
-    path('', api_root, name='api-root'),
-    
+    path("", api_root, name="api-root"),
     # Include the auth URLs with a unique namespace
-    path('auth/', include('rest_framework.urls', namespace='api_rest_framework')),
-    
+    path("auth/", include("rest_framework.urls", namespace="api_rest_framework")),
     # Include default DRF browsable API with a different namespace
-    path('api-auth/', include('rest_framework.urls', namespace='browsable_api')),
+    path("api-auth/", include("rest_framework.urls", namespace="browsable_api")),
 ]
 
 # Add a comment explaining the current state of the API implementation

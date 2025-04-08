@@ -9,7 +9,7 @@ from rest_framework.routers import DefaultRouter
 from .api_views import OrganizationViewSet, CertificationViewSet
 
 router = DefaultRouter()
-router.register(r'organizations', OrganizationViewSet)
-router.register(r'certifications', CertificationViewSet)
+router.register(r"organizations", OrganizationViewSet)
+router.register(r"certifications", CertificationViewSet)
 
 urlpatterns = router.urls

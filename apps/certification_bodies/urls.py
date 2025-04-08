@@ -10,20 +10,29 @@ from django.urls import path
 
 from . import views
 
-app_name = 'certification_bodies'
+app_name = "certification_bodies"
 
 urlpatterns = [
-    path("", views.certbody_list_view, name="certbody_list"),  # List view for certification bodies
-    path("<int:cb_id>", views.certbody_detail_view, name="certbody_detail"),  # Detail view for a specific certification body
-    
+    path(
+        "", views.certbody_list_view, name="certbody_list"
+    ),  # List view for certification bodies
+    path(
+        "<int:cb_id>", views.certbody_detail_view, name="certbody_detail"
+    ),  # Detail view for a specific certification body
     # Audit decision views
-    path('audits/pending/', 
-         views.AuditPendingDecisionListView.as_view(), 
-         name='pending_decisions'),
-    path('audits/<int:audit_id>/decision/', 
-         views.audit_decision_view, 
-         name='audit_decision'),
-    path('audits/<int:audit_id>/certificate/', 
-         views.issue_certificate_view, 
-         name='issue_certificate'),
+    path(
+        "audits/pending/",
+        views.AuditPendingDecisionListView.as_view(),
+        name="pending_decisions",
+    ),
+    path(
+        "audits/<int:audit_id>/decision/",
+        views.audit_decision_view,
+        name="audit_decision",
+    ),
+    path(
+        "audits/<int:audit_id>/certificate/",
+        views.issue_certificate_view,
+        name="issue_certificate",
+    ),
 ]

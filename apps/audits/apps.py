@@ -13,6 +13,7 @@ class AuditsConfig(AppConfig):
     """
     Configuration class for the Audits app.
     """
+
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.audits"
     verbose_name = "Audits"

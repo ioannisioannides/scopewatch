@@ -46,7 +46,7 @@ class OrganizationModelTest(TestCase):
             name="Complete Test Org",
             contact_email="complete@testorg.com",
             address="123 Test Street, Test City",
-            is_active=True
+            is_active=True,
         )
         self.assertEqual(org.name, "Complete Test Org")
         self.assertEqual(org.address, "123 Test Street, Test City")
@@ -58,17 +58,15 @@ class OrganizationModelTest(TestCase):
         Test updating an Organization instance.
         """
         org = Organization.objects.create(
-            name="Original Name", 
-            contact_email="original@example.com",
-            is_active=True
+            name="Original Name", contact_email="original@example.com", is_active=True
         )
-        
+
         # Update the organization
         org.name = "Updated Name"
         org.contact_email = "updated@example.com"
         org.is_active = False
         org.save()
-        
+
         # Fetch the organization again from the database
         updated_org = Organization.objects.get(pk=org.pk)
         self.assertEqual(updated_org.name, "Updated Name")
@@ -113,61 +111,59 @@ class CertificationModelTest(TestCase):
     """
     Test suite for the Certification model.
     """
-    
+
     def setUp(self):
         self.organization = Organization.objects.create(
-            name="Certified Org", 
-            contact_email="certified@example.com"
+            name="Certified Org", contact_email="certified@example.com"
         )
         self.cert_body = CertBody.objects.create(
-            name="Certifier Inc",
-            accreditation_id="CERT-123"
+            name="Certifier Inc", accreditation_id="CERT-123"
         )
-    
+
     def test_certification_creation(self):
         """
         Test creating a certification.
         """
         today = timezone.now().date()
         expiry = today + timedelta(days=365)
-        
+
         certification = Certification.objects.create(
             organization=self.organization,
             cert_body=self.cert_body,
             standard="ISO 9001:2015",
             certificate_number="ISO9001-123456",
             issue_date=today,
-            expiry_date=expiry
+            expiry_date=expiry,
         )
-        
+
         self.assertEqual(certification.organization, self.organization)
         self.assertEqual(certification.cert_body, self.cert_body)
         self.assertEqual(certification.standard, "ISO 9001:2015")
         self.assertEqual(certification.certificate_number, "ISO9001-123456")
-        
+
     def test_certification_validity(self):
         """
         Test certification validity property.
         """
         today = timezone.now().date()
-        
+
         valid_cert = Certification.objects.create(
             organization=self.organization,
             cert_body=self.cert_body,
             standard="ISO 9001:2015",
             certificate_number="VALID-CERT",
             issue_date=today - timedelta(days=30),
-            expiry_date=today + timedelta(days=335)
+            expiry_date=today + timedelta(days=335),
         )
-        
+
         expired_cert = Certification.objects.create(
             organization=self.organization,
             cert_body=self.cert_body,
             standard="ISO 9001:2015",
             certificate_number="EXPIRED-CERT",
             issue_date=today - timedelta(days=400),
-            expiry_date=today - timedelta(days=35)
+            expiry_date=today - timedelta(days=35),
         )
-        
+
         self.assertTrue(valid_cert.is_valid)
         self.assertFalse(expired_cert.is_valid)
