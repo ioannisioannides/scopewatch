@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from .models import ConsultancyFirm, Consultant
+from .models import ConsultancyFirm, Consultant, ConsultantEngagement, ConsultantDocument
 
 
 @admin.register(Consultant)
@@ -23,3 +23,15 @@ class ConsultancyFirmAdmin(admin.ModelAdmin):
 
     list_display = ("id", "name", "address", "is_active")
     search_fields = ("name",)
+
+
+@admin.register(ConsultantDocument)
+class ConsultantDocumentAdmin(admin.ModelAdmin):
+    """
+    Admin interface for ConsultantDocument model.
+    """
+    list_display = ('title', 'consultant', 'organization', 'document_type', 'standard', 'status')
+    list_filter = ('document_type', 'standard', 'status', 'created_at')
+    search_fields = ('title', 'consultant__user__username', 'organization__name', 'standard')
+    raw_id_fields = ('consultant', 'organization', 'engagement', 'submitted_to_audit')
+    date_hierarchy = 'created_at'

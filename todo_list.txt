@@ -1,0 +1,43 @@
+# ScopeWatch Todo List
+
+## Priority Issues
+1. Implement public search and verification functionality for certifications
+2. Add certification scope field to the Certification model
+3. Create link between successful audits and issued certifications
+4. Add functionality to track audit documentation submitted by consultants
+
+## Public App
+- Create views and search forms for the general public to verify certifications
+- Implement certification verification API endpoints
+- Add filtering by organization name, standard, and validity status
+- Create public certificate detail page showing scope and validity period
+
+## Organizations App
+- Add certification scope field to Certification model
+- Link certifications to successful audits
+- Implement a CertificationRequest model to track certification requests
+- Add field for organization industry/sector for better categorization
+
+## Certification Bodies App
+- Create StandardQualification model to link auditors to specific standards they're qualified for
+- Implement permission system for CertBodyUser roles
+- Add verification workflow for auditor qualifications
+- Create functionality for certification issuance based on successful audits
+
+## Audits App
+- Link successful audits to issued certifications
+- Create DocumentSubmission model to track documentation for audits
+- Add AuditResult model to formalize the outcome of audits
+- Implement workflow states for the full audit lifecycle
+
+## Consultants App
+- Create ConsultantDocument model to track documentation prepared for certification
+- Add StandardSpecialty model to link consultants to specific standards
+- Create notification system for certification/audit events relevant to consultants
+- Implement document collaboration features between consultants and organizations
+
+## General Improvements
+- Improve model relationships to better reflect business logic
+- Add workflow state tracking for certification processes
+- Implement notification system for certification events
+- Create dashboard views for different user roles

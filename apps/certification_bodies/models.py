@@ -84,3 +84,61 @@ class Auditor(models.Model):
     
     def __str__(self):
         return f"Auditor: {self.user.username}"
+
+
+class StandardQualification(models.Model):
+    """
+    Represents an auditor's qualification for a specific standard.
+    
+    This model supports the business requirement that auditors can only conduct
+    audits based on their knowledge and if verified by a certification body.
+    
+    Attributes:
+        auditor (ForeignKey): The auditor who has the qualification.
+        standard (CharField): The standard the auditor is qualified for.
+        cert_body (ForeignKey): The certification body that verified this qualification.
+        qualification_date (date): When the qualification was obtained.
+        expiry_date (date): When the qualification expires (if applicable).
+        evidence_document (FileField): Document showing evidence of qualification.
+        notes (TextField): Additional notes about the qualification.
+    """
+    auditor = models.ForeignKey(
+        Auditor, 
+        on_delete=models.CASCADE,
+        related_name='qualifications'
+    )
+    standard = models.CharField(max_length=255)
+    cert_body = models.ForeignKey(
+        CertBody,
+        on_delete=models.CASCADE,
+        related_name='verified_qualifications'
+    )
+    qualification_date = models.DateField()
+    expiry_date = models.DateField(null=True, blank=True)
+    evidence_document = models.FileField(
+        upload_to='auditor_qualifications/',
+        null=True,
+        blank=True
+    )
+    notes = models.TextField(blank=True)
+    
+    class Meta:
+        unique_together = ['auditor', 'standard', 'cert_body']
+    
+    def __str__(self):
+        return f"{self.auditor} - {self.standard} (Verified by {self.cert_body})"
+    
+    @property
+    def is_valid(self):
+        """
+        Checks if the qualification is currently valid based on its expiry date.
+        
+        Returns:
+            bool: True if the qualification is valid, False if expired.
+        """
+        from django.utils import timezone
+        
+        if not self.expiry_date:
+            return True
+        
+        return self.expiry_date >= timezone.now().date()

@@ -10,11 +10,11 @@ Expand these tests to cover additional scenarios and edge cases.
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, date
 
-from apps.audits.models import Audit, AuditTeam, AuditorAssignment, NonConformance
-from apps.certification_bodies.models import CertBody, Auditor
-from apps.organizations.models import Organization
+from apps.audits.models import Audit, AuditTeam, AuditorAssignment, NonConformance, AuditResult
+from apps.certification_bodies.models import CertBody, Auditor, CertBodyUser
+from apps.organizations.models import Organization, Certification
 from django.contrib.auth.models import User
 
 import pytest
@@ -310,3 +310,154 @@ class NonConformanceTest(TestCase):
         # Verify closure
         updated_nc = NonConformance.objects.get(pk=nc.pk)
         self.assertEqual(updated_nc.date_closed, closure_date)
+
+
+class CertificationIssuanceTestCase(TestCase):
+    """
+    Test cases for certification issuance workflow.
+    """
+    def setUp(self):
+        """
+        Set up test data.
+        """
+        # Create users
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.certbody_user = User.objects.create_user(username='certbodyuser', password='password')
+        
+        # Create organization
+        self.organization = Organization.objects.create(
+            name='Test Organization',
+            contact_email='test@example.com',
+            address='123 Test St',
+            is_active=True
+        )
+        
+        # Create certification body
+        self.certbody = CertBody.objects.create(
+            name='Test Certification Body',
+            accreditation_id='TCB-001',
+            contact_email='certbody@example.com',
+            is_active=True
+        )
+        
+        # Associate user with certification body
+        self.cb_user = CertBodyUser.objects.create(
+            user=self.certbody_user,
+            cert_body=self.certbody,
+            role='admin',
+            is_active=True
+        )
+        
+        # Create an audit
+        self.audit = Audit.objects.create(
+            audit_type='stage2',
+            start_date=date.today() - timedelta(days=10),
+            end_date=date.today() - timedelta(days=5),
+            status='completed',
+            organization=self.organization,
+            certbody=self.certbody,
+            standard='ISO 9001:2015'
+        )
+
+    def test_audit_result_creation(self):
+        """
+        Test creating an audit result.
+        """
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision='approve',
+            decided_by=self.cb_user,
+            nonconformances_closed=True,
+            recommendation='issue'
+        )
+        
+        self.assertEqual(audit_result.audit, self.audit)
+        self.assertEqual(audit_result.decision, 'approve')
+        self.assertTrue(audit_result.can_issue_certificate())
+    
+    def test_certificate_issuance(self):
+        """
+        Test issuing a certificate based on audit result.
+        """
+        # Create an audit result
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision='approve',
+            decided_by=self.cb_user,
+            nonconformances_closed=True,
+            recommendation='issue'
+        )
+        
+        # Issue a certificate
+        certificate = audit_result.issue_certificate(
+            certificate_number='CERT-001',
+            scope='Test certification scope',
+            expiry_date=date.today() + timedelta(days=365*3)
+        )
+        
+        # Check if the certificate was created correctly
+        self.assertIsInstance(certificate, Certification)
+        self.assertEqual(certificate.certificate_number, 'CERT-001')
+        self.assertEqual(certificate.organization, self.organization)
+        self.assertEqual(certificate.cert_body, self.certbody)
+        self.assertEqual(certificate.audit, self.audit)
+        self.assertTrue(certificate.is_valid)
+        
+        # Check if audit status was updated
+        self.audit.refresh_from_db()
+        self.assertEqual(self.audit.status, 'certification_issued')
+    
+    def test_cannot_issue_certificate_with_open_nonconformances(self):
+        """
+        Test that certificates cannot be issued with open major nonconformances.
+        """
+        # Create a major nonconformance
+        nonconformance = NonConformance.objects.create(
+            audit=self.audit,
+            severity='major',
+            description='Major nonconformance',
+        )
+        
+        # Create an audit result with nonconformances_closed=False
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision='conditional',
+            decided_by=self.cb_user,
+            nonconformances_closed=False,
+            recommendation='withhold'
+        )
+        
+        # Check that certificate cannot be issued
+        self.assertFalse(audit_result.can_issue_certificate())
+        
+        # Try to issue a certificate - should raise ValueError
+        with self.assertRaises(ValueError):
+            certificate = audit_result.issue_certificate(
+                certificate_number='CERT-001',
+                scope='Test certification scope',
+                expiry_date=date.today() + timedelta(days=365*3)
+            )
+    
+    def test_certificate_expiry(self):
+        """
+        Test certificate expiry logic.
+        """
+        # Create an audit result
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision='approve',
+            decided_by=self.cb_user,
+            nonconformances_closed=True,
+            recommendation='issue'
+        )
+        
+        # Issue a certificate with expiry date in the past
+        expiry_date = date.today() - timedelta(days=1)
+        certificate = audit_result.issue_certificate(
+            certificate_number='CERT-002',
+            scope='Test certification scope',
+            expiry_date=expiry_date
+        )
+        
+        # Check if the certificate is marked as not valid
+        self.assertFalse(certificate.is_valid)
