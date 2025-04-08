@@ -3,7 +3,7 @@ python-decouple==3.8  # For configuration management
 psycopg2-binary==2.9.10  # PostgreSQL database adapter
 gunicorn==23.0.0  # WSGI server for production
 django-extensions==3.2.3  # Useful development tools
-Pillow==10.3.0  # Required for ImageField
+Pillow==9.5.0  # Required for ImageField (using an older version with better compatibility)
 
 # Added for API Development
 djangorestframework>=3.15.2  # REST API framework (version 3.15.2 or higher)
