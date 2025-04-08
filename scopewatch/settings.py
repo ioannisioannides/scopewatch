@@ -4,7 +4,6 @@ Django settings for the Scopewatch project.
 This module contains the settings configuration for the Scopewatch project.
 """
 
-import os
 import sys
 from pathlib import Path
 from decouple import config
