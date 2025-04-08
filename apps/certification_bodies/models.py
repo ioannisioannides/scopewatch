@@ -29,9 +29,9 @@ class CertBody(models.Model):
     accreditation_id = models.CharField(max_length=100)
     address = models.CharField(max_length=255, blank=True)
     logo = models.ImageField(upload_to="certbody_logos/", null=True, blank=True)
-    contact_email = models.EmailField(blank=True)
+    contact_email = models.EmailField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -60,7 +60,7 @@ class CertBodyUser(models.Model):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -82,7 +82,7 @@ class Auditor(models.Model):
     bio = models.TextField(blank=True)
     employee_id = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

@@ -124,14 +124,14 @@ class ConsultantEngagementTest(TestCase):
             organization=self.organization,
             start_date=self.today,
             end_date=self.today + timedelta(days=30),
-            engagement_type='project',
-            description="Implementation of ISO 9001 quality management system"
+            standards="ISO 9001",
+            status="active",
+            notes="Implementation of ISO 9001 quality management system"
         )
         
         self.assertEqual(engagement.consultant, self.consultant)
         self.assertEqual(engagement.organization, self.organization)
-        self.assertEqual(engagement.engagement_type, 'project')
-        self.assertTrue(engagement.is_active)
+        self.assertEqual(engagement.status, 'active')
         self.assertEqual(engagement.end_date, self.today + timedelta(days=30))
     
     def test_long_term_engagement(self):
@@ -142,12 +142,12 @@ class ConsultantEngagementTest(TestCase):
             consultant=self.consultant,
             organization=self.organization,
             start_date=self.today,
-            engagement_type='long_term',
-            description="Ongoing quality management system maintenance"
+            standards="ISO 9001",
+            status="active",
+            notes="Ongoing quality management system maintenance"
         )
         
         self.assertEqual(engagement.consultant, self.consultant)
         self.assertEqual(engagement.organization, self.organization)
-        self.assertEqual(engagement.engagement_type, 'long_term')
-        self.assertTrue(engagement.is_active)
+        self.assertEqual(engagement.status, 'active')
         self.assertIsNone(engagement.end_date)

@@ -30,7 +30,12 @@
         </div>
     </div>
 
-    {% if certifications %}
+    {% if error_message or no_results %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No certificate found</h4>
+            <p>{% if error_message %}{{ error_message }}{% else %}No certificates match your search criteria. Please try a different search term or standard.{% endif %}</p>
+        </div>
+    {% elif certifications %}
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
@@ -95,11 +100,6 @@
             </ul>
         </nav>
         {% endif %}
-    {% else %}
-        <div class="alert alert-info">
-            <h4 class="alert-heading">No certificates found</h4>
-            <p>No certificates match your search criteria. Please try a different search term or standard.</p>
-        </div>
     {% endif %}
 </div>
 {% endblock %}

@@ -137,10 +137,33 @@ def verify_certificate_api(request):
 def certificate_verification_view(request):
     """
     View for verifying certificates.
-    This is a wrapper around CertificateDetailView for backward compatibility.
     """
-    # Redirect to the certificate search page by default
-    return CertificateSearchView.as_view()(request)
+    certificate_number = request.GET.get('certificate_number')
+    context = {
+        'page_title': 'Certificate Verification',
+        'description': 'Verify certification status'
+    }
+    
+    if certificate_number:
+        certifications = Certification.objects.filter(
+            certificate_number=certificate_number,
+            organization__is_active=True,
+            expiry_date__gte=timezone.now().date()
+        )
+        
+        if not certifications.exists():
+            context['error_message'] = "No certificate found"
+            return render(request, 'public/certificate_search.html', context)
+        
+        context['certifications'] = certifications
+    else:
+        # Show all valid certifications by default
+        context['certifications'] = Certification.objects.filter(
+            organization__is_active=True,
+            expiry_date__gte=timezone.now().date()
+        )
+    
+    return render(request, 'public/certificate_search.html', context)
 
 
 def home_view(request):
@@ -156,6 +179,39 @@ def home_view(request):
 def search_certified_organizations_view(request):
     """
     Search view for certified organizations.
-    This is a wrapper around CertificateSearchView for backward compatibility.
     """
-    return CertificateSearchView.as_view()(request)
+    query = request.GET.get('query')
+    context = {
+        'page_title': 'Search Certified Organizations',
+        'description': 'Find organizations with valid certifications'
+    }
+    
+    if query:
+        certifications = Certification.objects.filter(
+            Q(organization__name__icontains=query) |
+            Q(certificate_number__icontains=query) |
+            Q(scope__icontains=query),
+            organization__is_active=True,
+            expiry_date__gte=timezone.now().date()
+        )
+        
+        # Log the search
+        SearchLog.objects.create(
+            search_term=query,
+            ip_address=get_client_ip(request),
+            results_count=certifications.count()
+        )
+        
+        context['certifications'] = certifications
+        context['query'] = query
+        
+        if not certifications.exists():
+            context['no_results'] = True
+    else:
+        # Default view with all certifications
+        context['certifications'] = Certification.objects.filter(
+            organization__is_active=True,
+            expiry_date__gte=timezone.now().date()
+        )
+    
+    return render(request, 'public/certificate_search.html', context)

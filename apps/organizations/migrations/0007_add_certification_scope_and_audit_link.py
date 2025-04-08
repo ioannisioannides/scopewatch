@@ -6,7 +6,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('audits', '0001_initial'),
-        ('organizations', '0001_initial'),
+        ('organizations', '0002_certification'),  # Updated to depend on the migration that creates the Certification model
     ]
 
     operations = [
