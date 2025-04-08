@@ -8,6 +8,7 @@ This module provides forms for public users to search for certifications.
 
 from django import forms
 from apps.organizations.models import Certification
+from apps.certification_bodies.models import CertificationBody
 
 
 class CertificateSearchForm(forms.Form):
@@ -31,9 +32,20 @@ class CertificateSearchForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
     
+    certification_body = forms.ChoiceField(
+        label='Certification Body',
+        required=False,
+        choices=[('', '-- Any Certification Body --')],
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         # Get all distinct standards for the dropdown
         standards = Certification.objects.values_list('standard', flat=True).distinct().order_by('standard')
         self.fields['standard'].choices += [(std, std) for std in standards]
+        
+        # Get all active certification bodies for the dropdown
+        cert_bodies = CertificationBody.objects.filter(is_active=True).values_list('id', 'name').order_by('name')
+        self.fields['certification_body'].choices += [(cb_id, name) for cb_id, name in cert_bodies]

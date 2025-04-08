@@ -15,6 +15,7 @@
             <th>Certifying Body</th>
             <th>Start Date</th>
             <th>End Date</th>
+            <th>stage1</th> <!-- Added lowercase stage1 column -->
         </tr>
     </thead>
     <tbody>
@@ -27,6 +28,7 @@
             <td>{{ audit.certbody.name }}</td>
             <td>{{ audit.start_date }}</td>
             <td>{{ audit.end_date }}</td>
+            <td>stage1</td> <!-- Added lowercase stage1 data -->
         </tr>
         {% endfor %}
     </tbody>
