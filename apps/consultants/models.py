@@ -48,7 +48,10 @@ class Consultant(models.Model):
         firm (ForeignKey): The consultancy firm this consultant works for.
         bio (str): Biographical information about the consultant.
         specialties (str): The consultant's areas of specialty.
+        specialty (str): The primary specialty of the consultant (for backward compatibility).
         standards (str): The standards the consultant is familiar with.
+        is_active (bool): Whether the consultant is active.
+        is_independent (bool): Whether the consultant works independently.
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     firm = models.ForeignKey(
@@ -60,8 +63,11 @@ class Consultant(models.Model):
     )
     bio = models.TextField(blank=True)
     specialties = models.CharField(max_length=255, blank=True)
+    specialty = models.CharField(max_length=255, blank=True)  # For backward compatibility
     standards = models.CharField(max_length=255, blank=True)
     experience_years = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    is_independent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

@@ -23,6 +23,6 @@
     <p>Issued by: {{ certificate.cert_body.name }}</p>
     <p>Valid until: {{ certificate.expiry_date }}</p>
 {% elif certificate_number %}
-    <p>No certificate found with the provided number.</p>
+    <p>No certificate found</p>
 {% endif %}
 {% endblock %}
