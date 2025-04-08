@@ -3,102 +3,159 @@
 """
 Views for the Public app.
 
-This module contains views for the public-facing pages of the Scopewatch project.
+This module provides views for public users to search and verify certifications.
 """
 
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView, FormView
+from django.db.models import Q
+from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 
-from apps.organizations.models import Certification, Organization
+from .models import CertificationVerification, SearchLog
+from .forms import CertificateSearchForm
+from apps.organizations.models import Organization, Certification
 
 
-def public_home_view(request):
+def get_client_ip(request):
     """
-    Example view for a public homepage or search form.
+    Get the client IP address from the request.
     """
-    _ = request  # Explicitly mark 'request' as used
-    return HttpResponse("Welcome to the Public Portal")
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 
-def certificate_search_view(request):
+class CertificateSearchView(ListView):
     """
-    View for certificate search page.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        HttpResponse: Rendered certificate search page.
+    View for searching certifications.
     """
-    return HttpResponse("Certificate Search Placeholder")
-
-
-def home_view(request):
-    """
-    View for the root URL (homepage).
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        HttpResponse: Rendered homepage.
-    """
-    return render(request, "public/home.html")
-
-
-def search_certified_organizations_view(request):
-    """
-    View for searching certified organizations.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        HttpResponse: Rendered search page with results if query parameters are present.
-    """
-    query = request.GET.get('query', '')
-    cert_body = request.GET.get('cert_body', '')
+    model = Certification
+    template_name = 'public/certificate_search.html'
+    context_object_name = 'certifications'
+    paginate_by = 10
     
-    results = []
-    if query or cert_body:
-        # Filter certifications based on query parameters
-        certifications = Certification.objects.all()
+    def get_queryset(self):
+        queryset = Certification.objects.filter(
+            organization__is_active=True,
+            expiry_date__gte=timezone.now().date()
+        )
         
-        if query:
-            certifications = certifications.filter(organization__name__icontains=query)
-        
-        if cert_body:
-            certifications = certifications.filter(cert_body__name__icontains=cert_body)
-        
-        results = certifications
+        form = CertificateSearchForm(self.request.GET)
+        if form.is_valid():
+            search_term = form.cleaned_data.get('search_term')
+            standard = form.cleaned_data.get('standard')
+            
+            # Log the search
+            SearchLog.objects.create(
+                search_term=search_term or '',
+                ip_address=get_client_ip(self.request),
+                results_count=0  # Will update after filtering
+            )
+            
+            if search_term:
+                queryset = queryset.filter(
+                    Q(organization__name__icontains=search_term) |
+                    Q(certificate_number__icontains=search_term) |
+                    Q(scope__icontains=search_term)
+                )
+            
+            if standard:
+                queryset = queryset.filter(standard=standard)
+            
+            # Update the search log with results count
+            SearchLog.objects.filter(
+                search_term=search_term or '',
+                ip_address=get_client_ip(self.request)
+            ).update(results_count=queryset.count())
+            
+        return queryset
     
-    return render(request, "public/search.html", {
-        'query': query,
-        'cert_body': cert_body,
-        'results': results
-    })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CertificateSearchForm(self.request.GET)
+        return context
+
+
+class CertificateDetailView(DetailView):
+    """
+    View for displaying certificate details.
+    """
+    model = Certification
+    template_name = 'public/certificate_detail.html'
+    context_object_name = 'certificate'
+    
+    def get_object(self, queryset=None):
+        certificate = super().get_object(queryset)
+        
+        # Log the verification
+        CertificationVerification.objects.create(
+            certificate=certificate,
+            ip_address=get_client_ip(self.request),
+            user_agent=self.request.META.get('HTTP_USER_AGENT', '')
+        )
+        
+        return certificate
+
+
+@require_http_methods(["GET"])
+def verify_certificate_api(request):
+    """
+    API endpoint for verifying a certificate by number.
+    """
+    certificate_number = request.GET.get('certificate_number')
+    if not certificate_number:
+        return JsonResponse({'error': 'Certificate number is required'}, status=400)
+    
+    try:
+        certificate = Certification.objects.get(certificate_number=certificate_number)
+        
+        # Log the verification
+        CertificationVerification.objects.create(
+            certificate=certificate,
+            ip_address=get_client_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')
+        )
+        
+        return JsonResponse({
+            'valid': certificate.is_valid,
+            'organization': certificate.organization.name,
+            'standard': certificate.standard,
+            'issue_date': certificate.issue_date.isoformat(),
+            'expiry_date': certificate.expiry_date.isoformat(),
+            'cert_body': certificate.cert_body.name,
+            'scope': certificate.scope
+        })
+    except Certification.DoesNotExist:
+        return JsonResponse({'error': 'Certificate not found'}, status=404)
 
 
 def certificate_verification_view(request):
     """
-    View for verifying a certificate.
-
-    Args:
-        request (HttpRequest): The HTTP request.
-
-    Returns:
-        HttpResponse: Rendered certificate verification page with results if certificate number is provided.
+    View for verifying certificates.
+    This is a wrapper around CertificateDetailView for backward compatibility.
     """
-    certificate_number = request.GET.get('certificate_number', '')
-    certificate = None
-    
-    if certificate_number:
-        try:
-            certificate = Certification.objects.get(certificate_number=certificate_number)
-        except Certification.DoesNotExist:
-            pass
-    
-    return render(request, "public/verify.html", {
-        'certificate_number': certificate_number,
-        'certificate': certificate
+    # Redirect to the certificate search page by default
+    return CertificateSearchView.as_view()(request)
+
+
+def home_view(request):
+    """
+    Home page view.
+    """
+    return render(request, 'public/home.html', {
+        'page_title': 'Welcome to ScopeWatch',
+        'description': 'Verify certifications of organizations'
     })
+
+
+def search_certified_organizations_view(request):
+    """
+    Search view for certified organizations.
+    This is a wrapper around CertificateSearchView for backward compatibility.
+    """
+    return CertificateSearchView.as_view()(request)

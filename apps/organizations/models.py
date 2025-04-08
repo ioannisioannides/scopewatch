@@ -83,6 +83,8 @@ class Certification(models.Model):
         certificate_number (str): The unique certificate number.
         issue_date (date): The date the certification was issued.
         expiry_date (date): The date the certification expires.
+        scope (TextField): The scope of certification - what activities, processes, or sites are covered.
+        audit (ForeignKey): The audit that resulted in this certification (can be null for legacy data).
     """
     organization = models.ForeignKey(
         "Organization", on_delete=models.CASCADE, related_name="certifications"
@@ -94,6 +96,14 @@ class Certification(models.Model):
     certificate_number = models.CharField(max_length=100, unique=True)
     issue_date = models.DateField()
     expiry_date = models.DateField()
+    scope = models.TextField(blank=True, help_text="The scope of certification - what activities, processes, or sites are covered.")
+    audit = models.OneToOneField(
+        "audits.Audit", 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name="resulting_certification"
+    )
 
     def __str__(self):
         """

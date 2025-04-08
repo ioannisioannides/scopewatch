@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Certificate Details: {{ certificate.certificate_number }} | ScopeWatch{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'public:certificate_search' %}">Certificate Verification</a></li>
+                    <li class="breadcrumb-item active">Certificate Details</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>Certificate Details</h1>
+            <p class="lead">Certificate Number: {{ certificate.certificate_number }}</p>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Certification Information</h5>
+            <div>
+                {% if certificate.is_valid %}
+                    <span class="badge bg-success fs-6">Valid</span>
+                {% else %}
+                    <span class="badge bg-danger fs-6">Expired</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Organization:</strong></div>
+                <div class="col-md-8">{{ certificate.organization.name }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Standard:</strong></div>
+                <div class="col-md-8">{{ certificate.standard }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Certification Body:</strong></div>
+                <div class="col-md-8">{{ certificate.cert_body.name }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Issue Date:</strong></div>
+                <div class="col-md-8">{{ certificate.issue_date }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Expiry Date:</strong></div>
+                <div class="col-md-8">{{ certificate.expiry_date }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Accreditation ID:</strong></div>
+                <div class="col-md-8">{{ certificate.cert_body.accreditation_id }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Certification Scope</h5>
+        </div>
+        <div class="card-body">
+            <p>{{ certificate.scope|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Verification Notice</h4>
+                <p>This certificate has been verified through ScopeWatch's official verification system. If you have any questions about this certification, please contact the certification body directly.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between">
+            <a href="{% url 'public:certificate_search' %}" class="btn btn-secondary">Back to Search</a>
+            <button class="btn btn-primary" onclick="window.print()">Print Certificate Details</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

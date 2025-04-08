@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Pending Audit Decisions | ScopeWatch{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>Audits Pending Decisions</h1>
+            <p class="lead">Make certification decisions for completed audits</p>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="row mb-4">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if audits %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Organization</th>
+                        <th>Audit Type</th>
+                        <th>Standard</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for audit in audits %}
+                    <tr>
+                        <td>{{ audit.organization.name }}</td>
+                        <td>{{ audit.get_audit_type_display }}</td>
+                        <td>{{ audit.standard }}</td>
+                        <td>{{ audit.end_date }}</td>
+                        <td>{{ audit.get_status_display }}</td>
+                        <td>
+                            <a href="{% url 'certification_bodies:audit_decision' audit.pk %}" class="btn btn-sm btn-primary">Make Decision</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No pending decisions</h4>
+            <p>There are no completed audits that need certification decisions at this time.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

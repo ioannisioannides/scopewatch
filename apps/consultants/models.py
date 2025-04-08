@@ -115,3 +115,109 @@ class ConsultantEngagement(models.Model):
     
     def __str__(self):
         return f"{self.consultant} - {self.organization} ({self.get_engagement_type_display()})"
+
+
+class ConsultantDocument(models.Model):
+    """
+    Represents a document prepared by a consultant for an organization.
+    
+    This model supports the business requirement that consultants help organizations
+    prepare documentation for certification bodies to issue certificates.
+    
+    Attributes:
+        consultant (ForeignKey): The consultant who prepared the document.
+        organization (ForeignKey): The organization the document is prepared for.
+        title (str): The title of the document.
+        document_type (str): The type of document.
+        standard (str): The standard the document is related to.
+        engagement (ForeignKey): The consultant engagement this document is part of.
+        created_at (datetime): When the document was created.
+        updated_at (datetime): When the document was last updated.
+        status (str): The current status of the document.
+        file (FileField): The actual document file.
+        submitted_to_audit (ForeignKey): The audit this document was submitted to (if any).
+    """
+    DOCUMENT_TYPES = [
+        ('policy', 'Policy Document'),
+        ('procedure', 'Procedure'),
+        ('work_instruction', 'Work Instruction'),
+        ('form', 'Form Template'),
+        ('record', 'Record'),
+        ('manual', 'Manual'),
+        ('other', 'Other'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('review', 'Under Review'),
+        ('approved', 'Approved by Organization'),
+        ('submitted', 'Submitted to Audit'),
+        ('rejected', 'Rejected'),
+        ('archived', 'Archived'),
+    ]
+    
+    consultant = models.ForeignKey(
+        'Consultant',
+        on_delete=models.CASCADE,
+        related_name='documents'
+    )
+    organization = models.ForeignKey(
+        'organizations.Organization',
+        on_delete=models.CASCADE,
+        related_name='consultant_documents'
+    )
+    title = models.CharField(max_length=255)
+    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
+    standard = models.CharField(max_length=255, help_text="The standard this document is prepared for")
+    engagement = models.ForeignKey(
+        'ConsultantEngagement',
+        on_delete=models.CASCADE,
+        related_name='documents'
+    )
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    file = models.FileField(upload_to='consultant_documents/')
+    submitted_to_audit = models.ForeignKey(
+        'audits.Audit',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='submitted_consultant_documents'
+    )
+    notes = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f"{self.title} ({self.get_document_type_display()})"
+    
+    def submit_to_audit(self, audit):
+        """
+        Submit this document to a specific audit.
+        
+        Args:
+            audit: The audit to submit this document to
+            
+        Returns:
+            The created DocumentSubmission object
+        """
+        from apps.audits.models import DocumentSubmission
+        
+        if self.status != 'approved':
+            raise ValueError("Only approved documents can be submitted to an audit")
+        
+        # Create a DocumentSubmission
+        submission = DocumentSubmission.objects.create(
+            audit=audit,
+            title=self.title,
+            document_type='other',  # Default mapping
+            submitted_by=self.consultant.user,
+            consultant=self.consultant,
+            file=self.file
+        )
+        
+        # Update this document
+        self.submitted_to_audit = audit
+        self.status = 'submitted'
+        self.save()
+        
+        return submission

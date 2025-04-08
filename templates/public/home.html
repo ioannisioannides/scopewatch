@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4">{{ page_title }}</h1>
+            <p class="lead">{{ description }}</p>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-4">Find Certified Organizations</h2>
+                    <p>Search our database to find organizations with valid certifications.</p>
+                    <a href="{% url 'public:certificate_search' %}" class="btn btn-primary">Search Certifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">For Organizations</h3>
+                    <p class="card-text">Showcase your certifications and demonstrate compliance to potential clients and stakeholders.</p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a href="#" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">For Certification Bodies</h3>
+                    <p class="card-text">Manage certifications, audits, and maintain your registry of certified organizations.</p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a href="#" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">For Consultants</h3>
+                    <p class="card-text">Help your clients prepare documentation for certification and manage the certification process.</p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a href="#" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
