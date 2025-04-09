@@ -13,21 +13,6 @@ jobs:
     name: Run Tests for All User Roles
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
-          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
-          POSTGRES_DB: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       # Step 1: Checkout the repository
       - name: Checkout code
@@ -52,20 +37,22 @@ jobs:
           mkdir -p logs
           touch test-results.log
 
-      # Step 5: Set up the database - skip makemigrations, directly do migrate
-      - name: Set up the database
+      # Step 5: Configure SQLite (to avoid journal_mode error)
+      - name: Configure SQLite
         run: |
+          # Create empty SQLite database file
+          touch db.sqlite3
+          # Prepare the database
+          python optimize_sqlite.py
+          
           # Skip makemigrations due to circular dependencies
-          # Apply existing migrations
+          # Apply existing migrations with --fake-initial to avoid issues
           python manage.py migrate --fake-initial
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
-          DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
-          DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
-          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
-          DB_HOST: localhost
-          DB_PORT: 5432
+          DB_ENGINE: django.db.backends.sqlite3
+          DB_NAME: db.sqlite3
           DEBUG: true
 
       # Step 6: Seed the database with test data
@@ -98,11 +85,8 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
-          DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
-          DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
-          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
-          DB_HOST: localhost
-          DB_PORT: 5432
+          DB_ENGINE: django.db.backends.sqlite3
+          DB_NAME: db.sqlite3
           DEBUG: true
 
       # Step 7: Run tests for all user roles
@@ -110,11 +94,8 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
-          DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
-          DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
-          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
-          DB_HOST: localhost
-          DB_PORT: 5432
+          DB_ENGINE: django.db.backends.sqlite3
+          DB_NAME: db.sqlite3
           DEBUG: true
         run: |
           python -m pytest apps/ -v 2>&1 | tee -a test-results.log

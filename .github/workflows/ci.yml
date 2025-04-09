@@ -14,17 +14,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
     - uses: actions/checkout@v3
 
@@ -47,16 +36,19 @@ jobs:
     - name: Create logs directory
       run: |
         mkdir -p logs
+        
+    - name: Configure SQLite
+      run: |
+        # Create empty database file
+        touch db.sqlite3
+        # Optimize SQLite settings
+        python optimize_sqlite.py
 
     - name: Run migrations
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
-        DB_ENGINE: django.db.backends.postgresql
-        DB_NAME: test_db
-        DB_USER: postgres
-        DB_PASSWORD: postgres
-        DB_HOST: localhost
-        DB_PORT: 5432
+        DB_ENGINE: django.db.backends.sqlite3
+        DB_NAME: db.sqlite3
         DEBUG: true
       run: |
         # Skip making migrations due to circular dependencies
@@ -65,12 +57,8 @@ jobs:
     - name: Run tests
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
-        DB_ENGINE: django.db.backends.postgresql
-        DB_NAME: test_db
-        DB_USER: postgres
-        DB_PASSWORD: postgres
-        DB_HOST: localhost
-        DB_PORT: 5432
+        DB_ENGINE: django.db.backends.sqlite3
+        DB_NAME: db.sqlite3
         DEBUG: true
       run: |
         pytest --disable-warnings
