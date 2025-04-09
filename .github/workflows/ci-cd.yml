@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ vars.PYTHON_VERSION || '3.11' }}
+        python-version: ${{ vars.PYTHON_VERSION }}
         
     - name: Install dependencies
       run: |
@@ -38,7 +38,7 @@ jobs:
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DEBUG: ${{ secrets.DEV_DEBUG }}
-        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+        ALLOWED_HOSTS: 'localhost,127.0.0.1'
         
   deploy:
     needs: test
@@ -55,5 +55,5 @@ jobs:
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DEBUG: ${{ secrets.PROD_DEBUG }}
-        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+        ALLOWED_HOSTS: 'your-production-domain.com'
         # Add other production environment variables as needed
