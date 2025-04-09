@@ -39,12 +39,6 @@ jobs:
             pip-compile requirements.in
           fi
           
-      - name: 'Python dependency submission'
-        uses: actions/dependency-submission-action@v1
-        with:
-          tool-name: 'pip-requirements'
-          manifest-file: 'requirements.txt'
-          
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         with:
