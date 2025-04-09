@@ -363,3 +363,211 @@ class AuditorTest(TestCase):
         self.assertEqual(auditor.cert_bodies.count(), 2)
         self.assertIn(self.cert_body1, auditor.cert_bodies.all())
         self.assertIn(self.cert_body2, auditor.cert_bodies.all())
+
+
+class ExtendedCertBodyViewTest(TestCase):
+    """
+    Additional test suite for edge cases in Certification Body views.
+    """
+
+    def setUp(self):
+        # Create cert body, user, and organization
+        self.cert_body = CertBody.objects.create(
+            name="Edge Case Cert Body", accreditation_id="ECCB123"
+        )
+        self.user = User.objects.create_user(
+            username="cert_tester", email="tester@certbody.com", password="testpass123"
+        )
+        self.cert_body_user = CertBodyUser.objects.create(
+            user=self.user,
+            cert_body=self.cert_body,
+            role="admin",
+            is_active=True
+        )
+        self.organization = Organization.objects.create(
+            name="Test Org", industry="Technology", is_active=True
+        )
+        self.audit = Audit.objects.create(
+            organization=self.organization,
+            certbody=self.cert_body,
+            audit_type="initial",
+            status="completed",
+            standard="ISO 27001",
+            scheduled_date=timezone.now().date()
+        )
+        
+        # Create second cert body and user for unauthorized tests
+        self.other_cert_body = CertBody.objects.create(
+            name="Other Cert Body", accreditation_id="OTHER123"
+        )
+        self.other_user = User.objects.create_user(
+            username="other_tester", email="other@certbody.com", password="otherpass123"
+        )
+        self.other_cert_body_user = CertBodyUser.objects.create(
+            user=self.other_user,
+            cert_body=self.other_cert_body,
+            role="admin",
+            is_active=True
+        )
+        
+    def test_pending_decision_list_no_cert_body_user(self):
+        """
+        Test pending decision list when user has no certification body association.
+        """
+        # Create user with no cert body association
+        user_no_cert = User.objects.create_user(
+            username="no_cert_user", password="password123"
+        )
+        
+        self.client.login(username="no_cert_user", password="password123")
+        response = self.client.get(reverse("certification_bodies:pending_decisions"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("audits", response.context)
+        self.assertEqual(len(response.context["audits"]), 0)  # Should show no audits
+    
+    def test_audit_decision_view_exception_handling(self):
+        """
+        Test that the audit decision view handles exceptions properly.
+        """
+        # Login with an unrelated user (no cert body associations)
+        unrelated_user = User.objects.create_user(
+            username="unrelated", password="unrelated123"
+        )
+        self.client.login(username="unrelated", password="unrelated123")
+        
+        # Access audit decision view without proper permissions
+        response = self.client.get(
+            reverse("certification_bodies:audit_decision", args=[self.audit.pk])
+        )
+        
+        # Should redirect to dashboard with error message
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("certification_bodies:dashboard"))
+    
+    def test_audit_decision_submission_followup(self):
+        """
+        Test submitting a 'followup' audit decision.
+        """
+        self.client.login(username="cert_tester", password="testpass123")
+        response = self.client.post(
+            reverse("certification_bodies:audit_decision", args=[self.audit.pk]),
+            {
+                "decision": "followup",
+                "comments": "Needs follow-up actions before approval",
+            }
+        )
+        
+        # Should redirect to pending decisions page
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("certification_bodies:pending_decisions"))
+        
+        # Verify audit status changed to in_progress
+        self.audit.refresh_from_db()
+        self.assertEqual(self.audit.status, "in_progress")
+        
+        # Check that audit result was created
+        audit_result = AuditResult.objects.filter(audit=self.audit).first()
+        self.assertEqual(audit_result.decision, "followup")
+    
+    def test_issue_certificate_invalid_audit_status(self):
+        """
+        Test issue certificate view with invalid audit status.
+        """
+        # Create audit with invalid status
+        invalid_audit = Audit.objects.create(
+            organization=self.organization,
+            certbody=self.cert_body,
+            audit_type="initial",
+            status="in_progress",  # Not completed
+            standard="ISO 9001",
+            scheduled_date=timezone.now().date()
+        )
+        
+        self.client.login(username="cert_tester", password="testpass123")
+        
+        # Try to issue certificate for invalid audit (no result yet)
+        response = self.client.get(
+            reverse("certification_bodies:issue_certificate", args=[invalid_audit.pk])
+        )
+        
+        # Should redirect with error
+        self.assertEqual(response.status_code, 302)
+    
+    def test_issue_certificate_with_rejected_result(self):
+        """
+        Test attempt to issue certificate with rejected audit result.
+        """
+        # Create audit result with rejection
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision="reject",
+            comments="Does not meet standards",
+            decided_by=self.cert_body_user
+        )
+        
+        self.client.login(username="cert_tester", password="testpass123")
+        response = self.client.get(
+            reverse("certification_bodies:issue_certificate", args=[self.audit.pk])
+        )
+        
+        # Should redirect with error
+        self.assertEqual(response.status_code, 302)
+    
+    def test_issue_certificate_already_exists(self):
+        """
+        Test when trying to issue a certificate that already exists.
+        """
+        # Create approved audit result
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision="approve",
+            comments="Approved",
+            decided_by=self.cert_body_user
+        )
+        
+        # Create existing certification
+        existing_cert = Certification.objects.create(
+            organization=self.organization,
+            standard=self.audit.standard,
+            certificate_number="EXISTING-123",
+            issue_date=timezone.now().date(),
+            expiry_date=timezone.now().date() + timedelta(days=365*3),
+            audit=self.audit,
+            scope="Existing certification scope"
+        )
+        
+        self.client.login(username="cert_tester", password="testpass123")
+        response = self.client.get(
+            reverse("certification_bodies:issue_certificate", args=[self.audit.pk])
+        )
+        
+        # Should redirect to the existing certification
+        self.assertEqual(response.status_code, 302)
+    
+    def test_issue_certificate_form_validation_error(self):
+        """
+        Test form validation error when issuing a certificate.
+        """
+        # Create approved audit result
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision="approve",
+            comments="Approved",
+            decided_by=self.cert_body_user
+        )
+        
+        self.client.login(username="cert_tester", password="testpass123")
+        
+        # Submit with invalid certificate number (empty)
+        response = self.client.post(
+            reverse("certification_bodies:issue_certificate", args=[self.audit.pk]),
+            {
+                "certificate_number": "",  # Invalid - should be required
+                "scope": "Test scope",
+                "expiry_date": (timezone.now().date() + timedelta(days=365*3)).strftime('%Y-%m-%d'),
+            }
+        )
+        
+        # Should stay on the form with errors
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "field is required")
