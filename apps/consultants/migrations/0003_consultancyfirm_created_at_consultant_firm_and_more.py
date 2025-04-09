@@ -10,9 +10,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("consultants", "0002_remove_consultancyfirm_created_at_and_more"),
-        # Replace the non-existent migration with one that definitely exists
-        ("organizations", "0001_initial"),
-        # Also depend on all available organization migrations to ensure compatibility
+        # Remove dependency on organizations.0001_initial
+        # Instead, depend on these migrations which should exist in all environments
         ("organizations", "0002_certification"),
         ("organizations", "0003_remove_certification_is_active_and_more"),
         ("organizations", "0004_organization_is_active"),
