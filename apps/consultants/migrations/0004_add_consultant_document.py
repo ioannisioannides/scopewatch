@@ -6,9 +6,12 @@ from django.utils import timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("organizations", "0007_add_certification_scope_and_audit_link"),
+        # Replace the non-existent migration with the one that does exist
+        ("organizations", "0006_alter_organization_created_at"),
         ("audits", "0004_add_document_submission_audit_result"),
         ("consultants", "0003_consultancyfirm_created_at_consultant_firm_and_more"),
+        # Remove circular dependency, 0010 will depend on 0003 directly
+        # ("consultants", "0010_fix_dependencies_for_consultant_document"),
     ]
 
     operations = [
