@@ -23,10 +23,27 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
 
-      - name: 'Python dependency submission'
-        uses: actions/python-dependency-submission@v1
+      - name: 'Set up Python'
+        uses: actions/setup-python@v4
         with:
-          ignore-missing-requirements: true
+          python-version: '3.11'
+          
+      - name: 'Install pip-tools'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-tools
+          
+      - name: 'Generate requirements.txt if using requirements.in'
+        run: |
+          if [ -f requirements.in ]; then
+            pip-compile requirements.in
+          fi
+          
+      - name: 'Python dependency submission'
+        uses: actions/dependency-submission-action@v1
+        with:
+          tool-name: 'pip-requirements'
+          manifest-file: 'requirements.txt'
           
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4

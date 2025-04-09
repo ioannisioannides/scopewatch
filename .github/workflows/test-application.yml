@@ -23,7 +23,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U ${{ vars.TEST_DB_USER || 'scopewatch_user' }} -d ${{ vars.TEST_DB_NAME || 'scopewatch' }}"
+          --health-cmd pg_isready
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -37,15 +37,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.13
+          python-version: '3.11'
 
       # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       # Step 4: Create necessary directories and files
       - name: Create logs directory and test results file
@@ -56,12 +55,11 @@ jobs:
       # Step 5: Set up the database
       - name: Set up the database
         run: |
-          source venv/bin/activate  # Activate the virtual environment
           python manage.py makemigrations
           python manage.py migrate
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
           DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
           DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
           DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
@@ -72,7 +70,6 @@ jobs:
       # Step 6: Seed the database with test data
       - name: Seed the database
         run: |
-          source venv/bin/activate  # Activate the virtual environment
           python manage.py shell <<EOF
           from apps.organizations.models import Organization, Certification
           from apps.certification_bodies.models import CertBody
@@ -99,7 +96,7 @@ jobs:
           EOF
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
           DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
           DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
           DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
@@ -111,7 +108,7 @@ jobs:
       - name: Run tests for all user roles
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
           DB_NAME: ${{ vars.TEST_DB_NAME || 'scopewatch' }}
           DB_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
           DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
@@ -119,7 +116,6 @@ jobs:
           DB_PORT: 5432
           DEBUG: true
         run: |
-          source venv/bin/activate  # Activate the virtual environment
           python -m pytest apps/ -v 2>&1 | tee -a test-results.log
 
       # Step 8: List all issues
