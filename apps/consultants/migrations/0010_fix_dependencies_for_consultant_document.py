@@ -12,10 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("consultants", "0009_ensure_dependencies_compatibility"),
-        # Removed potentially problematic dependencies
-        # Use organizations migrations that are definitely available in the current state
-        ("organizations", "0005_certification_standard_organization_address_and_more"),
-        ("organizations", "0006_alter_organization_created_at"),
+        # Removed cross-app dependencies to organizations
     ]
 
     operations = [

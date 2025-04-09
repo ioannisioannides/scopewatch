@@ -33,11 +33,9 @@ class Migration(migrations.Migration):
     # Define initial state (no dependencies on previous migrations)
     initial = True
 
-    # Dependencies on other apps that this migration requires
+    # Dependencies on other apps - removing problematic dependencies
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("organizations", "0001_initial"),
-        ("audits", "0001_initial"),
     ]
 
     operations = [
@@ -105,7 +103,7 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        # Create ConsultantEngagement model
+        # Create ConsultantEngagement model - removing foreign keys to other apps
         migrations.CreateModel(
             name="ConsultantEngagement",
             fields=[
@@ -143,17 +141,9 @@ class Migration(migrations.Migration):
                         to="consultants.consultant",
                     ),
                 ),
-                (
-                    "organization",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="consultant_engagements",
-                        to="organizations.organization",
-                    ),
-                ),
             ],
         ),
-        # Create ConsultantDocument model
+        # Create ConsultantDocument model - removing foreign keys to other apps
         migrations.CreateModel(
             name="ConsultantDocument",
             fields=[
@@ -221,24 +211,6 @@ class Migration(migrations.Migration):
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="documents",
                         to="consultants.consultantengagement",
-                    ),
-                ),
-                (
-                    "organization",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="consultant_documents",
-                        to="organizations.organization",
-                    ),
-                ),
-                (
-                    "submitted_to_audit",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="submitted_consultant_documents",
-                        to="audits.audit",
                     ),
                 ),
             ],

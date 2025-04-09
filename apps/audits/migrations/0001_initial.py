@@ -9,8 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("certification_bodies", "0001_initial"),
-        ("organizations", "0001_initial"),
+        # Removed cross-app dependencies to prevent migration errors
     ]
 
     operations = [
@@ -32,22 +31,6 @@ class Migration(migrations.Migration):
                 ("status", models.CharField(default="Scheduled", max_length=50)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                (
-                    "certbody",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="audits",
-                        to="certification_bodies.certbody",
-                    ),
-                ),
-                (
-                    "organization",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="audits",
-                        to="organizations.organization",
-                    ),
-                ),
             ],
         ),
     ]

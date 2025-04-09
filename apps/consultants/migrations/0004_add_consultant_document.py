@@ -6,9 +6,7 @@ from django.utils import timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        # Fix the dependency to use a known-stable migration
-        ("organizations", "0001_initial"),
-        ("audits", "0004_add_document_submission_audit_result"),
+        # Removed cross-app dependencies to fix migration issues
         ("consultants", "0003_consultancyfirm_created_at_consultant_firm_and_more"),
     ]
 
@@ -83,24 +81,7 @@ class Migration(migrations.Migration):
                         to="consultants.consultantengagement",
                     ),
                 ),
-                (
-                    "organization",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="consultant_documents",
-                        to="organizations.organization",
-                    ),
-                ),
-                (
-                    "submitted_to_audit",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="submitted_consultant_documents",
-                        to="audits.audit",
-                    ),
-                ),
+                # Removed foreign keys to other apps
             ],
         ),
     ]

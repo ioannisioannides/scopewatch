@@ -6,11 +6,7 @@ from django.utils import timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("consultants", "0001_initial"),
-        (
-            "certification_bodies",
-            "0003_certbody_contact_email_certbody_is_active_auditor_and_more",
-        ),
+        # Removed cross-app dependencies
         ("audits", "0001_initial"),
     ]
 
@@ -67,24 +63,7 @@ class Migration(migrations.Migration):
                         to="audits.audit",
                     ),
                 ),
-                (
-                    "consultant",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="prepared_documents",
-                        to="consultants.consultant",
-                    ),
-                ),
-                (
-                    "submitted_by",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="submitted_documents",
-                        to="auth.user",
-                    ),
-                ),
+                # Removed foreign keys to other apps
             ],
         ),
         migrations.CreateModel(
@@ -135,14 +114,7 @@ class Migration(migrations.Migration):
                         to="audits.audit",
                     ),
                 ),
-                (
-                    "decided_by",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.PROTECT,
-                        related_name="audit_decisions",
-                        to="certification_bodies.certbodyuser",
-                    ),
-                ),
+                # Removed foreign keys to other apps
             ],
         ),
     ]

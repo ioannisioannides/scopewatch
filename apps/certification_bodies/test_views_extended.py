@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.contrib.messages.storage.fallback import FallbackStorage
 from datetime import timedelta
 
-from apps.audits.models import Audit, AuditResult, Nonconformance
+from apps.audits.models import Audit, AuditResult, NonConformance
 from apps.organizations.models import Organization, Certification
 from .models import CertBody, CertBodyUser, Auditor
 from .forms import CertificationIssueForm, AuditDecisionForm
@@ -106,7 +106,7 @@ class ViewsTestCase(TestCase):
         )
         
         # Create nonconformances
-        self.nonconformance = Nonconformance.objects.create(
+        self.nonconformance = NonConformance.objects.create(
             audit=self.completed_audit,
             description="Test nonconformance",
             severity="minor"

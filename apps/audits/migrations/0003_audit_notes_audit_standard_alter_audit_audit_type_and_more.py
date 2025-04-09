@@ -8,10 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("audits", "0002_remove_audit_created_at_remove_audit_updated_at"),
-        (
-            "certification_bodies",
-            "0003_certbody_contact_email_certbody_is_active_auditor_and_more",
-        ),
+        # Removed cross-app dependency on certification_bodies
     ]
 
     operations = [
@@ -77,14 +74,6 @@ class Migration(migrations.Migration):
                         to="audits.audit",
                     ),
                 ),
-                (
-                    "lead_auditor",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.PROTECT,
-                        related_name="lead_audits",
-                        to="certification_bodies.auditor",
-                    ),
-                ),
             ],
         ),
         migrations.CreateModel(
@@ -114,14 +103,6 @@ class Migration(migrations.Migration):
                 ("is_active", models.BooleanField(default=True)),
                 ("assigned_date", models.DateField(auto_now_add=True)),
                 ("unassigned_date", models.DateField(blank=True, null=True)),
-                (
-                    "auditor",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="assignments",
-                        to="certification_bodies.auditor",
-                    ),
-                ),
                 (
                     "team",
                     models.ForeignKey(

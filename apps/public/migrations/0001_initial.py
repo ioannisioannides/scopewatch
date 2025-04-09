@@ -8,11 +8,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        # Replace the non-existent migration with ones that definitely exist
-        ("organizations", "0001_initial"),
-        ("organizations", "0002_certification"),
-        ("organizations", "0003_remove_certification_is_active_and_more"),
-        ("organizations", "0004_organization_is_active"),
+        # Removed cross-app dependencies to prevent migration errors
     ]
 
     operations = [
@@ -49,14 +45,6 @@ class Migration(migrations.Migration):
                 ("verification_date", models.DateTimeField(default=timezone.now)),
                 ("ip_address", models.GenericIPAddressField(blank=True, null=True)),
                 ("user_agent", models.TextField(blank=True)),
-                (
-                    "certificate",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="verification_records",
-                        to="organizations.certification",
-                    ),
-                ),
             ],
         ),
     ]

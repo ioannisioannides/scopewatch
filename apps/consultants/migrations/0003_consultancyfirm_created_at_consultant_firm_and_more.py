@@ -10,11 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("consultants", "0002_remove_consultancyfirm_created_at_and_more"),
-        # Remove dependency on organizations.0001_initial
-        # Instead, depend on these migrations which should exist in all environments
-        ("organizations", "0002_certification"),
-        ("organizations", "0003_remove_certification_is_active_and_more"),
-        ("organizations", "0004_organization_is_active"),
+        # Removed cross-app dependencies to organizations
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -83,14 +79,7 @@ class Migration(migrations.Migration):
                         to="consultants.consultant",
                     ),
                 ),
-                (
-                    "organization",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="consultant_engagements",
-                        to="organizations.organization",
-                    ),
-                ),
+                # Removed organization foreign key to avoid cross-app dependency
             ],
         ),
     ]
