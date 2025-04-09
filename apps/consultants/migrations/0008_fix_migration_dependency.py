@@ -21,8 +21,6 @@ class Migration(migrations.Migration):
         ("organizations", "0004_organization_is_active"),
         ("organizations", "0005_certification_standard_organization_address_and_more"),
         ("organizations", "0006_alter_organization_created_at"),
-        # Remove non-existent migration
-        ("organizations", "0008_merge_20250408_0423"),
         # Add all potential dependencies to make sure this migration runs after all organization migrations
     ]
 
