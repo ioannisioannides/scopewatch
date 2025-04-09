@@ -12,7 +12,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("consultants", "0008_fix_migration_dependency"),
-        ("organizations", "0010_merge_20250409_0505"),  # Updated to point to the merge migration
+        # Depend on migrations we know exist in CI rather than one that might not exist yet
+        ("organizations", "0008_merge_20250408_0423"),  # Use an earlier merge migration that should exist
+        ("organizations", "0009_remove_organizationuser_joined_date_and_more"),  # Add another known migration
     ]
 
     operations = [
