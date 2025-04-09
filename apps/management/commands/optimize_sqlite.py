@@ -44,9 +44,9 @@ class Command(BaseCommand):
             self.stdout.write('Running PRAGMA wal_checkpoint...')
             cursor.execute('PRAGMA wal_checkpoint(FULL);')
             
-            # Set the cache size
-            self.stdout.write('Setting cache size...')
-            cursor.execute('PRAGMA cache_size = -65536;')  # 64MB cache
+            # Set the cache size - removed as it's incompatible with Python 3.13
+            # self.stdout.write('Setting cache size...')
+            # cursor.execute('PRAGMA cache_size = -65536;')  # 64MB cache
             
             # Set page size for better performance
             # self.stdout.write('Setting page size...')

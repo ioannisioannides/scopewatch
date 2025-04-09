@@ -156,12 +156,10 @@ if DB_ENGINE == "django.db.backends.sqlite3":
         "default": {
             "ENGINE": DB_ENGINE,
             "NAME": BASE_DIR / "db.sqlite3",
-            # SQLite optimizations
+            # SQLite optimizations - removed incompatible parameters for Python 3.13
             "OPTIONS": {
                 "timeout": 20,  # Busy timeout in seconds
                 "isolation_level": None,  # Use autocommit mode
-                "journal_mode": "WAL",  # Write-Ahead Logging for better concurrency
-                "cache_size": -1024 * 64,  # 64MB cache size
             },
             "ATOMIC_REQUESTS": True,  # Wrap each HTTP request in a transaction
         }
