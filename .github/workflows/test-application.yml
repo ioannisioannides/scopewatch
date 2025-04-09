@@ -15,7 +15,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:17
+        image: postgres:14
         env:
           POSTGRES_USER: ${{ vars.TEST_DB_USER || 'scopewatch_user' }}
           POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'mypassword' }}
@@ -52,11 +52,12 @@ jobs:
           mkdir -p logs
           touch test-results.log
 
-      # Step 5: Set up the database
+      # Step 5: Set up the database - skip makemigrations, directly do migrate
       - name: Set up the database
         run: |
-          python manage.py makemigrations
-          python manage.py migrate
+          # Skip makemigrations due to circular dependencies
+          # Apply existing migrations
+          python manage.py migrate --fake-initial
         env:
           DJANGO_SETTINGS_MODULE: scopewatch.settings
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
