@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
     dependencies = [
         ("consultants", "0007_consultancyfirm_is_active"),
         # Make sure to depend on all possible organization migrations to ensure they run first
-        # Remove reference to non-existent migration
-        ("organizations", "0002_certification"),
+        # Removed reference to potentially problematic migration
+        ("organizations", "0001_initial"),
         ("organizations", "0003_remove_certification_is_active_and_more"),
         ("organizations", "0004_organization_is_active"),
         ("organizations", "0005_certification_standard_organization_address_and_more"),

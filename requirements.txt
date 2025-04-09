@@ -1,6 +1,6 @@
 Django==5.2  # Updated to the latest secure version
 python-decouple==3.8  # For configuration management
-psycopg2-binary==2.9.10  # PostgreSQL database adapter
+# psycopg2-binary removed - using SQLite instead
 gunicorn==23.0.0  # WSGI server for production
 django-extensions==3.2.3  # Useful development tools
 Pillow>=10.0.0,<11.0.0  # Required for ImageField (Security fixes included)

@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "apps.organizations",
     "apps.consultants.apps.ConsultantsConfig",
     "apps.public.apps.PublicConfig",
+    "management",  # Only keeping the root level management app for commands
     # Third-party apps
     "django_extensions",
     "rest_framework",
@@ -78,6 +79,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Custom middleware
+    "apps.management.middleware.SQLiteOptimizedConnectionMiddleware",  # SQLite optimization
 ]
 
 # CORS configuration
@@ -135,12 +138,16 @@ SPECTACULAR_SETTINGS = {
 # Database
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME", default="scopewatch"),
-        "USER": config("DB_USER", default="scopewatch_user"),
-        "PASSWORD": config("DB_PASSWORD", default=""),
-        "HOST": config("DB_HOST", default="127.0.0.1"),
-        "PORT": config("DB_PORT", default="5432"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        # SQLite optimizations
+        "OPTIONS": {
+            "timeout": 20,  # Busy timeout in seconds
+            "isolation_level": None,  # Use autocommit mode
+            "journal_mode": "WAL",  # Write-Ahead Logging for better concurrency
+            "cache_size": -1024 * 64,  # 64MB cache size
+        },
+        "ATOMIC_REQUESTS": True,  # Wrap each HTTP request in a transaction
     }
 }
 

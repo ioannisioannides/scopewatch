@@ -6,7 +6,7 @@ These settings are used only for running tests.
 
 from .settings import *  # Import everything from base settings
 
-# Use an SQLite in-memory database for testing instead of PostgreSQL
+# Use an in-memory SQLite database for faster tests
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

@@ -11,11 +11,9 @@ class Migration(migrations.Migration):
     """
 
     dependencies = [
-        ("consultants", "0003_consultancyfirm_created_at_consultant_firm_and_more"),
-        ("organizations", "0001_initial"),  # Ensure minimal dependency
-        ("organizations", "0002_certification"),
-        ("organizations", "0003_remove_certification_is_active_and_more"),
-        ("organizations", "0004_organization_is_active"),
+        ("consultants", "0009_ensure_dependencies_compatibility"),
+        # Removed potentially problematic dependencies
+        # Use organizations migrations that are definitely available in the current state
         ("organizations", "0005_certification_standard_organization_address_and_more"),
         ("organizations", "0006_alter_organization_created_at"),
     ]
