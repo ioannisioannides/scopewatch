@@ -12,9 +12,10 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from apps.certification_bodies.models import CertBody, Auditor, CertBodyUser
-from apps.organizations.models import Organization, Certification
-from apps.consultants.models import Consultant
+# Use string references instead of direct imports to avoid circular dependencies
+# from apps.certification_bodies.models import CertBody, Auditor, CertBodyUser
+# from apps.organizations.models import Organization, Certification
+# from apps.consultants.models import Consultant
 
 # Get the User model
 User = get_user_model()
@@ -53,13 +54,13 @@ class Audit(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     status = models.CharField(
-        max_length=50, choices=STATUS_CHOICES, default="Scheduled"
+        max_length=50, choices=STATUS_CHOICES, default="scheduled"
     )
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="audits"
+        "organizations.Organization", on_delete=models.CASCADE, related_name="audits"
     )
     certbody = models.ForeignKey(
-        CertBody, on_delete=models.CASCADE, related_name="audits"
+        "certification_bodies.CertBody", on_delete=models.CASCADE, related_name="audits"
     )
     standard = models.CharField(
         max_length=255,
@@ -87,13 +88,39 @@ class Audit(models.Model):
 
         Returns:
             The newly created Certification object
+            
+        Raises:
+            ValueError: If the audit status doesn't allow certification
+            ValueError: If the certificate dates are invalid
+            ValueError: If the certificate number is already in use
         """
+        from apps.organizations.models import Certification
+        
         # Check if a certification already exists for this audit
         try:
             if hasattr(self, "resulting_certification"):
                 return self.resulting_certification
         except Certification.DoesNotExist:
             pass
+            
+        # Validate audit status
+        if self.status not in ["completed", "closed"]:
+            raise ValueError(
+                f"Cannot issue certification for an audit with status: {self.get_status_display()}. "
+                "Audit must be 'Completed' or 'Closed'."
+            )
+
+        # Validate dates
+        today = timezone.now().date()
+        if issue_date > today:
+            raise ValueError(f"Certificate issue date cannot be in the future")
+            
+        if expiry_date <= issue_date:
+            raise ValueError(f"Certificate expiry date must be after the issue date")
+            
+        # Validate certificate number uniqueness
+        if Certification.objects.filter(certificate_number=certificate_number).exists():
+            raise ValueError(f"Certificate number '{certificate_number}' is already in use")
 
         # Create a new certification
         certification = Certification.objects.create(
@@ -130,7 +157,7 @@ class AuditTeam(models.Model):
         Audit, on_delete=models.CASCADE, related_name="audit_team"
     )
     lead_auditor = models.ForeignKey(
-        Auditor, on_delete=models.PROTECT, related_name="lead_audits"
+        "certification_bodies.Auditor", on_delete=models.PROTECT, related_name="lead_audits"
     )
 
     def __str__(self):
@@ -159,7 +186,7 @@ class AuditorAssignment(models.Model):
         AuditTeam, on_delete=models.CASCADE, related_name="assignments"
     )
     auditor = models.ForeignKey(
-        Auditor, on_delete=models.CASCADE, related_name="assignments"
+        "certification_bodies.Auditor", on_delete=models.CASCADE, related_name="assignments"
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
@@ -246,7 +273,7 @@ class DocumentSubmission(models.Model):
     )
     submitted_at = models.DateTimeField(default=timezone.now)
     consultant = models.ForeignKey(
-        Consultant,
+        "consultants.Consultant",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -297,7 +324,7 @@ class AuditResult(models.Model):
     decision = models.CharField(max_length=20, choices=DECISION_CHOICES)
     decision_date = models.DateField(default=timezone.now)
     decided_by = models.ForeignKey(
-        CertBodyUser, on_delete=models.PROTECT, related_name="audit_decisions"
+        "certification_bodies.CertBodyUser", on_delete=models.PROTECT, related_name="audit_decisions"
     )
     notes = models.TextField(blank=True)
     nonconformances_closed = models.BooleanField(default=False)

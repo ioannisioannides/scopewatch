@@ -197,7 +197,24 @@ class ConsultantDocument(models.Model):
 
         Returns:
             DocumentSubmission: The newly created document submission
+            
+        Raises:
+            ValueError: If the document is already submitted to an audit
+            ValueError: If the audit is not in a valid state for submission
+            ValueError: If the audit is for a different organization
         """
+        # Validate that document isn't already submitted
+        if self.status == "submitted" and self.submitted_to_audit is not None:
+            raise ValueError(f"Document '{self.title}' is already submitted to an audit")
+            
+        # Validate that the audit belongs to the same organization
+        if audit.organization.id != self.organization.id:
+            raise ValueError(f"Cannot submit document to an audit for a different organization")
+            
+        # Validate that the audit is in a state that can accept documents
+        if audit.status not in ["scheduled", "in_progress", "completed"]:
+            raise ValueError(f"Cannot submit document to an audit with status: {audit.get_status_display()}")
+
         # Use get_model to break circular dependency
         DocumentSubmission = apps.get_model("audits", "DocumentSubmission")
 

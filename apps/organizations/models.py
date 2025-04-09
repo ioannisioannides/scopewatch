@@ -11,7 +11,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
-from apps.certification_bodies.models import CertBody
+# Use string reference instead of direct import to avoid circular dependencies
+# from apps.certification_bodies.models import CertBody
 
 # Use get_user_model() instead of directly importing User
 User = get_user_model()
@@ -97,7 +98,7 @@ class Certification(models.Model):
         Organization, on_delete=models.CASCADE, related_name="certifications"
     )
     cert_body = models.ForeignKey(
-        CertBody, on_delete=models.PROTECT, related_name="issued_certifications"
+        "certification_bodies.CertBody", on_delete=models.PROTECT, related_name="issued_certifications"
     )
     standard = models.CharField(max_length=255)
     certificate_number = models.CharField(

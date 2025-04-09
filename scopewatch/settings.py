@@ -6,21 +6,31 @@ This module contains the settings configuration for the Scopewatch project.
 
 import sys
 from pathlib import Path
-from decouple import config
+
+# Import our custom config module instead of using decouple directly
+from scopewatch.config import config, is_debug_mode, is_test_environment
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("DJANGO_SECRET_KEY", default="fallback-secret-key")
+# In production, this will raise an error if the environment variable is not set
+# In development/test, it will use a placeholder (but consistent) value
+if is_debug_mode() or is_test_environment():
+    SECRET_KEY = config("DJANGO_SECRET_KEY", default="dev-only-insecure-key-do-not-use-in-production")
+else:
+    # In production, SECRET_KEY is required
+    SECRET_KEY = config("DJANGO_SECRET_KEY", required=True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = is_debug_mode()
 
 # Custom test runner to skip migrations during testing
 TEST_RUNNER = "scopewatch.test_runner.NoMigrationsTestRunner"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
+# Add required environment-specific hosts
+ADDITIONAL_HOSTS = config("ADDITIONAL_HOSTS", default="", cast=str).split(",") if config("ADDITIONAL_HOSTS", default="") else []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"] + ADDITIONAL_HOSTS
 
 # Security settings for production
 SECURE_HSTS_SECONDS = 31536000  # 1 year
@@ -28,25 +38,21 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 # By default, enable SSL redirect in production
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = not (is_debug_mode() or is_test_environment())
 
-# Disable SSL redirection during testing
-# The test runner activates the 'test' in sys.argv
-if "test" in sys.argv or "pytest" in sys.modules or DEBUG:
-    print("Test environment detected - disabling SSL redirect")
-    SECURE_SSL_REDIRECT = False
+# Security settings based on environment
+if is_test_environment() or DEBUG:
     # Disable all security redirects during testing
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
-    # Keep URL patterns consistent
-    APPEND_SLASH = False
 else:
     # Security for production environments
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # This is the key setting that causes the URL trailing slash issues
-    # For consistency, we'll set it to False and update our URL patterns
-    APPEND_SLASH = False
+
+# URL handling - consistent behavior with APPEND_SLASH=True
+# This avoids URL resolution inconsistencies
+APPEND_SLASH = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -58,8 +64,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Scopewatch apps
     "apps.audits.apps.AuditsConfig",
-    "apps.certification_bodies",
-    "apps.organizations",
+    "apps.certification_bodies.apps.CertificationBodiesConfig",
+    "apps.organizations.apps.OrganizationsConfig",
     "apps.consultants.apps.ConsultantsConfig",
     "apps.public.apps.PublicConfig",
     "management",  # Only keeping the root level management app for commands
@@ -135,21 +141,38 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
-# Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-        # SQLite optimizations
-        "OPTIONS": {
-            "timeout": 20,  # Busy timeout in seconds
-            "isolation_level": None,  # Use autocommit mode
-            "journal_mode": "WAL",  # Write-Ahead Logging for better concurrency
-            "cache_size": -1024 * 64,  # 64MB cache size
-        },
-        "ATOMIC_REQUESTS": True,  # Wrap each HTTP request in a transaction
+# Database configuration
+# Default to SQLite, but allow override through environment variables
+DB_ENGINE = config("DB_ENGINE", default="django.db.backends.sqlite3")
+
+if DB_ENGINE == "django.db.backends.sqlite3":
+    DATABASES = {
+        "default": {
+            "ENGINE": DB_ENGINE,
+            "NAME": BASE_DIR / "db.sqlite3",
+            # SQLite optimizations
+            "OPTIONS": {
+                "timeout": 20,  # Busy timeout in seconds
+                "isolation_level": None,  # Use autocommit mode
+                "journal_mode": "WAL",  # Write-Ahead Logging for better concurrency
+                "cache_size": -1024 * 64,  # 64MB cache size
+            },
+            "ATOMIC_REQUESTS": True,  # Wrap each HTTP request in a transaction
+        }
     }
-}
+else:
+    # PostgreSQL or other database engine
+    DATABASES = {
+        "default": {
+            "ENGINE": DB_ENGINE,
+            "NAME": config("DB_NAME", required=True),
+            "USER": config("DB_USER", required=True),
+            "PASSWORD": config("DB_PASSWORD", required=True),
+            "HOST": config("DB_HOST", default="localhost"),
+            "PORT": config("DB_PORT", default="5432"),
+            "ATOMIC_REQUESTS": True,
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

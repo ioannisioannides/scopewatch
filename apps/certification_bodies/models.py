@@ -163,14 +163,47 @@ class StandardQualification(models.Model):
 
         current_date = timezone.now().date()
         return self.expiry_date >= current_date
+        
+    @property
+    def validity_status(self):
+        """
+        Returns a more detailed status about the qualification's validity.
+        
+        Returns:
+            str: Status description ("valid", "expired", "expiring_soon")
+        """
+        if not self.expiry_date:
+            return "valid"
+            
+        current_date = timezone.now().date()
+        if self.expiry_date < current_date:
+            return "expired"
+            
+        # Check if expiring within next 90 days
+        expiring_soon_threshold = current_date + timezone.timedelta(days=90)
+        if self.expiry_date <= expiring_soon_threshold:
+            return "expiring_soon"
+            
+        return "valid"
 
     def clean(self):
         """
         Validates the qualification dates.
         """
+        current_date = timezone.now().date()
+        
+        # Qualification date should not be in the future
+        if self.qualification_date and self.qualification_date > current_date:
+            raise ValidationError("Qualification date cannot be in the future")
+        
+        # Expiry date should be after qualification date
         if (
             self.expiry_date
             and self.qualification_date
             and self.expiry_date < self.qualification_date
         ):
             raise ValidationError("Expiry date cannot be before qualification date")
+            
+        # Standard should not be empty
+        if not self.standard.strip():
+            raise ValidationError("Standard cannot be empty")
