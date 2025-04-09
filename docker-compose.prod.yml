@@ -8,10 +8,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DEBUG=False
-      - ALLOWED_HOSTS=localhost,127.0.0.1
-      # In production, secrets would be provided by GitHub Actions/environment
-      # DO NOT add your DJANGO_SECRET_KEY here
+      - DEBUG=${DEBUG:-False}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      # All production secrets will be provided by GitHub Actions
     command: gunicorn scopewatch.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/app/staticfiles

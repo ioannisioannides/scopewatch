@@ -25,7 +25,13 @@ def get_env_file_path() -> Optional[Path]:
     """
     base_dir = Path(__file__).resolve().parent.parent
     
-    # First, check if there's a .env file in the project root
+    # First, check for environment-specific .env files
+    env = os.environ.get('ENV', 'development')
+    env_specific_path = base_dir / f".env.{env}"
+    if env_specific_path.exists():
+        return env_specific_path
+    
+    # Then, check if there's a .env file in the project root
     env_path = base_dir / ".env"
     if env_path.exists():
         return env_path
@@ -93,6 +99,28 @@ def is_debug_mode() -> bool:
     return config("DEBUG", default=False, cast=bool)
 
 
+def is_production() -> bool:
+    """
+    Check if the application is running in production mode.
+    
+    Returns:
+        bool: True if in production environment, False otherwise
+    """
+    env = os.environ.get("ENV", "").lower()
+    return env == "production" or (not is_debug_mode() and not is_test_environment())
+
+
+def is_development() -> bool:
+    """
+    Check if the application is running in development mode.
+    
+    Returns:
+        bool: True if in development environment, False otherwise
+    """
+    env = os.environ.get("ENV", "").lower()
+    return env == "development" or (is_debug_mode() and not is_test_environment())
+
+
 def is_test_environment() -> bool:
     """
     Check if the application is running in a test environment.
@@ -100,4 +128,4 @@ def is_test_environment() -> bool:
     Returns:
         bool: True if in a test environment, False otherwise
     """
-    return "test" in sys.argv or "pytest" in sys.modules
+    return "test" in sys.argv or "pytest" in sys.modules or os.environ.get("ENV", "").lower() == "test"
