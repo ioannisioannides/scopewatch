@@ -10,8 +10,17 @@ class NoMigrationsTestRunner(DiscoverRunner):
     manually creates the database schema based on the application models.
     """
 
+    def __init__(self, *args, **kwargs):
+        self.check_migrations = kwargs.pop('check_migrations', False)
+        super().__init__(*args, **kwargs)
+
     def setup_databases(self, **kwargs):
         """Custom database setup that creates tables directly from models."""
+        # If migration checking is enabled, use the default behavior
+        if self.check_migrations:
+            print("Migration integrity checking enabled - using Django's migration system...")
+            return super().setup_databases(**kwargs)
+
         # Store database configuration for teardown
         self.old_config = []
 
@@ -79,6 +88,21 @@ class NoMigrationsTestRunner(DiscoverRunner):
 
     def teardown_databases(self, old_config, **kwargs):
         """Preserve test databases for faster test runs."""
+        # If migration checking is enabled, use the default behavior
+        if self.check_migrations:
+            return super().teardown_databases(old_config, **kwargs)
+            
         # Intentionally do nothing to preserve the test database
         print("Preserving test database for faster future test runs.")
         return
+
+
+class MigrationCheckingTestRunner(NoMigrationsTestRunner):
+    """
+    Test runner that uses Django's migration system to verify migration integrity.
+    This runner is slower but validates that migrations work correctly.
+    """
+    
+    def __init__(self, *args, **kwargs):
+        kwargs['check_migrations'] = True
+        super().__init__(*args, **kwargs)

@@ -13,8 +13,13 @@ certification bodies can be created and validated correctly.
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
 
+from apps.audits.models import Audit, AuditResult
+from apps.organizations.models import Organization, Certification
 from .models import CertBody, CertBodyUser, Auditor
+from .forms import CertificationIssueForm, AuditDecisionForm
 
 
 class CertBodyModelTest(TestCase):
@@ -62,6 +67,33 @@ class CertBodyViewTest(TestCase):
         self.cert_body = CertBody.objects.create(
             name="Test Cert Body", accreditation_id="TCB789"
         )
+        # Create a user for authenticated views
+        self.user = User.objects.create_user(
+            username="certbody_staff", 
+            email="staff@certbody.com", 
+            password="secure_password123"
+        )
+        self.cert_body_user = CertBodyUser.objects.create(
+            user=self.user,
+            cert_body=self.cert_body,
+            role="admin",
+            is_active=True
+        )
+        # Create organization for audits
+        self.organization = Organization.objects.create(
+            name="Test Organization",
+            industry="Manufacturing",
+            is_active=True
+        )
+        # Create audit for testing decisions
+        self.audit = Audit.objects.create(
+            organization=self.organization,
+            certbody=self.cert_body,
+            audit_type="initial",
+            status="completed",
+            standard="ISO 9001:2015",
+            scheduled_date=timezone.now().date()
+        )
 
     def test_certbody_list_view(self):
         """
@@ -86,6 +118,159 @@ class CertBodyViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Cert Body")
+
+    def test_audit_pending_decision_list_view_unauthenticated(self):
+        """
+        Test that unauthenticated users are redirected from the pending decision list view.
+        """
+        response = self.client.get(reverse("certification_bodies:pending_decisions"))
+        # Should redirect to login page
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login/'))
+
+    def test_audit_pending_decision_list_view_authenticated(self):
+        """
+        Test that authenticated cert body users can see the pending decision list view.
+        """
+        self.client.login(username="certbody_staff", password="secure_password123")
+        response = self.client.get(reverse("certification_bodies:pending_decisions"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Pending Decisions")
+
+    def test_audit_pending_decision_list_contains_audits(self):
+        """
+        Test that the pending decision list shows audits that need decisions.
+        """
+        self.client.login(username="certbody_staff", password="secure_password123")
+        response = self.client.get(reverse("certification_bodies:pending_decisions"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("audits", response.context)
+        self.assertEqual(list(response.context["audits"]), [self.audit])
+
+    def test_audit_decision_view_unauthorized(self):
+        """
+        Test that unauthorized users cannot access the audit decision view.
+        """
+        # Create another cert body and user that shouldn't have access
+        other_cert_body = CertBody.objects.create(
+            name="Other Cert Body", accreditation_id="OCB123"
+        )
+        other_user = User.objects.create_user(
+            username="other_staff", password="other_password"
+        )
+        CertBodyUser.objects.create(
+            user=other_user, cert_body=other_cert_body, is_active=True
+        )
+        
+        self.client.login(username="other_staff", password="other_password")
+        response = self.client.get(
+            reverse("certification_bodies:audit_decision", args=[self.audit.pk])
+        )
+        # Should redirect with an error message
+        self.assertEqual(response.status_code, 302)
+
+    def test_audit_decision_view_authorized(self):
+        """
+        Test that authorized users can access the audit decision view.
+        """
+        self.client.login(username="certbody_staff", password="secure_password123")
+        response = self.client.get(
+            reverse("certification_bodies:audit_decision", args=[self.audit.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Audit Decision")
+        self.assertIsInstance(response.context["form"], AuditDecisionForm)
+
+    def test_audit_decision_submission(self):
+        """
+        Test that submitting an audit decision works correctly.
+        """
+        self.client.login(username="certbody_staff", password="secure_password123")
+        response = self.client.post(
+            reverse("certification_bodies:audit_decision", args=[self.audit.pk]),
+            {
+                "decision": "approve",
+                "comments": "Looks good, approved.",
+            }
+        )
+        # Should redirect to certificate issuance page
+        self.assertEqual(response.status_code, 302)
+        
+        # Check that audit result was created
+        audit_result = AuditResult.objects.filter(audit=self.audit).first()
+        self.assertIsNotNone(audit_result)
+        self.assertEqual(audit_result.decision, "approve")
+        self.assertEqual(audit_result.comments, "Looks good, approved.")
+
+    def test_issue_certificate_view_unauthorized(self):
+        """
+        Test that unauthorized users cannot issue certificates.
+        """
+        # Create an approved audit result first
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision="approve",
+            comments="Approved for certification",
+            decided_by=self.cert_body_user
+        )
+        
+        # Try to access with an unauthorized user
+        other_user = User.objects.create_user(
+            username="unauthorized", password="password123"
+        )
+        self.client.login(username="unauthorized", password="password123")
+        response = self.client.get(
+            reverse("certification_bodies:issue_certificate", args=[self.audit.pk])
+        )
+        self.assertEqual(response.status_code, 302)  # Should redirect
+
+    def test_issue_certificate_view_authorized(self):
+        """
+        Test that authorized users can access the certificate issuance view.
+        """
+        # Create an approved audit result first
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision="approve",
+            comments="Approved for certification",
+            decided_by=self.cert_body_user
+        )
+        
+        self.client.login(username="certbody_staff", password="secure_password123")
+        response = self.client.get(
+            reverse("certification_bodies:issue_certificate", args=[self.audit.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Issue Certificate")
+        self.assertIsInstance(response.context["form"], CertificationIssueForm)
+
+    def test_issue_certificate_submission(self):
+        """
+        Test that submitting a certificate issuance form works correctly.
+        """
+        # Create an approved audit result first
+        audit_result = AuditResult.objects.create(
+            audit=self.audit,
+            decision="approve",
+            comments="Approved for certification",
+            decided_by=self.cert_body_user
+        )
+        
+        self.client.login(username="certbody_staff", password="secure_password123")
+        response = self.client.post(
+            reverse("certification_bodies:issue_certificate", args=[self.audit.pk]),
+            {
+                "certificate_number": "CERT-123",
+                "scope": "Quality Management System",
+                "expiry_date": (timezone.now().date() + timedelta(days=365*3)).strftime('%Y-%m-%d'),
+            }
+        )
+        
+        # Check that certificate was created
+        cert = Certification.objects.filter(audit=self.audit).first()
+        self.assertIsNotNone(cert)
+        self.assertEqual(cert.certificate_number, "CERT-123")
+        self.assertEqual(cert.scope, "Quality Management System")
 
 
 class CertBodyUserTest(TestCase):
