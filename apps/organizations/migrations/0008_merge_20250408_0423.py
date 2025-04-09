@@ -7,7 +7,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("organizations", "0006_alter_organization_created_at"),
-        ("organizations", "0007_add_certification_scope_and_audit_link"),
     ]
 
     operations = []

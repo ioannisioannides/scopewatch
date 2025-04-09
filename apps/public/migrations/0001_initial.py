@@ -8,7 +8,11 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("organizations", "0007_add_certification_scope_and_audit_link"),
+        # Replace the non-existent migration with ones that definitely exist
+        ("organizations", "0001_initial"),
+        ("organizations", "0002_certification"),
+        ("organizations", "0003_remove_certification_is_active_and_more"),
+        ("organizations", "0004_organization_is_active"),
     ]
 
     operations = [
