@@ -41,11 +41,9 @@ def optimize_sqlite():
         print("Running PRAGMA wal_checkpoint...")
         cursor.execute('PRAGMA wal_checkpoint(FULL);')
         
-        print("Setting cache size...")
-        cursor.execute('PRAGMA cache_size = -65536;')  # 64MB cache
-        
-        print("Setting journal mode to WAL...")
-        cursor.execute('PRAGMA journal_mode = WAL;')
+        # Removed setting cache_size as it's not compatible with Python 3.13
+        # print("Setting cache size...")
+        # cursor.execute('PRAGMA cache_size = -65536;')  # 64MB cache
         
         print("Enabling memory-mapped I/O...")
         cursor.execute('PRAGMA mmap_size = 268435456;')  # 256MB
