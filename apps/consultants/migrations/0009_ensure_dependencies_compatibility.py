@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("consultants", "0008_fix_migration_dependency"),
-        ("organizations", "0009_remove_organizationuser_joined_date_and_more"),  # Ensure we depend on latest org migration
+        ("organizations", "0010_merge_20250409_0505"),  # Updated to point to the merge migration
     ]
 
     operations = [
