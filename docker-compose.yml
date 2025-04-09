@@ -11,6 +11,8 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=True
-      - DJANGO_SECRET_KEY=dev-only-insecure-key-do-not-use-in-production
+      # Use .env file for local development, secrets for CI/CD
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-only-insecure-key-do-not-use-in-production}
       - ALLOWED_HOSTS=localhost,127.0.0.1
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///db.sqlite3}
     command: python manage.py runserver 0.0.0.0:8000

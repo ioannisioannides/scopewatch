@@ -8,19 +8,25 @@ import sys
 from pathlib import Path
 
 # Import our custom config module instead of using decouple directly
-from scopewatch.config import config, is_debug_mode, is_test_environment
+from scopewatch.config import (
+    config, 
+    is_debug_mode, 
+    is_test_environment, 
+    is_production,
+    is_development
+)
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # In production, this will raise an error if the environment variable is not set
-# In development/test, it will use a placeholder (but consistent) value
-if is_debug_mode() or is_test_environment():
-    SECRET_KEY = config("DJANGO_SECRET_KEY", default="dev-only-insecure-key-do-not-use-in-production")
-else:
-    # In production, SECRET_KEY is required
+if is_production():
+    # In production, SECRET_KEY is absolutely required
     SECRET_KEY = config("DJANGO_SECRET_KEY", required=True)
+else:
+    # In development/test, allow a fallback for convenience
+    SECRET_KEY = config("DJANGO_SECRET_KEY", default="dev-only-insecure-key-do-not-use-in-production")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = is_debug_mode()
@@ -38,11 +44,11 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 # By default, enable SSL redirect in production
-SECURE_SSL_REDIRECT = not (is_debug_mode() or is_test_environment())
+SECURE_SSL_REDIRECT = is_production()
 
 # Security settings based on environment
-if is_test_environment() or DEBUG:
-    # Disable all security redirects during testing
+if is_development() or is_test_environment():
+    # Disable all security redirects during testing/development
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
 else:
@@ -68,7 +74,7 @@ INSTALLED_APPS = [
     "apps.organizations.apps.OrganizationsConfig",
     "apps.consultants.apps.ConsultantsConfig",
     "apps.public.apps.PublicConfig",
-    "management",  # Only keeping the root level management app for commands
+    "apps.management.apps.ManagementConfig",  # Updated to use proper AppConfig
     # Third-party apps
     "django_extensions",
     "rest_framework",
