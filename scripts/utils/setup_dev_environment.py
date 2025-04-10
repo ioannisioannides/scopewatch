@@ -14,6 +14,10 @@ import subprocess
 import platform
 from pathlib import Path
 
+# Add the project root to the path to ensure proper execution from any location
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+os.chdir(PROJECT_ROOT)
+
 
 def print_step(message):
     """Print a formatted step message."""
@@ -89,7 +93,7 @@ def create_virtualenv():
     """Create a virtual environment for the project."""
     print_step("Creating virtual environment...")
     
-    venv_path = Path(".venv")
+    venv_path = PROJECT_ROOT / ".venv"
     if venv_path.exists():
         print_warning("Virtual environment already exists.")
         overwrite = input("Do you want to overwrite it? (y/n): ").lower().strip()
@@ -100,7 +104,7 @@ def create_virtualenv():
             return True
     
     try:
-        subprocess.run([sys.executable, "-m", "virtualenv", ".venv"], check=True)
+        subprocess.run([sys.executable, "-m", "virtualenv", str(venv_path)], check=True)
         print_success("Virtual environment created successfully.")
         return True
     except subprocess.CalledProcessError:
@@ -114,13 +118,13 @@ def install_requirements():
     
     # Determine the pip executable path based on the OS
     if platform.system() == "Windows":
-        pip_path = Path(".venv") / "Scripts" / "pip"
+        pip_path = PROJECT_ROOT / ".venv" / "Scripts" / "pip"
     else:
-        pip_path = Path(".venv") / "bin" / "pip"
+        pip_path = PROJECT_ROOT / ".venv" / "bin" / "pip"
     
     # Install development requirements
     try:
-        subprocess.run([str(pip_path), "install", "-r", "requirements-dev.txt"], check=True)
+        subprocess.run([str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements-dev.txt")], check=True)
         print_success("Development dependencies installed successfully.")
     except subprocess.CalledProcessError:
         print_error("Failed to install development dependencies.")
@@ -128,7 +132,7 @@ def install_requirements():
     
     # Install production requirements
     try:
-        subprocess.run([str(pip_path), "install", "-r", "requirements.txt"], check=True)
+        subprocess.run([str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements.txt")], check=True)
         print_success("Production dependencies installed successfully.")
         return True
     except subprocess.CalledProcessError:
@@ -140,8 +144,8 @@ def create_env_file():
     """Create .env file if it doesn't exist."""
     print_step("Setting up environment configuration...")
     
-    env_file = Path(".env")
-    env_example = Path(".env.example")
+    env_file = PROJECT_ROOT / ".env"
+    env_example = PROJECT_ROOT / ".env.example"
     
     if not env_file.exists():
         if env_example.exists():
@@ -162,16 +166,16 @@ def setup_database():
     
     # Determine the python executable path based on the OS
     if platform.system() == "Windows":
-        python_path = Path(".venv") / "Scripts" / "python"
+        python_path = PROJECT_ROOT / ".venv" / "Scripts" / "python"
     else:
-        python_path = Path(".venv") / "bin" / "python"
+        python_path = PROJECT_ROOT / ".venv" / "bin" / "python"
     
     try:
         # Make migrations
-        subprocess.run([str(python_path), "manage.py", "makemigrations"], check=True)
+        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "makemigrations"], check=True)
         
         # Apply migrations
-        subprocess.run([str(python_path), "manage.py", "migrate"], check=True)
+        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True)
         
         print_success("Database migrations applied successfully.")
         return True
@@ -191,12 +195,12 @@ def create_superuser():
     
     # Determine the python executable path based on the OS
     if platform.system() == "Windows":
-        python_path = Path(".venv") / "Scripts" / "python"
+        python_path = PROJECT_ROOT / ".venv" / "Scripts" / "python"
     else:
-        python_path = Path(".venv") / "bin" / "python"
+        python_path = PROJECT_ROOT / ".venv" / "bin" / "python"
     
     try:
-        subprocess.run([str(python_path), "manage.py", "createsuperuser"], check=False)
+        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "createsuperuser"], check=False)
         return True
     except subprocess.CalledProcessError:
         print_error("Failed to create superuser.")
