@@ -1,72 +1,76 @@
 # apps/consultants/tests.py
 
 """
-Unit tests for the Consultants app.
+Tests for the consultants app.
 
-This module contains test cases for the Consultant and ConsultancyFirm models.
-These tests ensure that the models behave as expected when creating and validating instances.
+This module contains test cases for consultant-related functionality.
 """
 
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import ConsultancyFirm, Consultant, ConsultantEngagement
+from apps.consultants.models import ConsultancyFirm, Consultant, ConsultantEngagement
 from apps.organizations.models import Organization
+from apps.utils.test_credentials import get_test_credential
 
 
-class ConsultantsModelTest(TestCase):
+class ConsultantModelTest(TestCase):
     """
-    Test suite for the Consultant and ConsultancyFirm models.
+    Test cases for Consultant model
     """
-
-    def test_create_consultant(self):
+    
+    def test_create_consultant_with_firm(self):
         """
-        Test the creation of a Consultant instance.
+        Test creating a consultant associated with a consultancy firm.
         """
         user = User.objects.create_user(
-            username="consultant_user", password="password"
+            username=get_test_credential("consultant", "username"),
+            password=get_test_credential("consultant", "password")
         )  # Ensure user is created with a password
         consultant = Consultant.objects.create(
-            user=user, specialty="ISO 9001", is_active=True
+            user=user,
+            bio="Experienced consultant with over 10 years in the field.",
+            specialization="ISO 27001, ISO 9001",
+            is_active=True
         )
-        self.assertEqual(consultant.user.username, "consultant_user")
-        self.assertEqual(consultant.specialty, "ISO 9001")
+        
+        # Create a consultancy firm and associate the consultant
+        firm = ConsultancyFirm.objects.create(
+            name="Quality Consultants Inc.",
+            address="123 Consulting Ave, Suite 200",
+            contact_email="contact@qualityconsultants.com",
+            is_active=True
+        )
+        consultant.firm = firm
+        consultant.save()
+        
+        self.assertEqual(consultant.user, user)
+        self.assertEqual(consultant.firm, firm)
+        self.assertIn("ISO 27001", consultant.specialization)
         self.assertTrue(consultant.is_active)
-        self.assertFalse(consultant.is_independent)
-
+    
     def test_create_independent_consultant(self):
         """
-        Test the creation of an independent Consultant instance.
+        Test creating an independent consultant (not associated with a firm).
         """
         user = User.objects.create_user(
-            username="independent_consultant", password="password"
+            username=get_test_credential("consultant", "username", "independent_consultant"),
+            password=get_test_credential("consultant", "password")
         )
         consultant = Consultant.objects.create(
-            user=user, specialty="ISO 27001", is_active=True, is_independent=True
+            user=user,
+            bio="Independent consultant with expertise in ISO standards.",
+            specialization="ISO 14001, ISO 45001",
+            is_active=True
         )
-        self.assertEqual(consultant.user.username, "independent_consultant")
-        self.assertEqual(consultant.specialty, "ISO 27001")
-        self.assertTrue(consultant.is_active)
-        self.assertTrue(consultant.is_independent)
+        
+        self.assertEqual(consultant.user, user)
         self.assertIsNone(consultant.firm)
-
-    def test_create_consultancy_firm(self):
-        """
-        Test the creation of a ConsultancyFirm instance.
-        """
-        firm = ConsultancyFirm.objects.create(
-            name="Global Consulting",
-            contact_email="contact@globalconsulting.com",
-            address="123 Consulting Ave, Business District",
-        )
-        self.assertEqual(firm.name, "Global Consulting")
-        self.assertEqual(firm.contact_email, "contact@globalconsulting.com")
-        self.assertEqual(firm.address, "123 Consulting Ave, Business District")
-        self.assertTrue(firm.is_active)
-        self.assertIsNotNone(firm.created_at)
+        self.assertIn("ISO 14001", consultant.specialization)
+        self.assertTrue(consultant.is_active)
 
 
 class ConsultantViewTest(TestCase):

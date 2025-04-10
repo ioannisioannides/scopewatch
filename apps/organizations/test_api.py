@@ -16,6 +16,7 @@ from datetime import timedelta
 from apps.certification_bodies.models import CertBody
 from .models import Organization, Certification
 from .serializers import OrganizationSerializer, OrganizationDetailSerializer, CertificationSerializer
+from apps.utils.test_credentials import get_test_credential
 
 
 class OrganizationAPITest(APITestCase):
@@ -25,7 +26,8 @@ class OrganizationAPITest(APITestCase):
         """Set up test data."""
         # Create a user for authentication
         self.user = User.objects.create_user(
-            username="api_test_user", password="test_password123"
+            username=get_test_credential("api", "username"),
+            password=get_test_credential("api", "password")
         )
         self.client = APIClient()
         
@@ -168,7 +170,8 @@ class CertificationAPITest(APITestCase):
         """Set up test data."""
         # Create a user for authentication
         self.user = User.objects.create_user(
-            username="cert_api_user", password="test_password123"
+            username=get_test_credential("api_alt", "username"),
+            password=get_test_credential("api_alt", "password")
         )
         self.client = APIClient()
         

@@ -1,19 +1,23 @@
 # apps/public/tests.py
 
 """
-Unit tests for the Public app.
+Tests for the public app.
 
-This module contains test cases for the public-facing views and functionality.
+This module contains test cases for public-facing functionality.
 """
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.auth.models import User
 from django.utils import timezone
-import json
 from datetime import timedelta
 
 from apps.organizations.models import Organization, Certification
 from apps.certification_bodies.models import CertBody
+from apps.public.models import CertificationVerification
+from apps.public.forms import CertificationVerificationForm
+from apps.utils.test_credentials import get_test_credential
+
 from .models import CertificationVerification, SearchLog
 
 

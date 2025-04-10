@@ -11,13 +11,14 @@ certification bodies can be created and validated correctly.
 # pylint: disable=no-member
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
 
 from apps.audits.models import Audit, AuditResult
 from apps.organizations.models import Organization, Certification
+from apps.utils.test_credentials import get_test_credential
 from .models import CertBody, CertBodyUser, Auditor
 from .forms import CertificationIssueForm, AuditDecisionForm
 
@@ -67,11 +68,11 @@ class CertBodyViewTest(TestCase):
         self.cert_body = CertBody.objects.create(
             name="Test Cert Body", accreditation_id="TCB789"
         )
-        # Create a user for authenticated views
+        # Create a user for authenticated views using environment variables
         self.user = User.objects.create_user(
-            username="certbody_staff", 
-            email="staff@certbody.com", 
-            password="secure_password123"
+            username=get_test_credential("certbody", "username"),
+            email=get_test_credential("certbody", "email"),
+            password=get_test_credential("certbody", "password")
         )
         self.cert_body_user = CertBodyUser.objects.create(
             user=self.user,
@@ -79,6 +80,7 @@ class CertBodyViewTest(TestCase):
             role="admin",
             is_active=True
         )
+        self.client = Client()
         # Create organization for audits
         self.organization = Organization.objects.create(
             name="Test Organization",
@@ -132,7 +134,10 @@ class CertBodyViewTest(TestCase):
         """
         Test that authenticated cert body users can see the pending decision list view.
         """
-        self.client.login(username="certbody_staff", password="secure_password123")
+        self.client.login(
+            username=get_test_credential("certbody", "username"),
+            password=get_test_credential("certbody", "password")
+        )
         response = self.client.get(reverse("certification_bodies:pending_decisions"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Pending Decisions")
@@ -141,7 +146,10 @@ class CertBodyViewTest(TestCase):
         """
         Test that the pending decision list shows audits that need decisions.
         """
-        self.client.login(username="certbody_staff", password="secure_password123")
+        self.client.login(
+            username=get_test_credential("certbody", "username"),
+            password=get_test_credential("certbody", "password")
+        )
         response = self.client.get(reverse("certification_bodies:pending_decisions"))
         self.assertEqual(response.status_code, 200)
         self.assertIn("audits", response.context)
@@ -156,13 +164,17 @@ class CertBodyViewTest(TestCase):
             name="Other Cert Body", accreditation_id="OCB123"
         )
         other_user = User.objects.create_user(
-            username="other_staff", password="other_password"
+            username=get_test_credential("unauthorized", "username"),
+            password=get_test_credential("unauthorized", "password")
         )
         CertBodyUser.objects.create(
             user=other_user, cert_body=other_cert_body, is_active=True
         )
         
-        self.client.login(username="other_staff", password="other_password")
+        self.client.login(
+            username=get_test_credential("unauthorized", "username"),
+            password=get_test_credential("unauthorized", "password")
+        )
         response = self.client.get(
             reverse("certification_bodies:audit_decision", args=[self.audit.pk])
         )
@@ -173,7 +185,10 @@ class CertBodyViewTest(TestCase):
         """
         Test that authorized users can access the audit decision view.
         """
-        self.client.login(username="certbody_staff", password="secure_password123")
+        self.client.login(
+            username=get_test_credential("certbody", "username"),
+            password=get_test_credential("certbody", "password")
+        )
         response = self.client.get(
             reverse("certification_bodies:audit_decision", args=[self.audit.pk])
         )
@@ -185,7 +200,10 @@ class CertBodyViewTest(TestCase):
         """
         Test that submitting an audit decision works correctly.
         """
-        self.client.login(username="certbody_staff", password="secure_password123")
+        self.client.login(
+            username=get_test_credential("certbody", "username"),
+            password=get_test_credential("certbody", "password")
+        )
         response = self.client.post(
             reverse("certification_bodies:audit_decision", args=[self.audit.pk]),
             {
@@ -216,9 +234,13 @@ class CertBodyViewTest(TestCase):
         
         # Try to access with an unauthorized user
         other_user = User.objects.create_user(
-            username="unauthorized", password="password123"
+            username=get_test_credential("unauthorized", "username"),
+            password=get_test_credential("unauthorized", "password")
         )
-        self.client.login(username="unauthorized", password="password123")
+        self.client.login(
+            username=get_test_credential("unauthorized", "username"),
+            password=get_test_credential("unauthorized", "password")
+        )
         response = self.client.get(
             reverse("certification_bodies:issue_certificate", args=[self.audit.pk])
         )
@@ -236,7 +258,10 @@ class CertBodyViewTest(TestCase):
             decided_by=self.cert_body_user
         )
         
-        self.client.login(username="certbody_staff", password="secure_password123")
+        self.client.login(
+            username=get_test_credential("certbody", "username"),
+            password=get_test_credential("certbody", "password")
+        )
         response = self.client.get(
             reverse("certification_bodies:issue_certificate", args=[self.audit.pk])
         )
@@ -256,7 +281,10 @@ class CertBodyViewTest(TestCase):
             decided_by=self.cert_body_user
         )
         
-        self.client.login(username="certbody_staff", password="secure_password123")
+        self.client.login(
+            username=get_test_credential("certbody", "username"),
+            password=get_test_credential("certbody", "password")
+        )
         response = self.client.post(
             reverse("certification_bodies:issue_certificate", args=[self.audit.pk]),
             {

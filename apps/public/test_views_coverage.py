@@ -24,6 +24,7 @@ from .views import (
     home_view,
     search_certified_organizations_view,
 )
+from apps.utils.test_credentials import get_test_credential
 
 
 class PublicViewsCoverageTest(TestCase):
@@ -92,9 +93,9 @@ class PublicViewsCoverageTest(TestCase):
         
         # Create a user for testing
         self.user = User.objects.create_user(
-            username="coverage_tester",
-            email="coverage@example.com",
-            password="coverage_pass"
+            username=get_test_credential("default", "username", "coverage_tester"),
+            email=get_test_credential("default", "email", "coverage@example.com"),
+            password=get_test_credential("default", "password", "coverage_pass")
         )
         
         # Clear any search logs
