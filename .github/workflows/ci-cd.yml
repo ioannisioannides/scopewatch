@@ -41,6 +41,11 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
+      - name: Create empty database file
+        run: |
+          # Create empty database file for tests
+          python -c "import sqlite3; conn = sqlite3.connect('db.sqlite3'); conn.close()"
+      
       - name: Run linting
         run: |
           pylint --rcfile=pylintrc apps scopewatch management
@@ -52,7 +57,12 @@ jobs:
 
       - name: Run tests
         env:
-          # Use test credentials from Development environment
+          # Map environment-specific variables to non-prefixed versions needed by Django
+          DJANGO_SECRET_KEY: ${{ secrets.DEV_DJANGO_SECRET_KEY }}
+          DEBUG: ${{ secrets.DEV_DEBUG }}
+          ENV: "development"
+          
+          # Test credentials
           TEST_DEFAULT_USERNAME: ${{ secrets.TEST_DEFAULT_USERNAME }}
           TEST_DEFAULT_PASSWORD: ${{ secrets.TEST_DEFAULT_PASSWORD }}
           TEST_DEFAULT_EMAIL: ${{ secrets.TEST_DEFAULT_EMAIL }}
@@ -71,6 +81,8 @@ jobs:
           TEST_API_EMAIL: ${{ secrets.TEST_API_EMAIL }}
           TEST_API_ALT_USERNAME: ${{ secrets.TEST_API_ALT_USERNAME }}
           TEST_API_ALT_PASSWORD: ${{ secrets.TEST_API_ALT_PASSWORD }}
+          
+          # Also keep prefixed versions available
           DEV_DJANGO_SECRET_KEY: ${{ secrets.DEV_DJANGO_SECRET_KEY }}
           DEV_DEBUG: ${{ secrets.DEV_DEBUG }}
         run: |
@@ -122,6 +134,21 @@ jobs:
 
       - name: Deploy to development server
         env:
+          # Map environment-specific variables to non-prefixed versions
+          DJANGO_SECRET_KEY: ${{ secrets.DEV_DJANGO_SECRET_KEY }}
+          DEBUG: ${{ secrets.DEV_DEBUG }}
+          ALLOWED_HOSTS: ${{ secrets.DEV_ALLOWED_HOSTS }}
+          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+          EMAIL_HOST: ${{ secrets.DEV_EMAIL_HOST }}
+          EMAIL_HOST_USER: ${{ secrets.DEV_EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ secrets.DEV_EMAIL_HOST_PASSWORD }}
+          EMAIL_PORT: ${{ secrets.DEV_EMAIL_PORT }}
+          ADMIN_USERNAME: ${{ secrets.DEV_ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.DEV_ADMIN_PASSWORD }}
+          ADMIN_EMAIL: ${{ secrets.DEV_ADMIN_EMAIL }}
+          ENV: "development"
+          
+          # Also keep prefixed versions available
           DEV_DJANGO_SECRET_KEY: ${{ secrets.DEV_DJANGO_SECRET_KEY }}
           DEV_DEBUG: ${{ secrets.DEV_DEBUG }}
           DEV_ALLOWED_HOSTS: ${{ secrets.DEV_ALLOWED_HOSTS }}
@@ -152,6 +179,22 @@ jobs:
 
       - name: Deploy to production server
         env:
+          # Map environment-specific variables to non-prefixed versions
+          DJANGO_SECRET_KEY: ${{ secrets.PROD_DJANGO_SECRET_KEY }}
+          DEBUG: ${{ secrets.PROD_DEBUG }}
+          ALLOWED_HOSTS: ${{ secrets.PROD_ALLOWED_HOSTS }}
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          EMAIL_HOST: ${{ secrets.PROD_EMAIL_HOST }}
+          EMAIL_HOST_USER: ${{ secrets.PROD_EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ secrets.PROD_EMAIL_HOST_PASSWORD }}
+          EMAIL_PORT: ${{ secrets.PROD_EMAIL_PORT }}
+          DEFAULT_FROM_EMAIL: ${{ secrets.PROD_DEFAULT_FROM_EMAIL }}
+          ADMIN_USERNAME: ${{ secrets.PROD_ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.PROD_ADMIN_PASSWORD }}
+          ADMIN_EMAIL: ${{ secrets.PROD_ADMIN_EMAIL }}
+          ENV: "production"
+          
+          # Also keep prefixed versions available
           PROD_DJANGO_SECRET_KEY: ${{ secrets.PROD_DJANGO_SECRET_KEY }}
           PROD_DEBUG: ${{ secrets.PROD_DEBUG }}
           PROD_ALLOWED_HOSTS: ${{ secrets.PROD_ALLOWED_HOSTS }}
