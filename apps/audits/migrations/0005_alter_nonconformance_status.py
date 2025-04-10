@@ -6,23 +6,21 @@ class Migration(migrations.Migration):
     """Migration created to fix dependency issues in CI environment."""
 
     dependencies = [
-        ("audits", "0005_alter_nonconformance_status")
+        ("audits", "0004_add_document_submission_audit_result")
     ]
 
     operations = [
         migrations.AlterField(
-                model_name="audit",
+                model_name="nonconformance",
                 name="status",
                 field=models.CharField(
                     choices=[
-                        ("scheduled", "Scheduled"),
-                        ("in_progress", "In Progress"),
-                        ("completed", "Completed"),
+                        ("open", "Open"),
                         ("closed", "Closed"),
-                        ("certification_issued", "Certification Issued"),
+                        ("in_review", "In Review"),
                     ],
-                    default="scheduled",
-                    max_length=50,
+                    default="open",
+                    max_length=20,
                 ),
             )
     ]
