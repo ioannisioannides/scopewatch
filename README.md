@@ -111,16 +111,27 @@ Access the application at http://127.0.0.1:8000/ and the admin interface at http
 
 ### Project Structure
 
-- `apps/` - Django applications
+The project follows an organized structure to maintain clarity and separation of concerns:
+
+- `apps/` - Django applications organized by domain
   - `audits/` - Audit management
   - `certification_bodies/` - Certification bodies and auditors
   - `consultants/` - Consultant management
+  - `management/` - Management commands application
   - `organizations/` - Organization management
   - `public/` - Public certificate verification portal
+  - `utils/` - Shared utility modules
+- `backups/` - Database and migration backups
+  - `db/` - Database backup files
+  - `migrations/` - Migration backup files
 - `docs/` - Project documentation
-- `management/` - Custom management commands
+- `scripts/` - Utility scripts
+  - `migrations/` - Migration management scripts
+  - `utils/` - General utility scripts
 - `scopewatch/` - Core project settings
 - `templates/` - HTML templates
+
+For more detailed information about the project structure, see our [Project Structure Documentation](docs/project_structure.md).
 
 ### Running Tests
 
