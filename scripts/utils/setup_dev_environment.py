@@ -15,7 +15,7 @@ import platform
 from pathlib import Path
 
 # Add the project root to the path to ensure proper execution from any location
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent
 os.chdir(PROJECT_ROOT)
 
 
@@ -199,11 +199,36 @@ def create_superuser():
     else:
         python_path = PROJECT_ROOT / ".venv" / "bin" / "python"
     
+    # Validate that python_path exists and is within our project directory
+    python_path = python_path.resolve()
+    venv_dir = (PROJECT_ROOT / ".venv").resolve()
+    
+    if not python_path.exists():
+        print_error(f"Python executable not found at {python_path}")
+        return False
+        
+    if not str(python_path).startswith(str(venv_dir)):
+        print_error("Python path is outside the virtual environment directory")
+        return False
+        
     try:
-        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "createsuperuser"], check=False)
+        # Use a more secure approach with shell=False (the default)
+        # and a list of arguments instead of a string
+        result = subprocess.run(
+            [str(python_path), str(PROJECT_ROOT / "manage.py"), "createsuperuser"],
+            check=True,
+            text=True,
+            capture_output=False
+        )
+        
+        if result.returncode == 0:
+            print_success("Superuser created successfully.")
         return True
-    except subprocess.CalledProcessError:
-        print_error("Failed to create superuser.")
+    except subprocess.CalledProcessError as e:
+        print_error(f"Failed to create superuser. Error: {e}")
+        return False
+    except (FileNotFoundError, PermissionError) as e:
+        print_error(f"File system error occurred: {e}")
         return False
 
 
