@@ -198,6 +198,36 @@ def fix_audit_migrations():
     ]'''
         )
 
+    # Check the existing 0007 migration and fix its dependencies if necessary
+    migration_0007_path = base_path / "apps" / "audits" / "migrations" / "0007_audit_certbody_audit_organization_and_more.py"
+    if migration_0007_path.exists():
+        # Read the file content
+        with open(migration_0007_path, 'r') as f:
+            content = f.read()
+        
+        # Check if it has the correct dependency
+        if "0006_change_audit_status_choices" not in content:
+            # Fix the migration by updating its dependencies
+            deps_pattern = r'dependencies\s*=\s*\[(.*?)\]'
+            deps_match = re.search(deps_pattern, content, re.DOTALL)
+            if deps_match:
+                deps_content = deps_match.group(1)
+                # Add the missing dependency
+                new_deps = deps_content.rstrip()
+                if new_deps.endswith(','):
+                    new_deps += '\n        ("audits", "0006_change_audit_status_choices"),'
+                else:
+                    new_deps += ',\n        ("audits", "0006_change_audit_status_choices"),'
+                
+                # Update the file with corrected dependencies
+                new_content = re.sub(deps_pattern, f'dependencies = [{new_deps}]', content, flags=re.DOTALL)
+                with open(migration_0007_path, 'w') as f:
+                    f.write(new_content)
+                
+                print(f"Updated dependencies in {migration_0007_path}")
+            else:
+                print(f"Warning: Could not find dependencies section in {migration_0007_path}")
+
 
 def verify_migrations():
     """Verify all critical migrations exist and print a summary."""

@@ -60,15 +60,18 @@ jobs:
         find apps/*/migrations -name "0002_alter_certbody_options.py" || echo "Migration not created"
         find apps/*/migrations -name "0003_certbodyuser_contact_phone.py" || echo "Migration not created"
         find apps/*/migrations -name "0010_merge_20250409_0505.py" || echo "Migration not created"
+        find apps/audits/migrations -name "0006_change_audit_status_choices.py" || echo "Migration not created"
         
-    - name: Run migrations
+    - name: Run migrations with --fake-initial
       env:
         DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
         DB_ENGINE: django.db.backends.sqlite3
         DB_NAME: db.sqlite3
         DEBUG: true
       run: |
-        # Run migrations
+        # Run migrations with --fake flag first to handle the inconsistent history
+        python manage.py migrate --fake audits 0005_alter_nonconformance_status
+        # Then run the regular migrations
         python manage.py migrate
 
     - name: Run tests
