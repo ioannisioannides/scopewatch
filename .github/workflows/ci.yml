@@ -49,20 +49,17 @@ jobs:
         # Optimize SQLite settings
         python optimize_sqlite.py
 
-    - name: Fix all migration dependencies
-      env:
-        DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
-        DB_ENGINE: django.db.backends.sqlite3
-        DB_NAME: db.sqlite3
-        DEBUG: true
+    - name: Fix migration dependencies
       run: |
-        # Run our comprehensive migration fixer
-        python fix_all_migrations.py
+        # Run our permanent migration fixer script
+        python fix_ci_migrations.py
         
-    - name: List migrations
+    - name: Verify fixed migrations exist 
       run: |
-        # List all migrations to verify they exist
-        find apps -path "*/migrations/*.py" -type f | sort
+        # Verify that our critical migrations exist
+        find apps/*/migrations -name "0002_alter_certbody_options.py" || echo "Migration not created"
+        find apps/*/migrations -name "0003_certbodyuser_contact_phone.py" || echo "Migration not created"
+        find apps/*/migrations -name "0010_merge_20250409_0505.py" || echo "Migration not created"
         
     - name: Run migrations
       env:

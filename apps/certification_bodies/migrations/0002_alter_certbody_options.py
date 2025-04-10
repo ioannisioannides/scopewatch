@@ -7,8 +7,7 @@ class Migration(migrations.Migration):
     """Migration created to fix CI dependency chain."""
 
     dependencies = [
-        ("organizations", "0007_add_certification_scope_and_audit_link"),
-        ("organizations", "0009_remove_organizationuser_joined_date_and_more")
+        ("certification_bodies", "0001_initial")
     ]
 
     operations = []
