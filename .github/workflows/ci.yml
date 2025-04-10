@@ -49,6 +49,16 @@ jobs:
         # Optimize SQLite settings
         python optimize_sqlite.py
         
+    - name: Fix migration dependencies
+      env:
+        DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
+        DB_ENGINE: django.db.backends.sqlite3
+        DB_NAME: db.sqlite3
+        DEBUG: true
+      run: |
+        # Run our custom script to fix migration dependencies
+        python fix_migration_dependencies.py
+        
     - name: List migrations
       env:
         DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
@@ -65,12 +75,8 @@ jobs:
         DB_NAME: db.sqlite3
         DEBUG: true
       run: |
-        # Fix migration issues by using fake migrations
-        python manage.py migrate --fake-initial organizations
-        python manage.py migrate --fake consultants 
-        python manage.py migrate --fake audits
-        python manage.py migrate --fake public
-        python manage.py migrate --fake-initial
+        # Run migrations in the correct order with proper handling
+        python manage.py migrate --verbosity 2
 
     - name: Run tests
       env:
