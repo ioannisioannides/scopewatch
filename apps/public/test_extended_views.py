@@ -134,7 +134,7 @@ class ExtendedPublicViewTest(TestCase):
         self.assertTrue(response.context["no_results"])  # Should show no results message
         
         # Verify search log was created for no-results search
-        log = SearchLog.objects.latest('created_at')
+        log = SearchLog.objects.latest('search_date')
         self.assertEqual(log.search_term, "NonExistentTerm")
         self.assertEqual(log.results_count, 0)
     

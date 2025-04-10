@@ -14,9 +14,9 @@ class AuditDecisionForm(forms.ModelForm):
 
     class Meta:
         model = AuditResult
-        fields = ["decision", "nonconformances_closed", "recommendation", "notes"]
+        fields = ["decision", "nonconformances_closed", "recommendation", "comments"]
         widgets = {
-            "notes": forms.Textarea(attrs={"rows": 4}),
+            "comments": forms.Textarea(attrs={"rows": 4}),
         }
 
 

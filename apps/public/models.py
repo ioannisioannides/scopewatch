@@ -34,6 +34,13 @@ class CertificationVerification(models.Model):
     ip_address = models.GenericIPAddressField(blank=True, null=True)
     user_agent = models.TextField(blank=True)
 
+    @property
+    def created_at(self):
+        """
+        Property that returns verification_date to maintain compatibility with tests.
+        """
+        return self.verification_date
+
     def __str__(self):
         return f"Verification of {self.certificate} on {self.verification_date}"
 
