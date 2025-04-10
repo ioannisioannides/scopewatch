@@ -57,14 +57,8 @@ jobs:
         DB_NAME: db.sqlite3
         DEBUG: true
       run: |
-        # Setup database tables needed to run migrations
-        python manage.py migrate --fake contenttypes
-        python manage.py migrate --fake auth
-        python manage.py migrate --fake admin
-        
-        # Run reset_migrations.py to handle squashed migrations
-        # In CI we only need to create empty table structure with --fake
-        python manage.py migrate --fake
+        # Run our specialized CI migration fix script that handles the nonconformance model issue
+        python ci_migration_fix.py
 
     - name: Run tests
       env:
