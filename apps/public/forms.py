@@ -62,3 +62,21 @@ class CertificateSearchForm(forms.Form):
         self.fields["certification_body"].choices += [
             (cb_id, name) for cb_id, name in cert_bodies
         ]
+
+
+class CertificationVerificationForm(forms.Form):
+    """
+    Form for verifying certification by certificate number.
+    """
+    
+    certificate_number = forms.CharField(
+        label="Certificate Number",
+        max_length=255,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Enter certificate number",
+                "class": "form-control",
+            }
+        ),
+    )
