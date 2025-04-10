@@ -48,7 +48,7 @@ jobs:
         # Create empty database file
         touch db.sqlite3
         # Optimize SQLite settings
-        python optimize_sqlite.py
+        python scripts/utils/optimize_sqlite.py
 
     - name: Reset migrations for CI
       env:
@@ -58,7 +58,7 @@ jobs:
         DEBUG: true
       run: |
         # Run our specialized CI migration fix script that handles the nonconformance model issue
-        python ci_migration_fix.py
+        python scripts/migrations/ci_migration_fix.py
 
     - name: Run tests
       env:

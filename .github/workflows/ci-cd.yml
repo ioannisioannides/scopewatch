@@ -46,6 +46,8 @@ jobs:
         run: |
           # Create empty database file for tests
           python -c "import sqlite3; conn = sqlite3.connect('db.sqlite3'); conn.close()"
+          # Optimize SQLite settings if needed
+          python scripts/utils/optimize_sqlite.py
       
       - name: Run linting
         run: |
@@ -162,10 +164,8 @@ jobs:
           DEV_ADMIN_PASSWORD: ${{ secrets.DEV_ADMIN_PASSWORD }}
           DEV_ADMIN_EMAIL: ${{ secrets.DEV_ADMIN_EMAIL }}
         run: |
-          # Add commands to deploy to your development environment
-          # Example:
-          # bash ./deploy.sh development
-          echo "Deploying to development environment"
+          # Run the deployment script for development environment
+          bash ./deploy.sh development
     
   deploy-production:
     name: Deploy to Production
@@ -209,7 +209,5 @@ jobs:
           PROD_ADMIN_PASSWORD: ${{ secrets.PROD_ADMIN_PASSWORD }}
           PROD_ADMIN_EMAIL: ${{ secrets.PROD_ADMIN_EMAIL }}
         run: |
-          # Add commands to deploy to your production environment
-          # Example:
-          # bash ./deploy.sh production
-          echo "Deploying to production environment"
+          # Run the deployment script for production environment
+          bash ./deploy.sh production
