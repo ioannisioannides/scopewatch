@@ -20,6 +20,7 @@ from .models import Organization, Certification, OrganizationUser
 from .serializers import OrganizationSerializer, OrganizationDetailSerializer, CertificationSerializer
 from .api_views import OrganizationViewSet, CertificationViewSet
 from .api_urls import router
+from apps.utils.test_credentials import get_test_credential
 
 
 class OrganizationAPIURLsTest(TestCase):
@@ -54,14 +55,14 @@ class OrganizationAPIPermissionsTest(APITestCase):
         """Set up test data."""
         # Create users with different permission levels
         self.standard_user = User.objects.create_user(
-            username='standard_user',
-            password='standard123',
-            email='standard@example.com'
+            username=get_test_credential("default", "username"),
+            password=get_test_credential("default", "password"),
+            email=get_test_credential("default", "email")
         )
         self.staff_user = User.objects.create_user(
-            username='staff_user',
-            password='staff123',
-            email='staff@example.com',
+            username=get_test_credential("staff", "username", "staff_user"),
+            password=get_test_credential("staff", "password", "staff123"),
+            email="staff@example.com",
             is_staff=True
         )
         
@@ -120,9 +121,9 @@ class OrganizationAPIViewSetTest(APITestCase):
         """Set up test data."""
         # Create user
         self.user = User.objects.create_user(
-            username='api_tester',
-            password='complex123',
-            email='api@example.com'
+            username=get_test_credential("api", "username", "api_tester"),
+            password=get_test_credential("api", "password", "complex123"),
+            email=get_test_credential("api", "email", "api@example.com")
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
@@ -274,9 +275,9 @@ class CertificationAPIViewSetTest(APITestCase):
         """Set up test data."""
         # Create user
         self.user = User.objects.create_user(
-            username='cert_api_tester',
-            password='complex123',
-            email='certapi@example.com'
+            username=get_test_credential("api_alt", "username", "cert_api_tester"),
+            password=get_test_credential("api_alt", "password", "complex123"),
+            email=get_test_credential("api_alt", "email", "certapi@example.com") 
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)

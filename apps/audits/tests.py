@@ -29,6 +29,7 @@ from apps.audits.models import (
 )
 from apps.certification_bodies.models import CertBody, Auditor, CertBodyUser
 from apps.organizations.models import Organization, Certification
+from apps.utils.test_credentials import get_test_credential
 
 
 class AuditModelTest(TestCase):
@@ -310,10 +311,14 @@ class CertificationIssuanceTestCase(TestCase):
         """
         Set up test data.
         """
-        # Create users
-        self.user = User.objects.create_user(username="testuser", password="password")
+        # Create users with credentials from environment variables
+        self.user = User.objects.create_user(
+            username=get_test_credential("default", "username"),
+            password=get_test_credential("default", "password")
+        )
         self.certbody_user = User.objects.create_user(
-            username="certbodyuser", password="password"
+            username=get_test_credential("certbody", "username"),
+            password=get_test_credential("certbody", "password")
         )
 
         # Create organization

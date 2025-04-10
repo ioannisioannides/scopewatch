@@ -2,14 +2,16 @@
 Management command to create or update a superuser from environment variables.
 
 This command creates a superuser with credentials from environment variables,
-or updates an existing one if it already exists.
+or updates an existing one if it already exists. It looks for credentials with
+different prefixes based on the environment (PROD_ or DEV_).
 """
 
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+import os
 
-from scopewatch.config import config
+from scopewatch.config import config, is_production
 
 User = get_user_model()
 
@@ -24,14 +26,27 @@ class Command(BaseCommand):
     help = 'Create or update a superuser using environment variables'
     
     def handle(self, *args, **options):
-        username = config('ADMIN_USERNAME', default=None)
-        password = config('ADMIN_PASSWORD', default=None)
-        email = config('ADMIN_EMAIL', default=None)
+        # Determine environment to use correct prefix for environment variables
+        prefix = "PROD_" if is_production() else "DEV_"
+        
+        # Get credentials using the appropriate prefix
+        username = config(f'{prefix}ADMIN_USERNAME', default=None)
+        password = config(f'{prefix}ADMIN_PASSWORD', default=None)
+        email = config(f'{prefix}ADMIN_EMAIL', default=None)
+        
+        # For backwards compatibility, check without prefix if not found
+        if username is None:
+            username = config('ADMIN_USERNAME', default=None)
+        if password is None:
+            password = config('ADMIN_PASSWORD', default=None) 
+        if email is None:
+            email = config('ADMIN_EMAIL', default=None)
         
         if not all([username, password, email]):
+            env_type = "Production" if is_production() else "Development"
             self.stdout.write(self.style.WARNING(
-                'Admin user environment variables not set. '
-                'Set ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL to create a superuser.'
+                f'Admin user environment variables not set for {env_type} environment. '
+                f'Set {prefix}ADMIN_USERNAME, {prefix}ADMIN_PASSWORD, {prefix}ADMIN_EMAIL in GitHub environment secrets.'
             ))
             return
             
