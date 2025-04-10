@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
+import json  # Add missing import for json
 
 from apps.organizations.models import Organization, Certification
 from apps.certification_bodies.models import CertBody
@@ -157,14 +158,14 @@ class PublicViewTest(TestCase):
         Test the certificate verification API endpoint.
         """
         # Test without certificate number
-        response = self.client.get(reverse("verify_certificate_api"))
+        response = self.client.get(reverse("public:verify_api"))
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content)
         self.assertEqual(content["error"], "Certificate number is required")
         
         # Test with valid certificate number
         response = self.client.get(
-            reverse("verify_certificate_api") + f"?certificate_number={self.certification.certificate_number}"
+            reverse("public:verify_api") + f"?certificate_number={self.certification.certificate_number}"
         )
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
@@ -181,7 +182,7 @@ class PublicViewTest(TestCase):
         
         # Test with invalid certificate number
         response = self.client.get(
-            reverse("verify_certificate_api") + "?certificate_number=NONEXISTENT-CERT"
+            reverse("public:verify_api") + "?certificate_number=NONEXISTENT-CERT"
         )
         self.assertEqual(response.status_code, 404)
         content = json.loads(response.content)
@@ -192,7 +193,7 @@ class PublicViewTest(TestCase):
         Test the certificate detail view.
         """
         response = self.client.get(
-            reverse("certificate_detail", args=[self.certification.pk])
+            reverse("public:certificate_detail", args=[self.certification.pk])
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ViewTest Organization")
@@ -208,16 +209,20 @@ class PublicViewTest(TestCase):
         """
         Test the get_client_ip function.
         """
+        from django.test.client import RequestFactory
         from .views import get_client_ip
         
+        # Create a request factory
+        factory = RequestFactory()
+        
         # Test with X-Forwarded-For header
-        request = self.client.request()
+        request = factory.get('/')
         request.META['HTTP_X_FORWARDED_FOR'] = '192.168.1.1, 10.0.0.1'
         ip = get_client_ip(request)
         self.assertEqual(ip, '192.168.1.1')
         
         # Test without X-Forwarded-For header
-        request = self.client.request()
+        request = factory.get('/')
         request.META['REMOTE_ADDR'] = '192.168.1.2'
         ip = get_client_ip(request)
         self.assertEqual(ip, '192.168.1.2')
@@ -302,7 +307,7 @@ class CertificateSearchViewTest(TestCase):
         """
         Test basic functionality of the CertificateSearchView.
         """
-        response = self.client.get(reverse("certificate_search"))
+        response = self.client.get(reverse("public:certificate_search"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "QualityFirst Manufacturing")
         self.assertContains(response, "SecureIT Solutions")
@@ -318,27 +323,27 @@ class CertificateSearchViewTest(TestCase):
         Test searching by term in the CertificateSearchView.
         """
         # Search by organization name
-        response = self.client.get(reverse("certificate_search") + "?search_term=Quality")
+        response = self.client.get(reverse("public:certificate_search") + "?search_term=Quality")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "QualityFirst Manufacturing")
         self.assertNotContains(response, "SecureIT Solutions")
         self.assertEqual(len(response.context['certifications']), 1)
         
         # Search by certificate number
-        response = self.client.get(reverse("certificate_search") + "?search_term=SI-27001")
+        response = self.client.get(reverse("public:certificate_search") + "?search_term=SI-27001")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "SecureIT Solutions")
         self.assertNotContains(response, "QualityFirst Manufacturing")
         
         # Search by scope
-        response = self.client.get(reverse("certificate_search") + "?search_term=cloud")
+        response = self.client.get(reverse("public:certificate_search") + "?search_term=cloud")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "SecureIT Solutions")
         self.assertNotContains(response, "QualityFirst Manufacturing")
         
         # Verify search log was created
         self.assertEqual(SearchLog.objects.count(), 3)
-        log = SearchLog.objects.latest('created_at')
+        log = SearchLog.objects.latest('search_date')
         self.assertEqual(log.search_term, "cloud")
         self.assertEqual(log.results_count, 1)
     
@@ -346,12 +351,12 @@ class CertificateSearchViewTest(TestCase):
         """
         Test filtering by standard in the CertificateSearchView.
         """
-        response = self.client.get(reverse("certificate_search") + "?standard=ISO 9001:2015")
+        response = self.client.get(reverse("public:certificate_search") + "?standard=ISO 9001:2015")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "QualityFirst Manufacturing")
         self.assertNotContains(response, "SecureIT Solutions")
         
-        response = self.client.get(reverse("certificate_search") + "?standard=ISO 27001:2022")
+        response = self.client.get(reverse("public:certificate_search") + "?standard=ISO 27001:2022")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "SecureIT Solutions")
         self.assertNotContains(response, "QualityFirst Manufacturing")
@@ -361,7 +366,7 @@ class CertificateSearchViewTest(TestCase):
         Test combining search term and standard filters.
         """
         response = self.client.get(
-            reverse("certificate_search") + "?search_term=Quality&standard=ISO 9001:2015"
+            reverse("public:certificate_search") + "?search_term=Quality&standard=ISO 9001:2015"
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "QualityFirst Manufacturing")
@@ -369,12 +374,12 @@ class CertificateSearchViewTest(TestCase):
         
         # No results case
         response = self.client.get(
-            reverse("certificate_search") + "?search_term=NonExistent&standard=ISO 9001:2015"
+            reverse("public:certificate_search") + "?search_term=NonExistent&standard=ISO 9001:2015"
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['certifications']), 0)
         
         # Verify search log was updated
-        log = SearchLog.objects.latest('created_at')
+        log = SearchLog.objects.latest('search_date')
         self.assertEqual(log.search_term, "NonExistent")
         self.assertEqual(log.results_count, 0)

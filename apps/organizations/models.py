@@ -30,18 +30,20 @@ class Organization(models.Model):
         is_active (bool): Whether the organization is currently active in the system.
         created_at (datetime): When the organization was first added.
         updated_at (datetime): When the organization was last updated.
+        industry (str): The industry sector the organization operates in.
     """
 
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255, blank=True)
     contact_email = models.EmailField()
     website = models.URLField(blank=True)
+    industry = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class OrganizationUser(models.Model):
@@ -75,7 +77,7 @@ class OrganizationUser(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.username} ({self.role}) at {self.organization.name}"
+        return f"{self.user.get_username()} ({self.role}) at {self.organization.name}"
 
 
 class Certification(models.Model):
