@@ -34,6 +34,13 @@ class CertificationVerification(models.Model):
     ip_address = models.GenericIPAddressField(blank=True, null=True)
     user_agent = models.TextField(blank=True)
 
+    @property
+    def created_at(self):
+        """
+        Property that returns verification_date to maintain compatibility with tests.
+        """
+        return self.verification_date
+
     def __str__(self):
         return f"Verification of {self.certificate} on {self.verification_date}"
 
@@ -48,6 +55,7 @@ class SearchLog(models.Model):
     Attributes:
         search_term (str): What was searched for.
         search_date (datetime): When the search occurred.
+        created_at (datetime): When the search record was created (alias for search_date).
         results_count (int): Number of results returned.
         ip_address (str): The IP address of the searcher (anonymized).
     """
@@ -56,6 +64,13 @@ class SearchLog(models.Model):
     search_date = models.DateTimeField(default=timezone.now)
     results_count = models.IntegerField(default=0)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
+
+    @property
+    def created_at(self):
+        """
+        Property that returns search_date to maintain compatibility with tests.
+        """
+        return self.search_date
 
     def __str__(self):
         return f"Search for '{self.search_term}' ({self.results_count} results)"

@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("organizations", "0010_merge_20250409_0505"),
+        ("organizations", "0010_merge_20250410_fix"),
         ("public", "0001_initial"),
     ]
 

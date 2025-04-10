@@ -222,3 +222,55 @@ def issue_certificate_view(request, audit_id):
             "audit_result": audit.result,
         },
     )
+
+
+@login_required
+def cert_body_dashboard(request):
+    """
+    Dashboard view for certification body users.
+    
+    Displays an overview of audits, certificates, and other relevant information
+    for certification body staff.
+    """
+    try:
+        # Get the certification body associated with the user
+        cert_body_user = request.user.cert_body_roles.filter(is_active=True).first()
+        
+        if not cert_body_user:
+            messages.warning(request, "You are not associated with any certification body.")
+            return redirect("home")
+            
+        cert_body = cert_body_user.cert_body
+        
+        # Get pending audits that need decisions
+        pending_audits = Audit.objects.filter(
+            certbody=cert_body, 
+            status="completed"
+        ).exclude(
+            pk__in=AuditResult.objects.values_list("audit", flat=True)
+        )
+        
+        # Get recent certifications issued by this cert body
+        recent_certifications = Certification.objects.filter(
+            cert_body=cert_body
+        ).order_by('-issue_date')[:5]
+        
+        # Get audits in progress
+        in_progress_audits = Audit.objects.filter(
+            certbody=cert_body, 
+            status="in_progress"
+        )
+        
+        context = {
+            'cert_body': cert_body,
+            'pending_audits': pending_audits,
+            'recent_certifications': recent_certifications,
+            'in_progress_audits': in_progress_audits,
+            'cert_body_user': cert_body_user,
+        }
+        
+        return render(request, 'certification_bodies/dashboard.html', context)
+        
+    except Exception as e:
+        messages.error(request, f"An error occurred: {str(e)}")
+        return redirect("home")

@@ -1,0 +1,279 @@
+#!/usr/bin/env python3
+"""
+Development environment setup script for Scopewatch.
+
+This script helps set up a development environment for the Scopewatch project.
+It checks for required dependencies, creates a virtual environment, and installs
+required packages.
+"""
+
+import os
+import sys
+import shutil
+import subprocess
+import platform
+from pathlib import Path
+
+# Add the project root to the path to ensure proper execution from any location
+PROJECT_ROOT = Path(__file__).resolve().parent
+os.chdir(PROJECT_ROOT)
+
+
+def print_step(message):
+    """Print a formatted step message."""
+    print(f"\n\033[1;34m>>> {message}\033[0m")
+
+
+def print_success(message):
+    """Print a formatted success message."""
+    print(f"\033[1;32m✓ {message}\033[0m")
+
+
+def print_error(message):
+    """Print a formatted error message."""
+    print(f"\033[1;31m✗ {message}\033[0m")
+
+
+def print_warning(message):
+    """Print a formatted warning message."""
+    print(f"\033[1;33m! {message}\033[0m")
+
+
+def check_python_version():
+    """Check if Python version is 3.8 or higher."""
+    print_step("Checking Python version...")
+    
+    major, minor = sys.version_info[:2]
+    if major < 3 or (major == 3 and minor < 8):
+        print_error("Python 3.8 or higher is required.")
+        print_error(f"You are using Python {major}.{minor}.")
+        return False
+    
+    print_success(f"Python {major}.{minor} detected.")
+    return True
+
+
+def check_pip():
+    """Check if pip is installed."""
+    print_step("Checking for pip...")
+    
+    try:
+        subprocess.run([sys.executable, "-m", "pip", "--version"], 
+                       check=True, capture_output=True)
+        print_success("pip is installed.")
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print_error("pip is not installed or not working.")
+        print("Please install pip and try again.")
+        return False
+
+
+def check_virtualenv():
+    """Check if virtualenv is installed."""
+    print_step("Checking for virtualenv...")
+    
+    try:
+        subprocess.run([sys.executable, "-m", "pip", "show", "virtualenv"], 
+                       check=True, capture_output=True)
+        print_success("virtualenv is installed.")
+        return True
+    except subprocess.CalledProcessError:
+        print_warning("virtualenv is not installed. Installing...")
+        try:
+            subprocess.run([sys.executable, "-m", "pip", "install", "virtualenv"], 
+                           check=True, capture_output=True)
+            print_success("virtualenv installed successfully.")
+            return True
+        except subprocess.CalledProcessError:
+            print_error("Failed to install virtualenv.")
+            return False
+
+
+def create_virtualenv():
+    """Create a virtual environment for the project."""
+    print_step("Creating virtual environment...")
+    
+    venv_path = PROJECT_ROOT / ".venv"
+    if venv_path.exists():
+        print_warning("Virtual environment already exists.")
+        overwrite = input("Do you want to overwrite it? (y/n): ").lower().strip()
+        if overwrite == 'y':
+            shutil.rmtree(venv_path)
+        else:
+            print_warning("Using existing virtual environment.")
+            return True
+    
+    try:
+        subprocess.run([sys.executable, "-m", "virtualenv", str(venv_path)], check=True)
+        print_success("Virtual environment created successfully.")
+        return True
+    except subprocess.CalledProcessError:
+        print_error("Failed to create virtual environment.")
+        return False
+
+
+def install_requirements():
+    """Install project requirements."""
+    print_step("Installing project requirements...")
+    
+    # Determine the pip executable path based on the OS
+    if platform.system() == "Windows":
+        pip_path = PROJECT_ROOT / ".venv" / "Scripts" / "pip"
+    else:
+        pip_path = PROJECT_ROOT / ".venv" / "bin" / "pip"
+    
+    # Install development requirements
+    try:
+        subprocess.run([str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements-dev.txt")], check=True)
+        print_success("Development dependencies installed successfully.")
+    except subprocess.CalledProcessError:
+        print_error("Failed to install development dependencies.")
+        return False
+    
+    # Install production requirements
+    try:
+        subprocess.run([str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements.txt")], check=True)
+        print_success("Production dependencies installed successfully.")
+        return True
+    except subprocess.CalledProcessError:
+        print_error("Failed to install production dependencies.")
+        return False
+
+
+def create_env_file():
+    """Create .env file if it doesn't exist."""
+    print_step("Setting up environment configuration...")
+    
+    env_file = PROJECT_ROOT / ".env"
+    env_example = PROJECT_ROOT / ".env.example"
+    
+    if not env_file.exists():
+        if env_example.exists():
+            shutil.copy(env_example, env_file)
+            print_success(".env file created from example template.")
+        else:
+            print_error(".env.example not found.")
+            return False
+    else:
+        print_warning(".env file already exists.")
+    
+    return True
+
+
+def setup_database():
+    """Run database migrations."""
+    print_step("Setting up database...")
+    
+    # Determine the python executable path based on the OS
+    if platform.system() == "Windows":
+        python_path = PROJECT_ROOT / ".venv" / "Scripts" / "python"
+    else:
+        python_path = PROJECT_ROOT / ".venv" / "bin" / "python"
+    
+    try:
+        # Make migrations
+        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "makemigrations"], check=True)
+        
+        # Apply migrations
+        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True)
+        
+        print_success("Database migrations applied successfully.")
+        return True
+    except subprocess.CalledProcessError:
+        print_error("Failed to set up database.")
+        return False
+
+
+def create_superuser():
+    """Offer to create a superuser."""
+    print_step("Creating superuser...")
+    
+    create = input("Do you want to create a superuser now? (y/n): ").lower().strip()
+    if create != 'y':
+        print_warning("Superuser creation skipped.")
+        return True
+    
+    # Determine the python executable path based on the OS
+    if platform.system() == "Windows":
+        python_path = PROJECT_ROOT / ".venv" / "Scripts" / "python"
+    else:
+        python_path = PROJECT_ROOT / ".venv" / "bin" / "python"
+    
+    # Validate that python_path exists and is within our project directory
+    python_path = python_path.resolve()
+    venv_dir = (PROJECT_ROOT / ".venv").resolve()
+    
+    if not python_path.exists():
+        print_error(f"Python executable not found at {python_path}")
+        return False
+        
+    if not str(python_path).startswith(str(venv_dir)):
+        print_error("Python path is outside the virtual environment directory")
+        return False
+        
+    try:
+        # Use a more secure approach with shell=False (the default)
+        # and a list of arguments instead of a string
+        result = subprocess.run(
+            [str(python_path), str(PROJECT_ROOT / "manage.py"), "createsuperuser"],
+            check=True,
+            text=True,
+            capture_output=False
+        )
+        
+        if result.returncode == 0:
+            print_success("Superuser created successfully.")
+        return True
+    except subprocess.CalledProcessError as e:
+        print_error(f"Failed to create superuser. Error: {e}")
+        return False
+    except (FileNotFoundError, PermissionError) as e:
+        print_error(f"File system error occurred: {e}")
+        return False
+
+
+def main():
+    """Main function to run the setup process."""
+    print("\n\033[1;36m==================================\033[0m")
+    print("\033[1;36m Scopewatch Development Environment \033[0m")
+    print("\033[1;36m==================================\033[0m\n")
+    
+    # Check dependencies
+    if not all([
+        check_python_version(),
+        check_pip(),
+        check_virtualenv(),
+    ]):
+        sys.exit(1)
+    
+    # Set up environment
+    if not all([
+        create_virtualenv(),
+        install_requirements(),
+        create_env_file(),
+        setup_database(),
+        create_superuser(),
+    ]):
+        print_error("Setup failed. Please check the errors above and try again.")
+        sys.exit(1)
+    
+    print("\n\033[1;32m==================================\033[0m")
+    print("\033[1;32m      Setup completed successfully    \033[0m")
+    print("\033[1;32m==================================\033[0m\n")
+    
+    # Provide instructions for next steps
+    if platform.system() == "Windows":
+        activate_cmd = r".\.venv\Scripts\activate"
+    else:
+        activate_cmd = "source .venv/bin/activate"
+    
+    print("To activate the virtual environment, run:")
+    print(f"  \033[1;33m{activate_cmd}\033[0m")
+    print("\nTo run the development server, run:")
+    print("  \033[1;33mpython manage.py runserver\033[0m")
+    print("\nThe admin interface will be available at:")
+    print("  \033[1;33mhttp://127.0.0.1:8000/admin/\033[0m\n")
+
+
+if __name__ == "__main__":
+    main()

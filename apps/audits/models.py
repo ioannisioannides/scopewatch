@@ -32,6 +32,7 @@ class Audit(models.Model):
         status (str): The current status of the audit.
         organization (ForeignKey): The organization being audited.
         certbody (ForeignKey): The certification body conducting the audit.
+        scheduled_date (date): When the audit is scheduled to take place.
     """
 
     AUDIT_TYPE_CHOICES = [
@@ -53,6 +54,7 @@ class Audit(models.Model):
     audit_type = models.CharField(max_length=100, choices=AUDIT_TYPE_CHOICES)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
+    scheduled_date = models.DateField(null=True, blank=True)
     status = models.CharField(
         max_length=50, choices=STATUS_CHOICES, default="scheduled"
     )
@@ -301,7 +303,7 @@ class AuditResult(models.Model):
         decision (str): The certification decision (approve, conditional, reject).
         decision_date (date): When the decision was made.
         decided_by (ForeignKey): The certification body user who made the decision.
-        notes (TextField): Additional notes about the decision.
+        comments (TextField): Additional notes about the decision.
         nonconformances_closed (bool): Whether all nonconformances are closed.
         recommendation (str): The auditor's recommendation.
     """
@@ -326,7 +328,7 @@ class AuditResult(models.Model):
     decided_by = models.ForeignKey(
         "certification_bodies.CertBodyUser", on_delete=models.PROTECT, related_name="audit_decisions"
     )
-    notes = models.TextField(blank=True)
+    comments = models.TextField(blank=True)
     nonconformances_closed = models.BooleanField(default=False)
     recommendation = models.CharField(
         max_length=20, choices=RECOMMENDATION_CHOICES, blank=True

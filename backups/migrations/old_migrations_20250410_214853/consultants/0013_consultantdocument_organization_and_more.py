@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("audits", "0007_audit_certbody_audit_organization_and_more"),
         ("consultants", "0012_reset_migrations"),
-        ("organizations", "0010_merge_20250409_0505"),
+        ("organizations", "0010_merge_20250410_fix"),
     ]
 
     operations = [

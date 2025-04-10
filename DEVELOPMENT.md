@@ -84,6 +84,38 @@ This guide explains how to set up your development environment for working on th
    - Add a description of your changes
    - Submit the Pull Request
 
+## Project Structure
+
+We've organized the project structure to improve maintainability:
+
+### Key Directories
+
+- `apps/` - Django applications organized by domain functionality
+- `scripts/` - Utility scripts for development and maintenance
+  - `migrations/` - Scripts for managing database migrations
+  - `utils/` - General utility scripts
+- `backups/` - Organized backup storage
+  - `db/` - Database backups
+  - `migrations/` - Migration backups
+- `docs/` - Project documentation
+
+### Working with Management Commands
+
+Django management commands are centralized in the `apps/management/commands/` directory. Common commands include:
+
+```bash
+# Optimize SQLite database
+python manage.py optimize_sqlite --all
+
+# Backup SQLite database
+python manage.py backup_sqlite
+
+# Create or update a superuser
+python manage.py create_or_update_superuser
+```
+
+For more details on the project structure, refer to the [Project Structure Documentation](docs/project_structure.md).
+
 ## Database Migrations
 
 When making changes to models:

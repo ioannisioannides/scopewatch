@@ -43,7 +43,7 @@ jobs:
           # Create empty SQLite database file
           touch db.sqlite3
           # Prepare the database
-          python optimize_sqlite.py
+          python scripts/utils/optimize_sqlite.py
           
           # Skip makemigrations due to circular dependencies
           # Apply existing migrations with --fake-initial to avoid issues

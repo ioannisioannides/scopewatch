@@ -25,11 +25,9 @@ def skip_if_column_exists(apps, schema_editor, table, column):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("audits", "0006_alter_audit_status"),
-        ("certification_bodies", "0007_reset_migrations"),
-        ("consultants", "0012_reset_migrations"),
-        ("organizations", "0010_merge_20250409_0505"),
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ("certification_bodies", "0003_certbodyuser_contact_phone"),
+        ("organizations", "0010_merge_20250410_fix"),
+        ("audits", "0006_change_audit_status_choices"),
     ]
 
     operations = [

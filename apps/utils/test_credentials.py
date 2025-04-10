@@ -8,13 +8,14 @@ which are configured as secrets in the GitHub Development environment.
 import os
 from scopewatch.config import config
 
-def get_test_credential(type_name, credential_type="password"):
+def get_test_credential(type_name, credential_type="password", default=None):
     """
     Get a test credential from environment variables.
     
     Args:
         type_name (str): The user type (e.g., 'default', 'certbody', 'api')
         credential_type (str): The credential type (e.g., 'username', 'password', 'email')
+        default (str): Optional default value if the credential is not found
         
     Returns:
         str: The credential value from environment variables or a fallback value for local development
@@ -57,5 +58,8 @@ def get_test_credential(type_name, credential_type="password"):
         "TEST_API_ALT_PASSWORD": "complex123",
     }
     
+    # If a default is provided, use it as the final fallback
+    final_default = default if default is not None else fallback_values.get(env_var, "test_default")
+    
     # Use config function to read from environment variables with fallback
-    return config(env_var, default=fallback_values.get(env_var, "test_default"))
+    return config(env_var, default=final_default)

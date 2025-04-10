@@ -33,7 +33,7 @@ class ConsultantModelTest(TestCase):
         consultant = Consultant.objects.create(
             user=user,
             bio="Experienced consultant with over 10 years in the field.",
-            specialization="ISO 27001, ISO 9001",
+            specialties="ISO 27001, ISO 9001",
             is_active=True
         )
         
@@ -49,7 +49,7 @@ class ConsultantModelTest(TestCase):
         
         self.assertEqual(consultant.user, user)
         self.assertEqual(consultant.firm, firm)
-        self.assertIn("ISO 27001", consultant.specialization)
+        self.assertIn("ISO 27001", consultant.specialties)
         self.assertTrue(consultant.is_active)
     
     def test_create_independent_consultant(self):
@@ -63,13 +63,13 @@ class ConsultantModelTest(TestCase):
         consultant = Consultant.objects.create(
             user=user,
             bio="Independent consultant with expertise in ISO standards.",
-            specialization="ISO 14001, ISO 45001",
+            specialties="ISO 14001, ISO 45001",
             is_active=True
         )
         
         self.assertEqual(consultant.user, user)
         self.assertIsNone(consultant.firm)
-        self.assertIn("ISO 14001", consultant.specialization)
+        self.assertIn("ISO 14001", consultant.specialties)
         self.assertTrue(consultant.is_active)
 
 
