@@ -48,7 +48,7 @@ jobs:
         touch db.sqlite3
         # Optimize SQLite settings
         python optimize_sqlite.py
-        
+
     - name: Fix migration dependencies
       env:
         DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
@@ -56,18 +56,11 @@ jobs:
         DB_NAME: db.sqlite3
         DEBUG: true
       run: |
-        # Run our custom script to fix migration dependencies
-        python fix_migration_dependencies.py
+        # Directly modify migration dependencies to fix CI issues
+        python ci_fix_migrations.py
+        # Show the changes that were made
+        git diff
         
-    - name: List migrations
-      env:
-        DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
-        DB_ENGINE: django.db.backends.sqlite3
-        DB_NAME: db.sqlite3
-        DEBUG: true
-      run: |
-        python manage.py showmigrations
-
     - name: Run migrations
       env:
         DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
@@ -75,7 +68,6 @@ jobs:
         DB_NAME: db.sqlite3
         DEBUG: true
       run: |
-        # Run migrations in the correct order with proper handling
         python manage.py migrate --verbosity 2
 
     - name: Run tests
