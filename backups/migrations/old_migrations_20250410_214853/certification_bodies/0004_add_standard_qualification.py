@@ -26,9 +26,7 @@ class Migration(migrations.Migration):
                 ("expiry_date", models.DateField(blank=True, null=True)),
                 (
                     "evidence_document",
-                    models.FileField(
-                        blank=True, null=True, upload_to="auditor_qualifications/"
-                    ),
+                    models.FileField(blank=True, null=True, upload_to="auditor_qualifications/"),
                 ),
                 ("notes", models.TextField(blank=True)),
                 (

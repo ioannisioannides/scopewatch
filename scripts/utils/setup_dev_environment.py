@@ -58,9 +58,7 @@ def check_pip():
     print_step("Checking for pip...")
 
     try:
-        subprocess.run(
-            [sys.executable, "-m", "pip", "--version"], check=True, capture_output=True
-        )
+        subprocess.run([sys.executable, "-m", "pip", "--version"], check=True, capture_output=True)
         print_success("pip is installed.")
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
@@ -196,9 +194,7 @@ def setup_database():
         )
 
         # Apply migrations
-        subprocess.run(
-            [str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True
-        )
+        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True)
 
         print_success("Database migrations applied successfully.")
         return True

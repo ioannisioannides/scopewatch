@@ -105,9 +105,7 @@ def fake_apply_migrations():
     for app in core_apps:
         try:
             print(f"Fake migrating {app}...")
-            subprocess.run(
-                ["python", "manage.py", "migrate", app, "--fake"], check=True
-            )
+            subprocess.run(["python", "manage.py", "migrate", app, "--fake"], check=True)
         except subprocess.CalledProcessError as e:
             print(f"⚠️ Warning: Failed to fake migrate {app}: {e}")
 
@@ -118,14 +116,10 @@ def fake_apply_migrations():
             ["python", "manage.py", "migrate", "certification_bodies", "--fake"],
             check=True,
         )
-        subprocess.run(
-            ["python", "manage.py", "migrate", "organizations", "--fake"], check=True
-        )
+        subprocess.run(["python", "manage.py", "migrate", "organizations", "--fake"], check=True)
 
         # Then audits which depends on them
-        subprocess.run(
-            ["python", "manage.py", "migrate", "audits", "--fake"], check=True
-        )
+        subprocess.run(["python", "manage.py", "migrate", "audits", "--fake"], check=True)
 
         # Then all remaining apps
         subprocess.run(["python", "manage.py", "migrate", "--fake"], check=True)
@@ -184,12 +178,8 @@ def main():
     # Verify migrations
     if not verify_migrations():
         print("\n⚠️ Migration verification failed")
-        print(
-            "Your migrations are marked as applied, but there might still be inconsistencies."
-        )
-        print(
-            "If you encounter problems, you may need to run specific app migrations with --fake."
-        )
+        print("Your migrations are marked as applied, but there might still be inconsistencies.")
+        print("If you encounter problems, you may need to run specific app migrations with --fake.")
         print(f"You can restore your database from backup: {backup_file}")
         return 1
 

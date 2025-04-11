@@ -20,13 +20,7 @@ from django.utils import timezone
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 # Local imports - sorted alphabetically by app name
-from apps.audits.models import (
-    Audit,
-    AuditorAssignment,
-    AuditResult,
-    AuditTeam,
-    NonConformance,
-)
+from apps.audits.models import Audit, AuditorAssignment, AuditResult, AuditTeam, NonConformance
 from apps.certification_bodies.models import Auditor, CertBody, CertBodyUser
 from apps.organizations.models import Certification, Organization
 from apps.utils.test_credentials import get_test_credential
@@ -162,15 +156,11 @@ class AuditTeamTest(TestCase):
         self.organization = Organization.objects.create(
             name="Audited Organization", contact_email="audit@example.com"
         )
-        self.cert_body = CertBody.objects.create(
-            name="Auditing Body", accreditation_id="AB-123"
-        )
+        self.cert_body = CertBody.objects.create(name="Auditing Body", accreditation_id="AB-123")
 
         # Create auditor
         self.user = User.objects.create_user(username="lead_auditor")
-        self.auditor = Auditor.objects.create(
-            user=self.user, specialties="ISO 9001, ISO 14001"
-        )
+        self.auditor = Auditor.objects.create(user=self.user, specialties="ISO 9001, ISO 14001")
         self.auditor.cert_bodies.add(self.cert_body)
 
         # Create audit
@@ -201,9 +191,7 @@ class AuditTeamTest(TestCase):
 
         # Create additional team members
         user2 = User.objects.create_user(username="technical_expert")
-        technical_auditor = Auditor.objects.create(
-            user=user2, specialties="Technical systems"
-        )
+        technical_auditor = Auditor.objects.create(user=user2, specialties="Technical systems")
         technical_auditor.cert_bodies.add(self.cert_body)
 
         user3 = User.objects.create_user(username="trainee_auditor")
@@ -240,9 +228,7 @@ class NonConformanceTest(TestCase):
         self.organization = Organization.objects.create(
             name="Audited Organization", contact_email="audit@example.com"
         )
-        self.cert_body = CertBody.objects.create(
-            name="Auditing Body", accreditation_id="AB-123"
-        )
+        self.cert_body = CertBody.objects.create(name="Auditing Body", accreditation_id="AB-123")
 
         # Create audit
         self.audit = Audit.objects.create(

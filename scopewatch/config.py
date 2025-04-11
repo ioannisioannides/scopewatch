@@ -58,9 +58,7 @@ def get_config() -> Config:
     return cast(Config, os)
 
 
-def config(
-    key: str, default: Any = None, cast: Any = str, required: bool = False
-) -> Any:
+def config(key: str, default: Any = None, cast: Any = str, required: bool = False) -> Any:
     """
     Get a configuration value from environment variables or .env file.
 
@@ -127,7 +125,5 @@ def is_test_environment() -> bool:
         bool: True if in a test environment, False otherwise
     """
     return (
-        "test" in sys.argv
-        or "pytest" in sys.modules
-        or os.environ.get("ENV", "").lower() == "test"
+        "test" in sys.argv or "pytest" in sys.modules or os.environ.get("ENV", "").lower() == "test"
     )

@@ -79,9 +79,7 @@ def main():
     print("Starting migration dependency resolver...")
 
     # Handle the organizations app migrations
-    org_migration_files = find_migration_files(
-        "organizations", r"0010_merge_20250409_0505\.py"
-    )
+    org_migration_files = find_migration_files("organizations", r"0010_merge_20250409_0505\.py")
     if not org_migration_files:
         # Create a replacement migration to satisfy dependencies
         ensure_migration_exists(

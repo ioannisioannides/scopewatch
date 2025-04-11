@@ -110,12 +110,8 @@ def fake_migrations():
             ["python", "manage.py", "migrate", "--fake-initial", "contenttypes"],
             check=True,
         )
-        subprocess.run(
-            ["python", "manage.py", "migrate", "--fake-initial", "auth"], check=True
-        )
-        subprocess.run(
-            ["python", "manage.py", "migrate", "--fake-initial", "admin"], check=True
-        )
+        subprocess.run(["python", "manage.py", "migrate", "--fake-initial", "auth"], check=True)
+        subprocess.run(["python", "manage.py", "migrate", "--fake-initial", "admin"], check=True)
 
         # Then handle all migrations together
         subprocess.run(["python", "manage.py", "migrate", "--fake-initial"], check=True)
@@ -157,17 +153,13 @@ def restore_backup(backup_file):
 
 def main():
     parser = argparse.ArgumentParser(description="Update local development database")
-    parser.add_argument(
-        "--reset", action="store_true", help="Reset the database completely"
-    )
+    parser.add_argument("--reset", action="store_true", help="Reset the database completely")
     args = parser.parse_args()
 
     print("=" * 60)
     print("🔄 Local Development Database Update")
     print("=" * 60)
-    print(
-        "This script will help you update your local database after migration changes."
-    )
+    print("This script will help you update your local database after migration changes.")
 
     # Create a backup first
     backup_file = create_backup()

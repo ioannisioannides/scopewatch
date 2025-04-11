@@ -54,9 +54,7 @@ def get_test_credential(type_name, credential_type="password", default=None):
     }
 
     # If a default is provided, use it as the final fallback
-    final_default = (
-        default if default is not None else fallback_values.get(env_var, "test_default")
-    )
+    final_default = default if default is not None else fallback_values.get(env_var, "test_default")
 
     # Use config function to read from environment variables with fallback
     return config(env_var, default=final_default)

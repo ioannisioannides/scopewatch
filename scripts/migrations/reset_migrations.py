@@ -239,9 +239,7 @@ def fix_inconsistent_history():
     print("\nApplying fake migrations to fix inconsistent history...")
 
     # First, apply contenttypes and auth migrations with --fake
-    subprocess.run(
-        ["python", "manage.py", "migrate", "contenttypes", "--fake"], check=True
-    )
+    subprocess.run(["python", "manage.py", "migrate", "contenttypes", "--fake"], check=True)
     subprocess.run(["python", "manage.py", "migrate", "auth", "--fake"], check=True)
 
     # Specifically handle the problematic migrations
@@ -309,9 +307,7 @@ def create_empty_fixed_migration(app, name, dependencies, dry_run=False):
                 content = f.read()
 
             # Replace dependencies
-            deps_str = ",\n        ".join(
-                [f'("{app}", "{dep}")' for app, dep in dependencies]
-            )
+            deps_str = ",\n        ".join([f'("{app}", "{dep}")' for app, dep in dependencies])
             new_content = content.replace(
                 "dependencies = [", f"dependencies = [\n        {deps_str}"
             )
@@ -339,20 +335,14 @@ def main():
         action="store_true",
         help="Create a database backup before proceeding",
     )
-    parser.add_argument(
-        "--squash", action="store_true", help="Generate squashed migrations"
-    )
+    parser.add_argument("--squash", action="store_true", help="Generate squashed migrations")
     parser.add_argument(
         "--reset-db",
         action="store_true",
         help="Reset the migration history in the database",
     )
-    parser.add_argument(
-        "--clean", action="store_true", help="Remove old migration files"
-    )
-    parser.add_argument(
-        "--fix", action="store_true", help="Fix inconsistent migration history"
-    )
+    parser.add_argument("--clean", action="store_true", help="Remove old migration files")
+    parser.add_argument("--fix", action="store_true", help="Fix inconsistent migration history")
 
     args = parser.parse_args()
     dry_run = args.dry_run
@@ -401,9 +391,7 @@ def main():
                     ],
                     check=True,
                 )
-                subprocess.run(
-                    ["python", "manage.py", "migrate", "audits", "--fake"], check=True
-                )
+                subprocess.run(["python", "manage.py", "migrate", "audits", "--fake"], check=True)
         else:
             print("Would fix inconsistent migration history")
 

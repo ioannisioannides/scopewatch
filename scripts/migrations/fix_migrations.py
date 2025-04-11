@@ -31,17 +31,13 @@ def create_migration_file(app_name, migration_name, dependencies, operations=Non
         print(f"Removed existing file: {migration_path}")
 
     # Format dependencies for the migration file
-    deps_str = ",\n        ".join(
-        [f'("{app}", "{name}")' for app, name in dependencies]
-    )
+    deps_str = ",\n        ".join([f'("{app}", "{name}")' for app, name in dependencies])
 
     # Default operations if none provided
     if operations is None:
         operations_str = "    operations = []"
     else:
-        operations_str = (
-            "    operations = [\n        " + ",\n        ".join(operations) + "\n    ]"
-        )
+        operations_str = "    operations = [\n        " + ",\n        ".join(operations) + "\n    ]"
 
     # Create the migration file
     with open(migration_path, "w") as f:

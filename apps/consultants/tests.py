@@ -61,9 +61,7 @@ class ConsultantModelTest(TestCase):
         Test creating an independent consultant (not associated with a firm).
         """
         user = User.objects.create_user(
-            username=get_test_credential(
-                "consultant", "username", "independent_consultant"
-            ),
+            username=get_test_credential("consultant", "username", "independent_consultant"),
             password=get_test_credential("consultant", "password"),
         )
         consultant = Consultant.objects.create(
@@ -89,9 +87,7 @@ class ConsultantViewTest(TestCase):
         Set up test data for the Consultant views.
         """
         self.user = User.objects.create_user(username="consultant_user")
-        self.consultant = Consultant.objects.create(
-            user=self.user, specialty="ISO 9001"
-        )
+        self.consultant = Consultant.objects.create(user=self.user, specialty="ISO 9001")
         self.firm = ConsultancyFirm.objects.create(name="Test Firm")
 
     def test_consultant_list_view(self):

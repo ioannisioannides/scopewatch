@@ -35,9 +35,7 @@ def create_migration_file(app_name, migration_name, dependencies):
     print(f"Creating migration file: {migration_path}")
 
     # Format dependencies for the migration file
-    deps_str = ",\n        ".join(
-        [f'("{app}", "{name}")' for app, name in dependencies]
-    )
+    deps_str = ",\n        ".join([f'("{app}", "{name}")' for app, name in dependencies])
 
     # Create a simple empty migration with the necessary dependencies
     with open(migration_path, "w") as f:
@@ -114,9 +112,7 @@ def ensure_migration_chain():
 
     # Create any missing migrations
     for migration in missing_migrations:
-        create_migration_file(
-            migration["app"], migration["name"], migration["dependencies"]
-        )
+        create_migration_file(migration["app"], migration["name"], migration["dependencies"])
 
     # Fix dependencies in existing migrations
     dependency_fixes = [

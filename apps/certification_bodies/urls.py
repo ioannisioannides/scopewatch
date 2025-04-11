@@ -15,9 +15,7 @@ app_name = "certification_bodies"
 urlpatterns = [
     # Dashboard view
     path("dashboard/", views.cert_body_dashboard, name="dashboard"),
-    path(
-        "", views.certbody_list_view, name="certbody_list"
-    ),  # List view for certification bodies
+    path("", views.certbody_list_view, name="certbody_list"),  # List view for certification bodies
     path(
         "<int:cb_id>", views.certbody_detail_view, name="certbody_detail"
     ),  # Detail view for a specific certification body

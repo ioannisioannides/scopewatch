@@ -98,8 +98,7 @@ class ExtendedPublicViewTest(TestCase):
         """
         # Test with inactive organization's certificate
         response = self.client.get(
-            reverse("certificate_verification")
-            + "?certificate_number=INACTIVE-ORG-9001"
+            reverse("certificate_verification") + "?certificate_number=INACTIVE-ORG-9001"
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(
@@ -111,9 +110,7 @@ class ExtendedPublicViewTest(TestCase):
             reverse("certificate_verification") + "?certificate_number=EXPIRED-9001"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response, "No certificate found"
-        )  # Should not find expired certs
+        self.assertContains(response, "No certificate found")  # Should not find expired certs
 
     def test_search_certified_organizations_view_edge_cases(self):
         """
@@ -122,27 +119,19 @@ class ExtendedPublicViewTest(TestCase):
         # Test with no query parameter
         response = self.client.get(reverse("search_certified_organizations"))
         self.assertEqual(response.status_code, 200)
-        self.assertNotIn(
-            "no_results", response.context
-        )  # No query, so no "no results" message
+        self.assertNotIn("no_results", response.context)  # No query, so no "no results" message
 
         # Test with empty query
-        response = self.client.get(
-            reverse("search_certified_organizations") + "?query="
-        )
+        response = self.client.get(reverse("search_certified_organizations") + "?query=")
         self.assertEqual(response.status_code, 200)
-        self.assertNotIn(
-            "no_results", response.context
-        )  # Empty query should show all active certs
+        self.assertNotIn("no_results", response.context)  # Empty query should show all active certs
 
         # Test with query that returns no results
         response = self.client.get(
             reverse("search_certified_organizations") + "?query=NonExistentTerm"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            response.context["no_results"]
-        )  # Should show no results message
+        self.assertTrue(response.context["no_results"])  # Should show no results message
 
         # Verify search log was created for no-results search
         log = SearchLog.objects.latest("search_date")
@@ -183,9 +172,7 @@ class ExtendedPublicViewTest(TestCase):
         Test CertificateSearchForm validation behavior.
         """
         # Test with valid data
-        form = CertificateSearchForm(
-            data={"search_term": "test", "standard": "ISO 9001:2015"}
-        )
+        form = CertificateSearchForm(data={"search_term": "test", "standard": "ISO 9001:2015"})
         self.assertTrue(form.is_valid())
 
         # Test with empty data (should still be valid)
@@ -215,6 +202,4 @@ class ExtendedPublicViewTest(TestCase):
         result_counts = SearchLog.objects.filter(search_term="Active").values_list(
             "results_count", flat=True
         )
-        self.assertEqual(
-            list(result_counts), [1, 1, 1]
-        )  # Each search found 1 certificate
+        self.assertEqual(list(result_counts), [1, 1, 1])  # Each search found 1 certificate

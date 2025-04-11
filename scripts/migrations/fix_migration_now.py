@@ -163,9 +163,7 @@ def verify_fix():
                     ],
                     check=True,
                 )
-                subprocess.run(
-                    ["python", "manage.py", "migrate", "audits", "--fake"], check=True
-                )
+                subprocess.run(["python", "manage.py", "migrate", "audits", "--fake"], check=True)
                 subprocess.run(["python", "manage.py", "migrate"], check=True)
                 print("✅ Second attempt succeeded! The fix worked.")
                 return True

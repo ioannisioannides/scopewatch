@@ -33,9 +33,7 @@ class OrganizationModelTest(TestCase):
         This test ensures that an Organization instance can be created
         with valid data and that its attributes are correctly set.
         """
-        org = Organization.objects.create(
-            name="TestOrg", contact_email="contact@testorg.com"
-        )
+        org = Organization.objects.create(name="TestOrg", contact_email="contact@testorg.com")
         self.assertEqual(org.name, "TestOrg")
         self.assertEqual(org.contact_email, "contact@testorg.com")
         self.assertTrue(org.is_active)
@@ -102,9 +100,7 @@ class OrganizationViewTest(TestCase):
         This test ensures that the organization detail view returns a 200 status code
         and contains the expected organization data.
         """
-        response = self.client.get(
-            reverse("organization_detail", args=[self.organization.id])
-        )
+        response = self.client.get(reverse("organization_detail", args=[self.organization.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Org")
 
@@ -118,9 +114,7 @@ class CertificationModelTest(TestCase):
         self.organization = Organization.objects.create(
             name="Certified Org", contact_email="certified@example.com"
         )
-        self.cert_body = CertBody.objects.create(
-            name="Certifier Inc", accreditation_id="CERT-123"
-        )
+        self.cert_body = CertBody.objects.create(name="Certifier Inc", accreditation_id="CERT-123")
 
     def test_certification_creation(self):
         """

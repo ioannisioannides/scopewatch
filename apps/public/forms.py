@@ -48,17 +48,13 @@ class CertificateSearchForm(forms.Form):
 
         # Get all distinct standards for the dropdown
         standards = (
-            Certification.objects.values_list("standard", flat=True)
-            .distinct()
-            .order_by("standard")
+            Certification.objects.values_list("standard", flat=True).distinct().order_by("standard")
         )
         self.fields["standard"].choices += [(std, std) for std in standards]
 
         # Get all active certification bodies for the dropdown
         cert_bodies = (
-            CertBody.objects.filter(is_active=True)
-            .values_list("id", "name")
-            .order_by("name")
+            CertBody.objects.filter(is_active=True).values_list("id", "name").order_by("name")
         )
         self.fields["certification_body"].choices += list(cert_bodies)
 

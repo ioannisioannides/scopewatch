@@ -215,9 +215,7 @@ class OrganizationAPIViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Verify organization was created
-        self.assertTrue(
-            Organization.objects.filter(name="New API Organization").exists()
-        )
+        self.assertTrue(Organization.objects.filter(name="New API Organization").exists())
 
     def test_update_organization(self):
         """Test updating an organization."""
@@ -244,9 +242,7 @@ class OrganizationAPIViewSetTest(APITestCase):
         # Verify only the specified field was updated
         self.organization1.refresh_from_db()
         self.assertEqual(self.organization1.name, "Partially Updated Org")
-        self.assertEqual(
-            self.organization1.contact_email, "test1@example.com"
-        )  # Unchanged
+        self.assertEqual(self.organization1.contact_email, "test1@example.com")  # Unchanged
 
     def test_delete_organization(self):
         """Test deleting an organization."""
@@ -369,9 +365,7 @@ class CertificationAPIViewSetTest(APITestCase):
         # Verify certification was updated
         self.certification.refresh_from_db()
         self.assertEqual(self.certification.certificate_number, "UPDATED-CERT-API")
-        self.assertEqual(
-            self.certification.scope, "Updated Information Security Management"
-        )
+        self.assertEqual(self.certification.scope, "Updated Information Security Management")
 
     def test_partial_update_certification(self):
         """Test partially updating a certification."""
@@ -382,9 +376,7 @@ class CertificationAPIViewSetTest(APITestCase):
         # Verify only the specified field was updated
         self.certification.refresh_from_db()
         self.assertEqual(self.certification.scope, "Partially Updated Scope")
-        self.assertEqual(
-            self.certification.certificate_number, "CERT-API-TEST-123"
-        )  # Unchanged
+        self.assertEqual(self.certification.certificate_number, "CERT-API-TEST-123")  # Unchanged
 
     def test_delete_certification(self):
         """Test deleting a certification."""
@@ -392,6 +384,4 @@ class CertificationAPIViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Verify certification was deleted
-        self.assertFalse(
-            Certification.objects.filter(pk=self.certification.pk).exists()
-        )
+        self.assertFalse(Certification.objects.filter(pk=self.certification.pk).exists())

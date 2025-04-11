@@ -36,17 +36,13 @@ def create_migration_file(app_name, migration_name, dependencies, operations=Non
     migration_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Format dependencies for the migration file
-    deps_str = ",\n        ".join(
-        [f'("{app}", "{name}")' for app, name in dependencies]
-    )
+    deps_str = ",\n        ".join([f'("{app}", "{name}")' for app, name in dependencies])
 
     # Default operations if none provided
     if operations is None:
         operations_str = "    operations = []"
     else:
-        operations_str = (
-            "    operations = [\n        " + ",\n        ".join(operations) + "\n    ]"
-        )
+        operations_str = "    operations = [\n        " + ",\n        ".join(operations) + "\n    ]"
 
     # Create the migration file
     with open(migration_path, "w") as f:
@@ -168,17 +164,14 @@ def validate_migrations():
         print("Successfully built migration graph!")
 
         # Count migrations
-        migration_count = sum(
-            1 for node in loader.graph.nodes if node[0] != "__setting__"
-        )
+        migration_count = sum(1 for node in loader.graph.nodes if node[0] != "__setting__")
         print(f"Found {migration_count} migrations in the graph")
 
         # Check for any missing dependencies (DummyNodes)
         dummy_nodes = [
             node
             for node in loader.graph.node_map.values()
-            if hasattr(loader.graph, "DummyNode")
-            and isinstance(node, loader.graph.DummyNode)
+            if hasattr(loader.graph, "DummyNode") and isinstance(node, loader.graph.DummyNode)
         ]
 
         if dummy_nodes:

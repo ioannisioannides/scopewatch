@@ -19,9 +19,7 @@ class NoMigrationsTestRunner(DiscoverRunner):
         """Custom database setup that creates tables directly from models."""
         # If migration checking is enabled, use the default behavior
         if self.check_migrations:
-            print(
-                "Migration integrity checking enabled - using Django's migration system..."
-            )
+            print("Migration integrity checking enabled - using Django's migration system...")
             return super().setup_databases(**kwargs)
 
         # Store database configuration for teardown
@@ -51,9 +49,7 @@ class NoMigrationsTestRunner(DiscoverRunner):
                 # Force create test database
                 test_database_name = connection.creation._get_test_db_name()
                 connection.settings_dict["NAME"] = test_database_name
-                connection.creation._create_test_db(
-                    verbosity=self.verbosity, autoclobber=True
-                )
+                connection.creation._create_test_db(verbosity=self.verbosity, autoclobber=True)
 
                 # Create tables directly from models
                 print("Creating tables directly from application models...")
@@ -75,9 +71,7 @@ class NoMigrationsTestRunner(DiscoverRunner):
                             try:
                                 if not model._meta.managed:
                                     continue
-                                print(
-                                    f"Creating table for {model.__name__}...", end=" "
-                                )
+                                print(f"Creating table for {model.__name__}...", end=" ")
                                 schema_editor.create_model(model)
                                 print("Done", end=" ")
                             except Exception as e:

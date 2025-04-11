@@ -38,9 +38,7 @@ class PublicAppTest(TestCase):
         self.organization = Organization.objects.create(
             name="Public Test Org", contact_email="public@example.com"
         )
-        self.cert_body = CertBody.objects.create(
-            name="Public Certifier", accreditation_id="PCB123"
-        )
+        self.cert_body = CertBody.objects.create(name="Public Certifier", accreditation_id="PCB123")
 
         # Create certifications with different validity periods
         today = timezone.now().date()
@@ -120,9 +118,7 @@ class PublicViewTest(TestCase):
         self.assertContains(response, "Search")
 
         # Test search functionality
-        response = self.client.get(
-            reverse("search_certified_organizations") + "?query=ViewTest"
-        )
+        response = self.client.get(reverse("search_certified_organizations") + "?query=ViewTest")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ViewTest Organization")
 
@@ -325,26 +321,20 @@ class CertificateSearchViewTest(TestCase):
         Test searching by term in the CertificateSearchView.
         """
         # Search by organization name
-        response = self.client.get(
-            reverse("public:certificate_search") + "?search_term=Quality"
-        )
+        response = self.client.get(reverse("public:certificate_search") + "?search_term=Quality")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "QualityFirst Manufacturing")
         self.assertNotContains(response, "SecureIT Solutions")
         self.assertEqual(len(response.context["certifications"]), 1)
 
         # Search by certificate number
-        response = self.client.get(
-            reverse("public:certificate_search") + "?search_term=SI-27001"
-        )
+        response = self.client.get(reverse("public:certificate_search") + "?search_term=SI-27001")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "SecureIT Solutions")
         self.assertNotContains(response, "QualityFirst Manufacturing")
 
         # Search by scope
-        response = self.client.get(
-            reverse("public:certificate_search") + "?search_term=cloud"
-        )
+        response = self.client.get(reverse("public:certificate_search") + "?search_term=cloud")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "SecureIT Solutions")
         self.assertNotContains(response, "QualityFirst Manufacturing")
@@ -359,9 +349,7 @@ class CertificateSearchViewTest(TestCase):
         """
         Test filtering by standard in the CertificateSearchView.
         """
-        response = self.client.get(
-            reverse("public:certificate_search") + "?standard=ISO 9001:2015"
-        )
+        response = self.client.get(reverse("public:certificate_search") + "?standard=ISO 9001:2015")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "QualityFirst Manufacturing")
         self.assertNotContains(response, "SecureIT Solutions")
@@ -378,8 +366,7 @@ class CertificateSearchViewTest(TestCase):
         Test combining search term and standard filters.
         """
         response = self.client.get(
-            reverse("public:certificate_search")
-            + "?search_term=Quality&standard=ISO 9001:2015"
+            reverse("public:certificate_search") + "?search_term=Quality&standard=ISO 9001:2015"
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "QualityFirst Manufacturing")
@@ -387,8 +374,7 @@ class CertificateSearchViewTest(TestCase):
 
         # No results case
         response = self.client.get(
-            reverse("public:certificate_search")
-            + "?search_term=NonExistent&standard=ISO 9001:2015"
+            reverse("public:certificate_search") + "?search_term=NonExistent&standard=ISO 9001:2015"
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["certifications"]), 0)

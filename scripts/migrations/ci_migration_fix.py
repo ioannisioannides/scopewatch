@@ -89,9 +89,7 @@ def run_command(cmd, description="", check=True):
 def create_nonconformance_model():
     """Create a minimal nonconformance model to fix the migrations"""
     # Check if audits migrations folder exists
-    audits_migrations_dir = (
-        Path(__file__).resolve().parent / "apps" / "audits" / "migrations"
-    )
+    audits_migrations_dir = Path(__file__).resolve().parent / "apps" / "audits" / "migrations"
     if not audits_migrations_dir.exists():
         print(f"Creating migrations directory: {audits_migrations_dir}")
         audits_migrations_dir.mkdir(parents=True, exist_ok=True)
@@ -107,9 +105,7 @@ def create_nonconformance_model():
     nonconformance_migration_path = audits_migrations_dir / "0000_fix_nonconformance.py"
 
     if not nonconformance_migration_path.exists():
-        print(
-            f"Creating basic NonConformance model migration: {nonconformance_migration_path}"
-        )
+        print(f"Creating basic NonConformance model migration: {nonconformance_migration_path}")
 
         with open(nonconformance_migration_path, "w") as f:
             f.write(
@@ -142,9 +138,7 @@ def fake_migrations():
     """Apply fake migrations to handle the complex dependencies"""
     # First apply core Django migrations
     for app in ["contenttypes", "auth", "admin", "sessions"]:
-        run_command(
-            ["python", "manage.py", "migrate", app, "--fake"], f"Fake migrating {app}"
-        )
+        run_command(["python", "manage.py", "migrate", app, "--fake"], f"Fake migrating {app}")
 
     # Then base apps
     base_apps = ["certification_bodies", "organizations"]
@@ -184,9 +178,7 @@ def mark_migrations_applied():
     # Mark all migrations as applied
     applied = 0
     for app_label, migration_name in loader.disk_migrations.keys():
-        if not recorder.migration_qs.filter(
-            app=app_label, name=migration_name
-        ).exists():
+        if not recorder.migration_qs.filter(app=app_label, name=migration_name).exists():
             recorder.record_applied(app_label, migration_name)
             applied += 1
             print(f"Marked {app_label}.{migration_name} as applied")
@@ -198,9 +190,7 @@ def main():
     print("=" * 60)
     print("🛠️  CI Migration Fix for NonConformance Model Issue")
     print("=" * 60)
-    print(
-        "This script will fix the CI migration errors related to the nonconformance model."
-    )
+    print("This script will fix the CI migration errors related to the nonconformance model.")
 
     # Initialize the database
     initialize_db()
@@ -215,9 +205,7 @@ def main():
     mark_migrations_applied()
 
     print("\n✅ CI migration fix completed successfully!")
-    print(
-        "All migrations should be marked as applied, and the database structure is minimal."
-    )
+    print("All migrations should be marked as applied, and the database structure is minimal.")
     print(
         "This approach works with CI where the exact schema is less important than passing the tests."
     )

@@ -48,9 +48,7 @@ def parse_migration_dependencies(file_path):
     if deps_match:
         deps_text = deps_match.group(1)
         # Extract individual dependencies
-        for dep in re.finditer(
-            r'\(\s*["\']([^"\']+)["\'],\s*["\']([^"\']+)["\']', deps_text
-        ):
+        for dep in re.finditer(r'\(\s*["\']([^"\']+)["\'],\s*["\']([^"\']+)["\']', deps_text):
             dependencies.append((dep.group(1), dep.group(2)))
 
     return dependencies
@@ -72,9 +70,7 @@ def get_latest_migration(app_name):
     return migrations[-1]
 
 
-def create_migration_file(
-    app_name, migration_name, dependencies, operations_template="[]"
-):
+def create_migration_file(app_name, migration_name, dependencies, operations_template="[]"):
     """Create a migration file with the specified dependencies."""
     base_path = Path(__file__).resolve().parent
     migration_path = base_path / "apps" / app_name / "migrations" / migration_name
@@ -83,9 +79,7 @@ def create_migration_file(
     migration_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Format dependencies for the migration file
-    deps_str = ",\n        ".join(
-        [f'("{app}", "{name}")' for app, name in dependencies]
-    )
+    deps_str = ",\n        ".join([f'("{app}", "{name}")' for app, name in dependencies])
 
     # Create the migration file
     with open(migration_path, "w") as f:
@@ -169,18 +163,10 @@ def fix_audit_migrations():
     # Check if any required audits migrations are missing
     base_path = Path(__file__).resolve().parent
     missing_path = (
-        base_path
-        / "apps"
-        / "audits"
-        / "migrations"
-        / "0005_alter_nonconformance_status.py"
+        base_path / "apps" / "audits" / "migrations" / "0005_alter_nonconformance_status.py"
     )
     missing_path2 = (
-        base_path
-        / "apps"
-        / "audits"
-        / "migrations"
-        / "0006_change_audit_status_choices.py"
+        base_path / "apps" / "audits" / "migrations" / "0006_change_audit_status_choices.py"
     )
 
     # Create any missing migrations
@@ -253,13 +239,9 @@ def fix_audit_migrations():
                 # Add the missing dependency
                 new_deps = deps_content.rstrip()
                 if new_deps.endswith(","):
-                    new_deps += (
-                        '\n        ("audits", "0006_change_audit_status_choices"),'
-                    )
+                    new_deps += '\n        ("audits", "0006_change_audit_status_choices"),'
                 else:
-                    new_deps += (
-                        ',\n        ("audits", "0006_change_audit_status_choices"),'
-                    )
+                    new_deps += ',\n        ("audits", "0006_change_audit_status_choices"),'
 
                 # Update the file with corrected dependencies
                 new_content = re.sub(
@@ -273,9 +255,7 @@ def fix_audit_migrations():
 
                 print(f"Updated dependencies in {migration_0007_path}")
             else:
-                print(
-                    f"Warning: Could not find dependencies section in {migration_0007_path}"
-                )
+                print(f"Warning: Could not find dependencies section in {migration_0007_path}")
 
 
 def verify_migrations():
