@@ -54,7 +54,10 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=255)),
                 ("address", models.CharField(blank=True, max_length=255)),
-                ("contact_email", models.EmailField(blank=True, max_length=254, null=True)),
+                (
+                    "contact_email",
+                    models.EmailField(blank=True, max_length=254, null=True),
+                ),
                 ("website", models.URLField(blank=True)),
                 ("specialties", models.CharField(blank=True, max_length=255)),
                 ("is_active", models.BooleanField(default=True)),
@@ -175,7 +178,8 @@ class Migration(migrations.Migration):
                 (
                     "standard",
                     models.CharField(
-                        help_text="The standard this document is prepared for", max_length=255
+                        help_text="The standard this document is prepared for",
+                        max_length=255,
                     ),
                 ),
                 ("created_at", models.DateTimeField(default=django.utils.timezone.now)),

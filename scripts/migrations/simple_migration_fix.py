@@ -222,7 +222,9 @@ def main():
 
     # Step 8: Restore data if needed
     print("\n👉 Step 6: Restoring data")
-    choice = input(f"Do you want to restore data from backup {backup_file}? [y/N]: ").lower()
+    choice = input(
+        f"Do you want to restore data from backup {backup_file}? [y/N]: "
+    ).lower()
     if choice == "y":
         print(f"Restoring data from {backup_file}...")
         try:
@@ -235,7 +237,9 @@ def main():
 
     print("\n✅ Migration fix completed!")
     print("\nNext steps:")
-    print("1. Run 'python manage.py migrate --check' to verify everything is consistent")
+    print(
+        "1. Run 'python manage.py migrate --check' to verify everything is consistent"
+    )
     print("2. If you encounter any issues, you can restore your data with:")
     print(f"   python manage.py loaddata {backup_file}")
     print("3. Update your CI workflow to use '--fake-initial' when running migrations")

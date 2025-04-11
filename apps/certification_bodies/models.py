@@ -57,7 +57,9 @@ class CertBodyUser(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    cert_body = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name="users")
+    cert_body = models.ForeignKey(
+        CertBody, on_delete=models.CASCADE, related_name="users"
+    )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -128,14 +130,18 @@ class StandardQualification(models.Model):
         notes (TextField): Additional information about the qualification.
     """
 
-    auditor = models.ForeignKey(Auditor, on_delete=models.CASCADE, related_name="qualifications")
+    auditor = models.ForeignKey(
+        Auditor, on_delete=models.CASCADE, related_name="qualifications"
+    )
     standard = models.CharField(max_length=255)
     cert_body = models.ForeignKey(
         CertBody, on_delete=models.CASCADE, related_name="verified_qualifications"
     )
     qualification_date = models.DateField()
     expiry_date = models.DateField(null=True, blank=True)
-    evidence_document = models.FileField(upload_to="auditor_qualifications/", null=True, blank=True)
+    evidence_document = models.FileField(
+        upload_to="auditor_qualifications/", null=True, blank=True
+    )
     notes = models.TextField(blank=True)
 
     class Meta:

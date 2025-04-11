@@ -55,7 +55,9 @@ class Audit(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     scheduled_date = models.DateField(null=True, blank=True)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="scheduled")
+    status = models.CharField(
+        max_length=50, choices=STATUS_CHOICES, default="scheduled"
+    )
     organization = models.ForeignKey(
         "organizations.Organization", on_delete=models.CASCADE, related_name="audits"
     )
@@ -69,7 +71,9 @@ class Audit(models.Model):
     )
     notes = models.TextField(blank=True)
 
-    objects: Type[models.Manager] = models.Manager()  # Add type hint for objects manager
+    objects: Type[models.Manager] = (
+        models.Manager()
+    )  # Add type hint for objects manager
 
     def __str__(self):
         return (
@@ -121,7 +125,9 @@ class Audit(models.Model):
 
         # Validate certificate number uniqueness
         if Certification.objects.filter(certificate_number=certificate_number).exists():
-            raise ValueError(f"Certificate number '{certificate_number}' is already in use")
+            raise ValueError(
+                f"Certificate number '{certificate_number}' is already in use"
+            )
 
         # Create a new certification
         certification = Certification.objects.create(
@@ -154,9 +160,13 @@ class AuditTeam(models.Model):
         lead_auditor (ForeignKey): The lead auditor for this audit team.
     """
 
-    audit = models.OneToOneField(Audit, on_delete=models.CASCADE, related_name="audit_team")
+    audit = models.OneToOneField(
+        Audit, on_delete=models.CASCADE, related_name="audit_team"
+    )
     lead_auditor = models.ForeignKey(
-        "certification_bodies.Auditor", on_delete=models.PROTECT, related_name="lead_audits"
+        "certification_bodies.Auditor",
+        on_delete=models.PROTECT,
+        related_name="lead_audits",
     )
 
     def __str__(self):
@@ -181,9 +191,13 @@ class AuditorAssignment(models.Model):
         ("observer", "Observer"),
     ]
 
-    team = models.ForeignKey(AuditTeam, on_delete=models.CASCADE, related_name="assignments")
+    team = models.ForeignKey(
+        AuditTeam, on_delete=models.CASCADE, related_name="assignments"
+    )
     auditor = models.ForeignKey(
-        "certification_bodies.Auditor", on_delete=models.CASCADE, related_name="assignments"
+        "certification_bodies.Auditor",
+        on_delete=models.CASCADE,
+        related_name="assignments",
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
@@ -213,7 +227,9 @@ class NonConformance(models.Model):
         ("observation", "Observation"),
     ]
 
-    audit = models.ForeignKey(Audit, on_delete=models.CASCADE, related_name="nonconformances")
+    audit = models.ForeignKey(
+        Audit, on_delete=models.CASCADE, related_name="nonconformances"
+    )
     severity = models.CharField(max_length=20, choices=SEVERITY_CHOICES)
     description = models.TextField()
     date_raised = models.DateField(auto_now_add=True)
@@ -274,7 +290,9 @@ class DocumentSubmission(models.Model):
         blank=True,
         related_name="prepared_documents",
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="submitted")
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="submitted"
+    )
     notes = models.TextField(blank=True)
     file = models.FileField(upload_to="audit_documents/")
 
@@ -323,7 +341,9 @@ class AuditResult(models.Model):
     )
     comments = models.TextField(blank=True)
     nonconformances_closed = models.BooleanField(default=False)
-    recommendation = models.CharField(max_length=20, choices=RECOMMENDATION_CHOICES, blank=True)
+    recommendation = models.CharField(
+        max_length=20, choices=RECOMMENDATION_CHOICES, blank=True
+    )
 
     def __str__(self):
         return f"Result for {self.audit}: {self.get_decision_display()}"

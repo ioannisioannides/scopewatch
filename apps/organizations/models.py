@@ -68,7 +68,9 @@ class OrganizationUser(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="users")
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, related_name="users"
+    )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -121,7 +123,9 @@ class Certification(models.Model):
     )
 
     def __str__(self):
-        return f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
+        return (
+            f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
+        )
 
     @property
     def is_valid(self):

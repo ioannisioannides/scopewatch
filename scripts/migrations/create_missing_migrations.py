@@ -18,7 +18,11 @@ def ensure_migration_exists():
     """Create the missing migration file if it doesn't exist."""
     base_path = Path(__file__).resolve().parent
     migration_path = (
-        base_path / "apps" / "organizations" / "migrations" / "0010_merge_20250409_0505.py"
+        base_path
+        / "apps"
+        / "organizations"
+        / "migrations"
+        / "0010_merge_20250409_0505.py"
     )
 
     if migration_path.exists():

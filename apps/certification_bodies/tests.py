@@ -53,7 +53,9 @@ class CertBodyModelTest(TestCase):
         """
         Test the string representation of a CertBody instance.
         """
-        cert_body = CertBody.objects.create(name="StandardsChecker", accreditation_id="SC456")
+        cert_body = CertBody.objects.create(
+            name="StandardsChecker", accreditation_id="SC456"
+        )
         self.assertEqual(str(cert_body), "StandardsChecker")
 
 
@@ -63,7 +65,9 @@ class CertBodyViewTest(TestCase):
     """
 
     def setUp(self):
-        self.cert_body = CertBody.objects.create(name="Test Cert Body", accreditation_id="TCB789")
+        self.cert_body = CertBody.objects.create(
+            name="Test Cert Body", accreditation_id="TCB789"
+        )
         # Create a user for authenticated views using environment variables
         self.user = User.objects.create_user(
             username=get_test_credential("certbody", "username"),
@@ -151,12 +155,16 @@ class CertBodyViewTest(TestCase):
         Test that unauthorized users cannot access the audit decision view.
         """
         # Create another cert body and user that shouldn't have access
-        other_cert_body = CertBody.objects.create(name="Other Cert Body", accreditation_id="OCB123")
+        other_cert_body = CertBody.objects.create(
+            name="Other Cert Body", accreditation_id="OCB123"
+        )
         other_user = User.objects.create_user(
             username=get_test_credential("unauthorized", "username"),
             password=get_test_credential("unauthorized", "password"),
         )
-        CertBodyUser.objects.create(user=other_user, cert_body=other_cert_body, is_active=True)
+        CertBodyUser.objects.create(
+            user=other_user, cert_body=other_cert_body, is_active=True
+        )
 
         self.client.login(
             username=get_test_credential("unauthorized", "username"),
@@ -212,7 +220,7 @@ class CertBodyViewTest(TestCase):
         Test that unauthorized users cannot issue certificates.
         """
         # Create an approved audit result first
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved for certification",
@@ -238,7 +246,7 @@ class CertBodyViewTest(TestCase):
         Test that authorized users can access the certificate issuance view.
         """
         # Create an approved audit result first
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved for certification",
@@ -261,7 +269,7 @@ class CertBodyViewTest(TestCase):
         Test that submitting a certificate issuance form works correctly.
         """
         # Create an approved audit result first
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved for certification",
@@ -277,9 +285,9 @@ class CertBodyViewTest(TestCase):
             {
                 "certificate_number": "CERT-123",
                 "scope": "Quality Management System",
-                "expiry_date": (timezone.now().date() + timedelta(days=365 * 3)).strftime(
-                    "%Y-%m-%d"
-                ),
+                "expiry_date": (
+                    timezone.now().date() + timedelta(days=365 * 3)
+                ).strftime("%Y-%m-%d"),
             },
         )
 
@@ -309,7 +317,9 @@ class CertBodyUserTest(TestCase):
         """
         Test creating a user associated with a certification body.
         """
-        staff = CertBodyUser.objects.create(user=self.user, cert_body=self.cert_body, role="admin")
+        staff = CertBodyUser.objects.create(
+            user=self.user, cert_body=self.cert_body, role="admin"
+        )
 
         self.assertEqual(staff.user, self.user)
         self.assertEqual(staff.cert_body, self.cert_body)
@@ -323,8 +333,12 @@ class CertBodyUserTest(TestCase):
         roles = ["admin", "auditor", "secretary", "accountant"]
 
         for i, role in enumerate(roles):
-            user = User.objects.create_user(username=f"staff_{role}", password="password")
-            staff = CertBodyUser.objects.create(user=user, cert_body=self.cert_body, role=role)
+            user = User.objects.create_user(
+                username=f"staff_{role}", password="password"
+            )
+            staff = CertBodyUser.objects.create(
+                user=user, cert_body=self.cert_body, role=role
+            )
             self.assertEqual(staff.role, role)
             self.assertIn(role, str(staff))
 
@@ -412,7 +426,10 @@ class ExtendedCertBodyViewTest(TestCase):
             username="other_tester", email="other@certbody.com", password="otherpass123"
         )
         self.other_cert_body_user = CertBodyUser.objects.create(
-            user=self.other_user, cert_body=self.other_cert_body, role="admin", is_active=True
+            user=self.other_user,
+            cert_body=self.other_cert_body,
+            role="admin",
+            is_active=True,
         )
 
     def test_pending_decision_list_no_cert_body_user(self):
@@ -420,7 +437,9 @@ class ExtendedCertBodyViewTest(TestCase):
         Test pending decision list when user has no certification body association.
         """
         # Create user with no cert body association
-        user_no_cert = User.objects.create_user(username="no_cert_user", password="password123")
+        _user_no_cert = User.objects.create_user(
+            username="no_cert_user", password="password123"
+        )
 
         self.client.login(username="no_cert_user", password="password123")
         response = self.client.get(reverse("certification_bodies:pending_decisions"))
@@ -433,7 +452,10 @@ class ExtendedCertBodyViewTest(TestCase):
         Test that the audit decision view handles exceptions properly.
         """
         # Login with an unrelated user (no cert body associations)
-        unrelated_user = User.objects.create_user(username="unrelated", password="unrelated123")
+        _unrelated_user = User.objects.create_user(
+            username="unrelated", password="unrelated123"
+        )
+
         self.client.login(username="unrelated", password="unrelated123")
 
         # Access audit decision view without proper permissions
@@ -460,7 +482,9 @@ class ExtendedCertBodyViewTest(TestCase):
 
         # Should redirect to pending decisions page
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("certification_bodies:pending_decisions"))
+        self.assertRedirects(
+            response, reverse("certification_bodies:pending_decisions")
+        )
 
         # Verify audit status changed to in_progress
         self.audit.refresh_from_db()
@@ -519,7 +543,7 @@ class ExtendedCertBodyViewTest(TestCase):
         Test when trying to issue a certificate that already exists.
         """
         # Create approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved",
@@ -527,7 +551,7 @@ class ExtendedCertBodyViewTest(TestCase):
         )
 
         # Create existing certification
-        existing_cert = Certification.objects.create(
+        _existing_cert = Certification.objects.create(
             organization=self.organization,
             standard=self.audit.standard,
             certificate_number="EXISTING-123",
@@ -550,7 +574,7 @@ class ExtendedCertBodyViewTest(TestCase):
         Test form validation error when issuing a certificate.
         """
         # Create approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved",
@@ -565,9 +589,9 @@ class ExtendedCertBodyViewTest(TestCase):
             {
                 "certificate_number": "",  # Invalid - should be required
                 "scope": "Test scope",
-                "expiry_date": (timezone.now().date() + timedelta(days=365 * 3)).strftime(
-                    "%Y-%m-%d"
-                ),
+                "expiry_date": (
+                    timezone.now().date() + timedelta(days=365 * 3)
+                ).strftime("%Y-%m-%d"),
             },
         )
 

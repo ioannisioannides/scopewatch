@@ -58,7 +58,9 @@ def check_pip():
     print_step("Checking for pip...")
 
     try:
-        subprocess.run([sys.executable, "-m", "pip", "--version"], check=True, capture_output=True)
+        subprocess.run(
+            [sys.executable, "-m", "pip", "--version"], check=True, capture_output=True
+        )
         print_success("pip is installed.")
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
@@ -73,7 +75,9 @@ def check_virtualenv():
 
     try:
         subprocess.run(
-            [sys.executable, "-m", "pip", "show", "virtualenv"], check=True, capture_output=True
+            [sys.executable, "-m", "pip", "show", "virtualenv"],
+            check=True,
+            capture_output=True,
         )
         print_success("virtualenv is installed.")
         return True
@@ -128,7 +132,13 @@ def install_requirements():
     # Install development requirements
     try:
         subprocess.run(
-            [str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements-dev.txt")], check=True
+            [
+                str(pip_path),
+                "install",
+                "-r",
+                str(PROJECT_ROOT / "requirements-dev.txt"),
+            ],
+            check=True,
         )
         print_success("Development dependencies installed successfully.")
     except subprocess.CalledProcessError:
@@ -138,7 +148,8 @@ def install_requirements():
     # Install production requirements
     try:
         subprocess.run(
-            [str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements.txt")], check=True
+            [str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements.txt")],
+            check=True,
         )
         print_success("Production dependencies installed successfully.")
         return True
@@ -180,11 +191,14 @@ def setup_database():
     try:
         # Make migrations
         subprocess.run(
-            [str(python_path), str(PROJECT_ROOT / "manage.py"), "makemigrations"], check=True
+            [str(python_path), str(PROJECT_ROOT / "manage.py"), "makemigrations"],
+            check=True,
         )
 
         # Apply migrations
-        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True)
+        subprocess.run(
+            [str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True
+        )
 
         print_success("Database migrations applied successfully.")
         return True

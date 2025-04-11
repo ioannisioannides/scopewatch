@@ -17,7 +17,9 @@ def consultant_list_view(request):
     View for listing all consultants.
     """
     consultants = Consultant.objects.all()
-    return render(request, "consultants/consultant_list.html", {"consultants": consultants})
+    return render(
+        request, "consultants/consultant_list.html", {"consultants": consultants}
+    )
 
 
 def consultancy_firm_list_view(request):

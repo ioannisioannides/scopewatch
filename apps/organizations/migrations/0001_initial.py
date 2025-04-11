@@ -141,7 +141,9 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "unique_together": {("organization", "standard", "cert_body", "issue_date")},
+                "unique_together": {
+                    ("organization", "standard", "cert_body", "issue_date")
+                },
             },
         ),
     ]

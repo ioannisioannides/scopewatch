@@ -19,10 +19,16 @@ class Migration(migrations.Migration):
     replaces = [
         ("certification_bodies", "0001_initial"),
         ("certification_bodies", "0002_remove_certbody_contact_email_and_more"),
-        ("certification_bodies", "0003_certbody_contact_email_certbody_is_active_auditor_and_more"),
+        (
+            "certification_bodies",
+            "0003_certbody_contact_email_certbody_is_active_auditor_and_more",
+        ),
         ("certification_bodies", "0004_add_standard_qualification"),
         ("certification_bodies", "0005_merge_20250408_0423"),
-        ("certification_bodies", "0006_remove_certbodyuser_joined_date_auditor_bio_and_more"),
+        (
+            "certification_bodies",
+            "0006_remove_certbodyuser_joined_date_auditor_bio_and_more",
+        ),
     ]
 
     # Define initial state (no dependencies on previous migrations)
@@ -50,8 +56,16 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=255)),
                 ("accreditation_id", models.CharField(max_length=100)),
                 ("address", models.CharField(blank=True, max_length=255)),
-                ("logo", models.ImageField(blank=True, null=True, upload_to="certbody_logos/")),
-                ("contact_email", models.EmailField(blank=True, max_length=254, null=True)),
+                (
+                    "logo",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="certbody_logos/"
+                    ),
+                ),
+                (
+                    "contact_email",
+                    models.EmailField(blank=True, max_length=254, null=True),
+                ),
                 ("is_active", models.BooleanField(default=True)),
                 ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
@@ -155,7 +169,9 @@ class Migration(migrations.Migration):
                 ("expiry_date", models.DateField(blank=True, null=True)),
                 (
                     "evidence_document",
-                    models.FileField(blank=True, null=True, upload_to="auditor_qualifications/"),
+                    models.FileField(
+                        blank=True, null=True, upload_to="auditor_qualifications/"
+                    ),
                 ),
                 ("notes", models.TextField(blank=True)),
                 (

@@ -77,7 +77,8 @@ class OrganizationAPITest(APITestCase):
             "organizations-api:organization-detail", args=[self.organization1.pk]
         )
         self.certifications_url = reverse(
-            "organizations-api:organization-certifications", args=[self.organization1.pk]
+            "organizations-api:organization-certifications",
+            args=[self.organization1.pk],
         )
 
     def test_get_organizations_unauthenticated(self):
@@ -118,11 +119,15 @@ class OrganizationAPITest(APITestCase):
             "is_active": True,
         }
 
-        response = self.client.post(self.organizations_url, new_organization_data, format="json")
+        response = self.client.post(
+            self.organizations_url, new_organization_data, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Verify organization was created
-        self.assertTrue(Organization.objects.filter(name="New Test Organization").exists())
+        self.assertTrue(
+            Organization.objects.filter(name="New Test Organization").exists()
+        )
 
         # Check the returned data
         self.assertEqual(response.data["name"], "New Test Organization")
@@ -137,7 +142,9 @@ class OrganizationAPITest(APITestCase):
             "is_active": True,
         }
 
-        response = self.client.put(self.organization_detail_url, updated_data, format="json")
+        response = self.client.put(
+            self.organization_detail_url, updated_data, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Verify organization was updated
@@ -244,7 +251,9 @@ class CertificationAPITest(APITestCase):
             "certificate_number": "NEW-CERT-789",
             "standard": "ISO 14001",
             "issue_date": timezone.now().date().isoformat(),
-            "expiry_date": (timezone.now().date() + timedelta(days=365 * 3)).isoformat(),
+            "expiry_date": (
+                timezone.now().date() + timedelta(days=365 * 3)
+            ).isoformat(),
             "cert_body": self.cert_body.pk,
             "scope": "Environmental Management",
         }
@@ -255,7 +264,9 @@ class CertificationAPITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Verify certification was created
-        self.assertTrue(Certification.objects.filter(certificate_number="NEW-CERT-789").exists())
+        self.assertTrue(
+            Certification.objects.filter(certificate_number="NEW-CERT-789").exists()
+        )
 
     def test_update_certification(self):
         """Test updating an existing certification."""
@@ -265,12 +276,16 @@ class CertificationAPITest(APITestCase):
             "certificate_number": "UPDATED-CERT",
             "standard": "ISO 27001",
             "issue_date": timezone.now().date().isoformat(),
-            "expiry_date": (timezone.now().date() + timedelta(days=365 * 3)).isoformat(),
+            "expiry_date": (
+                timezone.now().date() + timedelta(days=365 * 3)
+            ).isoformat(),
             "cert_body": self.cert_body.pk,
             "scope": "Updated scope",
         }
 
-        response = self.client.put(self.certification_detail_url, updated_data, format="json")
+        response = self.client.put(
+            self.certification_detail_url, updated_data, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Verify certification was updated
@@ -285,7 +300,9 @@ class CertificationAPITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Verify certification was deleted
-        self.assertFalse(Certification.objects.filter(pk=self.certification.pk).exists())
+        self.assertFalse(
+            Certification.objects.filter(pk=self.certification.pk).exists()
+        )
 
 
 class SerializerTest(APITestCase):

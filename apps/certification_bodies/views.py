@@ -12,7 +12,6 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
@@ -32,7 +31,9 @@ def certbody_list_view(request):
     View for listing all certification bodies.
     """
     cert_bodies = CertBody.objects.all()
-    return render(request, "certification_bodies/certbody_list.html", {"cert_bodies": cert_bodies})
+    return render(
+        request, "certification_bodies/certbody_list.html", {"cert_bodies": cert_bodies}
+    )
 
 
 def certbody_detail_view(request, cb_id):
@@ -40,7 +41,9 @@ def certbody_detail_view(request, cb_id):
     View for displaying the details of a specific certification body.
     """
     cert_body = get_object_or_404(CertBody, id=cb_id)
-    return render(request, "certification_bodies/certbody_detail.html", {"cert_body": cert_body})
+    return render(
+        request, "certification_bodies/certbody_detail.html", {"cert_body": cert_body}
+    )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -56,7 +59,9 @@ class AuditPendingDecisionListView(ListView):
     def get_queryset(self):
         # Get the certification body user
         try:
-            cert_body_user = self.request.user.cert_body_roles.filter(is_active=True).first()
+            cert_body_user = self.request.user.cert_body_roles.filter(
+                is_active=True
+            ).first()
             if not cert_body_user:
                 return Audit.objects.none()
 
@@ -82,10 +87,14 @@ def audit_decision_view(request, audit_id):
             cert_body=audit.certbody, is_active=True
         ).first()
         if not cert_body_user:
-            messages.error(request, "You are not authorized to make decisions for this audit.")
+            messages.error(
+                request, "You are not authorized to make decisions for this audit."
+            )
             return redirect("certification_bodies:dashboard")
     except AttributeError:
-        messages.error(request, "You are not authorized to make decisions for this audit.")
+        messages.error(
+            request, "You are not authorized to make decisions for this audit."
+        )
         return redirect("certification_bodies:dashboard")
 
     # Handle form submission
@@ -108,7 +117,9 @@ def audit_decision_view(request, audit_id):
 
             # If approved, redirect to certificate issuance
             if audit_result.can_issue_certificate():
-                return redirect("certification_bodies:issue_certificate", audit_id=audit.pk)
+                return redirect(
+                    "certification_bodies:issue_certificate", audit_id=audit.pk
+                )
             return redirect("certification_bodies:pending_decisions")
     else:
         form = AuditDecisionForm()
@@ -135,7 +146,9 @@ def issue_certificate_view(request, audit_id):
     try:
         audit_result = audit.result
         if not audit_result.can_issue_certificate():
-            messages.error(request, "This audit result does not allow certificate issuance.")
+            messages.error(
+                request, "This audit result does not allow certificate issuance."
+            )
             return redirect("certification_bodies:pending_decisions")
     except AuditResult.DoesNotExist:
         messages.error(request, "This audit doesn't have a decision yet.")
@@ -147,16 +160,22 @@ def issue_certificate_view(request, audit_id):
             cert_body=audit.certbody, is_active=True
         ).first()
         if not cert_body_user:
-            messages.error(request, "You are not authorized to issue certificates for this audit.")
+            messages.error(
+                request, "You are not authorized to issue certificates for this audit."
+            )
             return redirect("certification_bodies:dashboard")
     except AttributeError:
-        messages.error(request, "You are not authorized to issue certificates for this audit.")
+        messages.error(
+            request, "You are not authorized to issue certificates for this audit."
+        )
         return redirect("certification_bodies:dashboard")
 
     # Check if certificate already exists
     try:
         if hasattr(audit, "resulting_certification"):
-            messages.warning(request, "A certificate has already been issued for this audit.")
+            messages.warning(
+                request, "A certificate has already been issued for this audit."
+            )
             return redirect(
                 "organizations:certification_detail",
                 pk=audit.resulting_certification.pk,
@@ -181,9 +200,12 @@ def issue_certificate_view(request, audit_id):
                     expiry_date=expiry_date,
                 )
                 messages.success(
-                    request, f"Certificate {certification.certificate_number} issued successfully."
+                    request,
+                    f"Certificate {certification.certificate_number} issued successfully.",
                 )
-                return redirect("organizations:certification_detail", pk=certification.pk)
+                return redirect(
+                    "organizations:certification_detail", pk=certification.pk
+                )
             except ValueError as e:
                 messages.error(request, str(e))
     else:
@@ -218,23 +240,27 @@ def cert_body_dashboard(request):
         cert_body_user = request.user.cert_body_roles.filter(is_active=True).first()
 
         if not cert_body_user:
-            messages.warning(request, "You are not associated with any certification body.")
+            messages.warning(
+                request, "You are not associated with any certification body."
+            )
             return redirect("home")
 
         cert_body = cert_body_user.cert_body
 
         # Get pending audits that need decisions
-        pending_audits = Audit.objects.filter(certbody=cert_body, status="completed").exclude(
-            pk__in=AuditResult.objects.values_list("audit", flat=True)
-        )
+        pending_audits = Audit.objects.filter(
+            certbody=cert_body, status="completed"
+        ).exclude(pk__in=AuditResult.objects.values_list("audit", flat=True))
 
         # Get recent certifications issued by this cert body
-        recent_certifications = Certification.objects.filter(cert_body=cert_body).order_by(
-            "-issue_date"
-        )[:5]
+        recent_certifications = Certification.objects.filter(
+            cert_body=cert_body
+        ).order_by("-issue_date")[:5]
 
         # Get audits in progress
-        in_progress_audits = Audit.objects.filter(certbody=cert_body, status="in_progress")
+        in_progress_audits = Audit.objects.filter(
+            certbody=cert_body, status="in_progress"
+        )
 
         context = {
             "cert_body": cert_body,

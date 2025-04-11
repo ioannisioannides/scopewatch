@@ -117,12 +117,17 @@ class PublicViewsCoverageTest(TestCase):
 
         # Should return all valid certificates as a fallback
         self.assertEqual(len(response.context["certifications"]), 1)
-        self.assertEqual(response.context["certifications"][0], self.valid_certification)
+        self.assertEqual(
+            response.context["certifications"][0], self.valid_certification
+        )
 
     def test_certificate_search_view_form_validation_branch(self):
         """Test the form validation branch in CertificateSearchView."""
         # Setup a request with both search_term and standard
-        url = reverse("certificate_search") + "?search_term=Coverage&standard=ISO+9001:2015"
+        url = (
+            reverse("certificate_search")
+            + "?search_term=Coverage&standard=ISO+9001:2015"
+        )
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -256,20 +261,26 @@ class PublicViewsCoverageTest(TestCase):
         self.assertNotIn("no_results", response.context)
 
         # Test with empty query parameter
-        response = self.client.get(reverse("search_certified_organizations") + "?query=")
+        response = self.client.get(
+            reverse("search_certified_organizations") + "?query="
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["certifications"]), 1)
         self.assertNotIn("no_results", response.context)
 
         # Test with query that matches
-        response = self.client.get(reverse("search_certified_organizations") + "?query=Coverage")
+        response = self.client.get(
+            reverse("search_certified_organizations") + "?query=Coverage"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["certifications"]), 1)
         self.assertEqual(response.context["query"], "Coverage")
         self.assertNotIn("no_results", response.context)
 
         # Test with query that doesn't match
-        response = self.client.get(reverse("search_certified_organizations") + "?query=NoMatch")
+        response = self.client.get(
+            reverse("search_certified_organizations") + "?query=NoMatch"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["certifications"]), 0)
         self.assertEqual(response.context["query"], "NoMatch")

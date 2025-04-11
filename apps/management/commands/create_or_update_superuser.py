@@ -57,10 +57,16 @@ class Command(BaseCommand):
             user.email = email
             user.set_password(password)
             user.save()
-            self.stdout.write(self.style.SUCCESS(f"Updated existing superuser: {username}"))
+            self.stdout.write(
+                self.style.SUCCESS(f"Updated existing superuser: {username}")
+            )
         except User.DoesNotExist:
             try:
-                User.objects.create_superuser(username=username, email=email, password=password)
-                self.stdout.write(self.style.SUCCESS(f"Created new superuser: {username}"))
+                User.objects.create_superuser(
+                    username=username, email=email, password=password
+                )
+                self.stdout.write(
+                    self.style.SUCCESS(f"Created new superuser: {username}")
+                )
             except IntegrityError as exc:
                 raise CommandError(f"Could not create superuser: {username}") from exc

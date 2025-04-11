@@ -12,7 +12,9 @@ def skip_if_column_exists(apps, schema_editor, table, column):
     cursor = schema_editor.connection.cursor()
 
     # SQLite specific check for column existence
-    cursor.execute("SELECT COUNT(*) FROM pragma_table_info(?) WHERE name = ?", [table, column])
+    cursor.execute(
+        "SELECT COUNT(*) FROM pragma_table_info(?) WHERE name = ?", [table, column]
+    )
     if cursor.fetchone()[0] > 0:
         # Column already exists, return True to skip
         return True
@@ -31,7 +33,9 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             code=lambda apps, schema_editor: (
                 None
-                if skip_if_column_exists(apps, schema_editor, "audits_audit", "certbody_id")
+                if skip_if_column_exists(
+                    apps, schema_editor, "audits_audit", "certbody_id"
+                )
                 else None
             ),
             reverse_code=lambda apps, schema_editor: None,
@@ -49,7 +53,9 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             code=lambda apps, schema_editor: (
                 None
-                if skip_if_column_exists(apps, schema_editor, "audits_audit", "organization_id")
+                if skip_if_column_exists(
+                    apps, schema_editor, "audits_audit", "organization_id"
+                )
                 else None
             ),
             reverse_code=lambda apps, schema_editor: None,
@@ -87,7 +93,9 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             code=lambda apps, schema_editor: (
                 None
-                if skip_if_column_exists(apps, schema_editor, "audits_auditresult", "decided_by_id")
+                if skip_if_column_exists(
+                    apps, schema_editor, "audits_auditresult", "decided_by_id"
+                )
                 else None
             ),
             reverse_code=lambda apps, schema_editor: None,
@@ -105,7 +113,9 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             code=lambda apps, schema_editor: (
                 None
-                if skip_if_column_exists(apps, schema_editor, "audits_auditteam", "lead_auditor_id")
+                if skip_if_column_exists(
+                    apps, schema_editor, "audits_auditteam", "lead_auditor_id"
+                )
                 else None
             ),
             reverse_code=lambda apps, schema_editor: None,
