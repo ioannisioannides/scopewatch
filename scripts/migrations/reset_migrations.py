@@ -101,7 +101,10 @@ def get_latest_migration(app):
     base_path = Path(__file__).resolve().parent
 
     # Check both potential locations for migrations
-    paths_to_check = [base_path / app / "migrations", base_path / "apps" / app / "migrations"]
+    paths_to_check = [
+        base_path / app / "migrations",
+        base_path / "apps" / app / "migrations",
+    ]
 
     for migrations_path in paths_to_check:
         if not migrations_path.exists():
@@ -252,7 +255,14 @@ def fix_inconsistent_history():
         check=True,
     )
     subprocess.run(
-        ["python", "manage.py", "migrate", "audits", "0006_change_audit_status_choices", "--fake"],
+        [
+            "python",
+            "manage.py",
+            "migrate",
+            "audits",
+            "0006_change_audit_status_choices",
+            "--fake",
+        ],
         check=True,
     )
 
@@ -269,7 +279,8 @@ def create_empty_fixed_migration(app, name, dependencies, dry_run=False):
     if not dry_run:
         # Create migration using makemigrations --empty
         subprocess.run(
-            ["python", "manage.py", "makemigrations", "--empty", "--name", name, app], check=True
+            ["python", "manage.py", "makemigrations", "--empty", "--name", name, app],
+            check=True,
         )
 
         # Now find the created migration file
@@ -315,14 +326,20 @@ def create_empty_fixed_migration(app, name, dependencies, dry_run=False):
 def main():
     parser = argparse.ArgumentParser(description="Reset and squash Django migrations")
     parser.add_argument(
-        "--dry-run", action="store_true", help="Show what would be done without making changes"
+        "--dry-run",
+        action="store_true",
+        help="Show what would be done without making changes",
     )
     parser.add_argument(
-        "--backup", action="store_true", help="Create a database backup before proceeding"
+        "--backup",
+        action="store_true",
+        help="Create a database backup before proceeding",
     )
     parser.add_argument("--squash", action="store_true", help="Generate squashed migrations")
     parser.add_argument(
-        "--reset-db", action="store_true", help="Reset the migration history in the database"
+        "--reset-db",
+        action="store_true",
+        help="Reset the migration history in the database",
     )
     parser.add_argument("--clean", action="store_true", help="Remove old migration files")
     parser.add_argument("--fix", action="store_true", help="Fix inconsistent migration history")
@@ -365,7 +382,14 @@ def main():
                 print("\nTrying alternate approach...")
                 # Try specific problem migrations
                 subprocess.run(
-                    ["python", "manage.py", "migrate", "certification_bodies", "--fake"], check=True
+                    [
+                        "python",
+                        "manage.py",
+                        "migrate",
+                        "certification_bodies",
+                        "--fake",
+                    ],
+                    check=True,
                 )
                 subprocess.run(["python", "manage.py", "migrate", "audits", "--fake"], check=True)
         else:

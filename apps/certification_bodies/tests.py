@@ -212,7 +212,7 @@ class CertBodyViewTest(TestCase):
         Test that unauthorized users cannot issue certificates.
         """
         # Create an approved audit result first
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved for certification",
@@ -238,7 +238,7 @@ class CertBodyViewTest(TestCase):
         Test that authorized users can access the certificate issuance view.
         """
         # Create an approved audit result first
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved for certification",
@@ -261,7 +261,7 @@ class CertBodyViewTest(TestCase):
         Test that submitting a certificate issuance form works correctly.
         """
         # Create an approved audit result first
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved for certification",
@@ -412,7 +412,10 @@ class ExtendedCertBodyViewTest(TestCase):
             username="other_tester", email="other@certbody.com", password="otherpass123"
         )
         self.other_cert_body_user = CertBodyUser.objects.create(
-            user=self.other_user, cert_body=self.other_cert_body, role="admin", is_active=True
+            user=self.other_user,
+            cert_body=self.other_cert_body,
+            role="admin",
+            is_active=True,
         )
 
     def test_pending_decision_list_no_cert_body_user(self):
@@ -420,7 +423,7 @@ class ExtendedCertBodyViewTest(TestCase):
         Test pending decision list when user has no certification body association.
         """
         # Create user with no cert body association
-        user_no_cert = User.objects.create_user(username="no_cert_user", password="password123")
+        _user_no_cert = User.objects.create_user(username="no_cert_user", password="password123")
 
         self.client.login(username="no_cert_user", password="password123")
         response = self.client.get(reverse("certification_bodies:pending_decisions"))
@@ -433,7 +436,8 @@ class ExtendedCertBodyViewTest(TestCase):
         Test that the audit decision view handles exceptions properly.
         """
         # Login with an unrelated user (no cert body associations)
-        unrelated_user = User.objects.create_user(username="unrelated", password="unrelated123")
+        _unrelated_user = User.objects.create_user(username="unrelated", password="unrelated123")
+
         self.client.login(username="unrelated", password="unrelated123")
 
         # Access audit decision view without proper permissions
@@ -519,7 +523,7 @@ class ExtendedCertBodyViewTest(TestCase):
         Test when trying to issue a certificate that already exists.
         """
         # Create approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved",
@@ -527,7 +531,7 @@ class ExtendedCertBodyViewTest(TestCase):
         )
 
         # Create existing certification
-        existing_cert = Certification.objects.create(
+        _existing_cert = Certification.objects.create(
             organization=self.organization,
             standard=self.audit.standard,
             certificate_number="EXISTING-123",
@@ -550,7 +554,7 @@ class ExtendedCertBodyViewTest(TestCase):
         Test form validation error when issuing a certificate.
         """
         # Create approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.audit,
             decision="approve",
             comments="Approved",

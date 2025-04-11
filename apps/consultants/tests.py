@@ -7,15 +7,18 @@ This module contains tests for models, views, and forms related to
 consultants and consultancy firms.
 """
 
-from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
-from django.urls import reverse
+from datetime import timedelta
 
-User = get_user_model()
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+from django.utils import timezone
 
 from apps.consultants.models import ConsultancyFirm, Consultant, ConsultantEngagement
 from apps.organizations.models import Organization
 from apps.utils.test_credentials import get_test_credential
+
+User = get_user_model()
 
 
 class ConsultantModelTest(TestCase):

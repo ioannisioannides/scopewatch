@@ -175,7 +175,8 @@ class PublicViewTest(TestCase):
         self.assertEqual(content["standard"], "ISO 27001:2022")
         self.assertEqual(content["cert_body"], "ViewTest Certifier")
         self.assertEqual(
-            content["scope"], "Information Security Management System for cloud services"
+            content["scope"],
+            "Information Security Management System for cloud services",
         )
 
         # Verify that a verification log was created

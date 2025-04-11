@@ -115,7 +115,11 @@ def fix_migration_history():
                     INSERT INTO django_migrations (app, name, applied)
                     VALUES (%s, %s, datetime(%s, '-1 minute'))
                     """,
-                    ["certification_bodies", "0003_certbodyuser_contact_phone", audit_timestamp[0]],
+                    [
+                        "certification_bodies",
+                        "0003_certbodyuser_contact_phone",
+                        audit_timestamp[0],
+                    ],
                 )
                 print("✅ Added missing migration with timestamp before audits.0007")
         else:
@@ -150,7 +154,14 @@ def verify_fix():
             # Fake apply these migrations
             try:
                 subprocess.run(
-                    ["python", "manage.py", "migrate", "certification_bodies", "--fake"], check=True
+                    [
+                        "python",
+                        "manage.py",
+                        "migrate",
+                        "certification_bodies",
+                        "--fake",
+                    ],
+                    check=True,
                 )
                 subprocess.run(["python", "manage.py", "migrate", "audits", "--fake"], check=True)
                 subprocess.run(["python", "manage.py", "migrate"], check=True)

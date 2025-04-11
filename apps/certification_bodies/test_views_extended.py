@@ -7,24 +7,16 @@ particularly targeting edge cases and error handling paths.
 
 from datetime import timedelta
 
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.messages.storage.fallback import FallbackStorage
-from django.test import Client, RequestFactory, TestCase
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
 from apps.audits.models import Audit, AuditResult, NonConformance
 from apps.organizations.models import Certification, Organization
 
-from .forms import AuditDecisionForm, CertificationIssueForm
-from .models import Auditor, CertBody, CertBodyUser
-from .views import (
-    audit_decision_view,
-    certbody_detail_view,
-    certbody_list_view,
-    issue_certificate_view,
-)
+from .models import CertBody, CertBodyUser
 
 User = get_user_model()
 
@@ -47,10 +39,14 @@ class ViewsTestCase(TestCase):
             username="admin_user", password="secure_password", email="admin@example.com"
         )
         self.auditor_user = User.objects.create_user(
-            username="auditor_user", password="secure_password", email="auditor@example.com"
+            username="auditor_user",
+            password="secure_password",
+            email="auditor@example.com",
         )
         self.unauthorized_user = User.objects.create_user(
-            username="unauthorized", password="secure_password", email="unauthorized@example.com"
+            username="unauthorized",
+            password="secure_password",
+            email="unauthorized@example.com",
         )
 
         # Create cert body users
@@ -58,7 +54,10 @@ class ViewsTestCase(TestCase):
             user=self.admin_user, cert_body=self.cert_body, role="admin", is_active=True
         )
         self.auditor_cb_user = CertBodyUser.objects.create(
-            user=self.auditor_user, cert_body=self.cert_body, role="auditor", is_active=True
+            user=self.auditor_user,
+            cert_body=self.cert_body,
+            role="auditor",
+            is_active=True,
         )
 
         # Create another certification body for testing unauthorized access
@@ -99,7 +98,9 @@ class ViewsTestCase(TestCase):
 
         # Create nonconformances
         self.nonconformance = NonConformance.objects.create(
-            audit=self.completed_audit, description="Test nonconformance", severity="minor"
+            audit=self.completed_audit,
+            description="Test nonconformance",
+            severity="minor",
         )
 
         # Set up request factory for view testing
@@ -116,7 +117,7 @@ class ViewsTestCase(TestCase):
         """Test AuditPendingDecisionListView exception handling."""
         # Remove attributes to force exception
         # This test confirms that exception handling in the view returns an empty queryset
-        original_user = self.admin_user
+        _original_user = self.admin_user
 
         url = reverse("certification_bodies:pending_decisions")
         self.client.force_login(self.unauthorized_user)
@@ -188,7 +189,7 @@ class ViewsTestCase(TestCase):
     def test_issue_certificate_view_complete_workflow(self):
         """Test the complete workflow for issuing a certificate."""
         # First create an approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.completed_audit,
             decision="approve",
             comments="Approved without conditions",
@@ -226,7 +227,7 @@ class ViewsTestCase(TestCase):
     def test_issue_certificate_with_invalid_form(self):
         """Test certificate issuance with invalid form data."""
         # Create approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.completed_audit,
             decision="approve",
             comments="Approved without conditions",
@@ -252,7 +253,7 @@ class ViewsTestCase(TestCase):
     def test_issue_certificate_value_error(self):
         """Test handling of ValueError during certificate issuance."""
         # Create approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.completed_audit,
             decision="approve",
             comments="Approved without conditions",
@@ -260,7 +261,7 @@ class ViewsTestCase(TestCase):
         )
 
         # Create a certification with the same certificate number we'll try to use
-        existing_cert = Certification.objects.create(
+        _existing_cert = Certification.objects.create(
             organization=self.organization,
             certificate_number="DUPLICATE-NUMBER",
             standard=self.completed_audit.standard,
@@ -303,7 +304,7 @@ class ViewsTestCase(TestCase):
     def test_issue_certificate_with_default_expiry(self):
         """Test certificate issuance using default expiry date."""
         # Create approved audit result
-        audit_result = AuditResult.objects.create(
+        _audit_result = AuditResult.objects.create(
             audit=self.completed_audit,
             decision="approve",
             comments="Approved",

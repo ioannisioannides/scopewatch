@@ -77,7 +77,8 @@ class OrganizationAPITest(APITestCase):
             "organizations-api:organization-detail", args=[self.organization1.pk]
         )
         self.certifications_url = reverse(
-            "organizations-api:organization-certifications", args=[self.organization1.pk]
+            "organizations-api:organization-certifications",
+            args=[self.organization1.pk],
         )
 
     def test_get_organizations_unauthenticated(self):

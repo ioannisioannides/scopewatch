@@ -12,7 +12,6 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
@@ -181,7 +180,8 @@ def issue_certificate_view(request, audit_id):
                     expiry_date=expiry_date,
                 )
                 messages.success(
-                    request, f"Certificate {certification.certificate_number} issued successfully."
+                    request,
+                    f"Certificate {certification.certificate_number} issued successfully.",
                 )
                 return redirect("organizations:certification_detail", pk=certification.pk)
             except ValueError as e:

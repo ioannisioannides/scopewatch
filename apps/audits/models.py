@@ -156,7 +156,9 @@ class AuditTeam(models.Model):
 
     audit = models.OneToOneField(Audit, on_delete=models.CASCADE, related_name="audit_team")
     lead_auditor = models.ForeignKey(
-        "certification_bodies.Auditor", on_delete=models.PROTECT, related_name="lead_audits"
+        "certification_bodies.Auditor",
+        on_delete=models.PROTECT,
+        related_name="lead_audits",
     )
 
     def __str__(self):
@@ -183,7 +185,9 @@ class AuditorAssignment(models.Model):
 
     team = models.ForeignKey(AuditTeam, on_delete=models.CASCADE, related_name="assignments")
     auditor = models.ForeignKey(
-        "certification_bodies.Auditor", on_delete=models.CASCADE, related_name="assignments"
+        "certification_bodies.Auditor",
+        on_delete=models.CASCADE,
+        related_name="assignments",
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)

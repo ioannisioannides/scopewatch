@@ -113,7 +113,8 @@ def fake_apply_migrations():
     try:
         # First cert bodies and organizations which are base apps
         subprocess.run(
-            ["python", "manage.py", "migrate", "certification_bodies", "--fake"], check=True
+            ["python", "manage.py", "migrate", "certification_bodies", "--fake"],
+            check=True,
         )
         subprocess.run(["python", "manage.py", "migrate", "organizations", "--fake"], check=True)
 

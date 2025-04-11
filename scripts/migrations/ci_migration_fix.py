@@ -155,7 +155,10 @@ def fake_migrations():
     )
 
     # Finally, remaining apps
-    run_command(["python", "manage.py", "migrate", "--fake"], "Fake migrating all remaining apps")
+    run_command(
+        ["python", "manage.py", "migrate", "--fake"],
+        "Fake migrating all remaining apps",
+    )
 
 
 def mark_migrations_applied():

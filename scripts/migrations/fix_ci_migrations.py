@@ -245,7 +245,10 @@ def fix_audit_migrations():
 
                 # Update the file with corrected dependencies
                 new_content = re.sub(
-                    deps_pattern, f"dependencies = [{new_deps}]", content, flags=re.DOTALL
+                    deps_pattern,
+                    f"dependencies = [{new_deps}]",
+                    content,
+                    flags=re.DOTALL,
                 )
                 with open(migration_0007_path, "w") as f:
                     f.write(new_content)

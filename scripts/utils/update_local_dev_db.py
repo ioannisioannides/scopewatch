@@ -107,7 +107,8 @@ def fake_migrations():
     try:
         # First handle Django's built-in apps
         subprocess.run(
-            ["python", "manage.py", "migrate", "--fake-initial", "contenttypes"], check=True
+            ["python", "manage.py", "migrate", "--fake-initial", "contenttypes"],
+            check=True,
         )
         subprocess.run(["python", "manage.py", "migrate", "--fake-initial", "auth"], check=True)
         subprocess.run(["python", "manage.py", "migrate", "--fake-initial", "admin"], check=True)
