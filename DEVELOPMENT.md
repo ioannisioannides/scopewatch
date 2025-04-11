@@ -42,7 +42,7 @@ This guide explains how to set up your development environment for working on th
    ```bash
    # On Windows:
    .\.venv\Scripts\activate
-   
+
    # On macOS/Linux:
    source .venv/bin/activate
    ```
@@ -65,7 +65,7 @@ This guide explains how to set up your development environment for working on th
    ```bash
    # Run tests
    pytest
-   
+
    # Run linting
    pylint --rcfile=pylintrc $(git ls-files '*.py')
    ```

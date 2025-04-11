@@ -41,7 +41,7 @@ erDiagram
         string first_name
         string last_name
         boolean is_active
-        date date_joined        
+        date date_joined
     }
 
     ROLE {

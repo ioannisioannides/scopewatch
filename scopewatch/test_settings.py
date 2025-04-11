@@ -4,8 +4,9 @@ Test settings for the Scopewatch project.
 These settings are used only for running tests.
 """
 
-from .settings import *  # Import everything from base settings
 import os
+
+from .settings import *  # Import everything from base settings
 
 # Use an in-memory SQLite database for faster tests
 DATABASES = {
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
 ]
 
 # Disable migrations completely for testing unless explicitly checking them
-if os.environ.get('CHECK_MIGRATIONS') != 'True':
+if os.environ.get("CHECK_MIGRATIONS") != "True":
     MIGRATION_MODULES = {app.split(".")[-1]: None for app in INSTALLED_APPS}
 
 # Set this to True to avoid time-consuming password hashing
@@ -48,7 +49,7 @@ PASSWORD_HASHERS = [
 
 # Use our custom test runner
 # Default is NoMigrationsTestRunner, but use MigrationCheckingTestRunner when needed
-if os.environ.get('CHECK_MIGRATIONS') == 'True':
+if os.environ.get("CHECK_MIGRATIONS") == "True":
     TEST_RUNNER = "scopewatch.test_runner.MigrationCheckingTestRunner"
 else:
     TEST_RUNNER = "scopewatch.test_runner.NoMigrationsTestRunner"

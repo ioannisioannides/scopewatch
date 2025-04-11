@@ -5,7 +5,8 @@ Admin configuration for the Certification Bodies app.
 """
 
 from django.contrib import admin
-from .models import CertBody, CertBodyUser, Auditor, StandardQualification
+
+from .models import Auditor, CertBody, StandardQualification
 
 
 @admin.register(CertBody)
@@ -21,6 +22,19 @@ class CertBodyAdmin(admin.ModelAdmin):
         "created_at",
     )  # Ensure fields exist
     search_fields = ("name", "accreditation_id")
+
+
+@admin.register(Auditor)
+class AuditorAdmin(admin.ModelAdmin):
+    """
+    Admin interface for Auditor model.
+    """
+
+    list_display = ("user", "specialties", "is_active")
+    list_filter = ("is_active", "cert_bodies")
+    search_fields = ("user__username", "user__email", "specialties")
+    filter_horizontal = ("cert_bodies",)
+    raw_id_fields = ("user",)
 
 
 @admin.register(StandardQualification)

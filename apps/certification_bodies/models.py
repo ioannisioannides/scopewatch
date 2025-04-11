@@ -6,10 +6,10 @@ Models for the Certification Bodies app.
 This module defines the database models for certification bodies and auditors.
 """
 
-from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils import timezone
 
 # Use get_user_model() instead of directly importing User
 User = get_user_model()
@@ -57,9 +57,7 @@ class CertBodyUser(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    cert_body = models.ForeignKey(
-        CertBody, on_delete=models.CASCADE, related_name="users"
-    )
+    cert_body = models.ForeignKey(CertBody, on_delete=models.CASCADE, related_name="users")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -130,18 +128,14 @@ class StandardQualification(models.Model):
         notes (TextField): Additional information about the qualification.
     """
 
-    auditor = models.ForeignKey(
-        Auditor, on_delete=models.CASCADE, related_name="qualifications"
-    )
+    auditor = models.ForeignKey(Auditor, on_delete=models.CASCADE, related_name="qualifications")
     standard = models.CharField(max_length=255)
     cert_body = models.ForeignKey(
         CertBody, on_delete=models.CASCADE, related_name="verified_qualifications"
     )
     qualification_date = models.DateField()
     expiry_date = models.DateField(null=True, blank=True)
-    evidence_document = models.FileField(
-        upload_to="auditor_qualifications/", null=True, blank=True
-    )
+    evidence_document = models.FileField(upload_to="auditor_qualifications/", null=True, blank=True)
     notes = models.TextField(blank=True)
 
     class Meta:
@@ -163,27 +157,27 @@ class StandardQualification(models.Model):
 
         current_date = timezone.now().date()
         return self.expiry_date >= current_date
-        
+
     @property
     def validity_status(self):
         """
         Returns a more detailed status about the qualification's validity.
-        
+
         Returns:
             str: Status description ("valid", "expired", "expiring_soon")
         """
         if not self.expiry_date:
             return "valid"
-            
+
         current_date = timezone.now().date()
         if self.expiry_date < current_date:
             return "expired"
-            
+
         # Check if expiring within next 90 days
         expiring_soon_threshold = current_date + timezone.timedelta(days=90)
         if self.expiry_date <= expiring_soon_threshold:
             return "expiring_soon"
-            
+
         return "valid"
 
     def clean(self):
@@ -191,11 +185,11 @@ class StandardQualification(models.Model):
         Validates the qualification dates.
         """
         current_date = timezone.now().date()
-        
+
         # Qualification date should not be in the future
         if self.qualification_date and self.qualification_date > current_date:
             raise ValidationError("Qualification date cannot be in the future")
-        
+
         # Expiry date should be after qualification date
         if (
             self.expiry_date
@@ -203,7 +197,7 @@ class StandardQualification(models.Model):
             and self.expiry_date < self.qualification_date
         ):
             raise ValidationError("Expiry date cannot be before qualification date")
-            
+
         # Standard should not be empty
         if not self.standard.strip():
             raise ValidationError("Standard cannot be empty")

@@ -66,10 +66,10 @@ If you prefer to set up manually, follow these steps:
    ```bash
    # Using virtualenv
    virtualenv .venv
-   
+
    # On Windows
    .\.venv\Scripts\activate
-   
+
    # On Unix/MacOS
    source .venv/bin/activate
    ```
@@ -84,7 +84,7 @@ If you prefer to set up manually, follow these steps:
    ```bash
    # Copy the example .env file
    cp .env.example .env
-   
+
    # Edit the .env file with your settings
    ```
 

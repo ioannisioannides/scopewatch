@@ -6,10 +6,10 @@ Models for the Organizations app.
 This module defines the database models for organizations and their certifications.
 """
 
-from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils import timezone
 
 # Use string reference instead of direct import to avoid circular dependencies
 # from apps.certification_bodies.models import CertBody
@@ -68,9 +68,7 @@ class OrganizationUser(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="users"
-    )
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="users")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -100,7 +98,9 @@ class Certification(models.Model):
         Organization, on_delete=models.CASCADE, related_name="certifications"
     )
     cert_body = models.ForeignKey(
-        "certification_bodies.CertBody", on_delete=models.PROTECT, related_name="issued_certifications"
+        "certification_bodies.CertBody",
+        on_delete=models.PROTECT,
+        related_name="issued_certifications",
     )
     standard = models.CharField(max_length=255)
     certificate_number = models.CharField(
@@ -121,9 +121,7 @@ class Certification(models.Model):
     )
 
     def __str__(self):
-        return (
-            f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
-        )
+        return f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
 
     @property
     def is_valid(self):

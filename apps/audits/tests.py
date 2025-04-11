@@ -8,28 +8,24 @@ Expand these tests to cover additional scenarios and edge cases.
 """
 
 import sys
+from datetime import date, timedelta
 from pathlib import Path
-import pytest
-from datetime import timedelta, date
-from django.test import TestCase, Client
+
+from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from django.contrib.auth.models import User
 
 # Ensure that the parent directory is in the Python path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 # Local imports - sorted alphabetically by app name
-from apps.audits.models import (
-    Audit,
-    AuditTeam,
-    AuditorAssignment,
-    NonConformance,
-    AuditResult,
-)
-from apps.certification_bodies.models import CertBody, Auditor, CertBodyUser
-from apps.organizations.models import Organization, Certification
+from apps.audits.models import Audit, AuditorAssignment, AuditResult, AuditTeam, NonConformance
+from apps.certification_bodies.models import Auditor, CertBody, CertBodyUser
+from apps.organizations.models import Certification, Organization
 from apps.utils.test_credentials import get_test_credential
+
+User = get_user_model()
 
 
 class AuditModelTest(TestCase):
@@ -160,15 +156,11 @@ class AuditTeamTest(TestCase):
         self.organization = Organization.objects.create(
             name="Audited Organization", contact_email="audit@example.com"
         )
-        self.cert_body = CertBody.objects.create(
-            name="Auditing Body", accreditation_id="AB-123"
-        )
+        self.cert_body = CertBody.objects.create(name="Auditing Body", accreditation_id="AB-123")
 
         # Create auditor
         self.user = User.objects.create_user(username="lead_auditor")
-        self.auditor = Auditor.objects.create(
-            user=self.user, specialties="ISO 9001, ISO 14001"
-        )
+        self.auditor = Auditor.objects.create(user=self.user, specialties="ISO 9001, ISO 14001")
         self.auditor.cert_bodies.add(self.cert_body)
 
         # Create audit
@@ -199,9 +191,7 @@ class AuditTeamTest(TestCase):
 
         # Create additional team members
         user2 = User.objects.create_user(username="technical_expert")
-        technical_auditor = Auditor.objects.create(
-            user=user2, specialties="Technical systems"
-        )
+        technical_auditor = Auditor.objects.create(user=user2, specialties="Technical systems")
         technical_auditor.cert_bodies.add(self.cert_body)
 
         user3 = User.objects.create_user(username="trainee_auditor")
@@ -238,9 +228,7 @@ class NonConformanceTest(TestCase):
         self.organization = Organization.objects.create(
             name="Audited Organization", contact_email="audit@example.com"
         )
-        self.cert_body = CertBody.objects.create(
-            name="Auditing Body", accreditation_id="AB-123"
-        )
+        self.cert_body = CertBody.objects.create(name="Auditing Body", accreditation_id="AB-123")
 
         # Create audit
         self.audit = Audit.objects.create(
@@ -314,11 +302,11 @@ class CertificationIssuanceTestCase(TestCase):
         # Create users with credentials from environment variables
         self.user = User.objects.create_user(
             username=get_test_credential("default", "username"),
-            password=get_test_credential("default", "password")
+            password=get_test_credential("default", "password"),
         )
         self.certbody_user = User.objects.create_user(
             username=get_test_credential("certbody", "username"),
-            password=get_test_credential("certbody", "password")
+            password=get_test_credential("certbody", "password"),
         )
 
         # Create organization
@@ -409,7 +397,7 @@ class CertificationIssuanceTestCase(TestCase):
         Test that certificates cannot be issued with open major nonconformances.
         """
         # Create a major nonconformance
-        nonconformance = NonConformance.objects.create(
+        NonConformance.objects.create(
             audit=self.audit,
             severity="major",
             description="Major nonconformance",

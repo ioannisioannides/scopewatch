@@ -5,15 +5,15 @@ This module defines the API views for the Organizations app,
 providing a RESTful interface for organization data.
 """
 
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import Organization, Certification
+from .models import Certification, Organization
 from .serializers import (
-    OrganizationSerializer,
-    OrganizationDetailSerializer,
     CertificationSerializer,
+    OrganizationDetailSerializer,
+    OrganizationSerializer,
 )
 
 

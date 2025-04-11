@@ -6,16 +6,17 @@ Views for the Public app.
 This module provides views for public users to search and verify certifications.
 """
 
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
 from django.db.models import Q
-from django.utils import timezone
 from django.http import JsonResponse
+from django.shortcuts import render
+from django.utils import timezone
 from django.views.decorators.http import require_http_methods
+from django.views.generic import DetailView, ListView
 
 from apps.organizations.models import Certification
-from .models import CertificationVerification, SearchLog
+
 from .forms import CertificateSearchForm
+from .models import CertificationVerification, SearchLog
 
 
 def get_client_ip(request):

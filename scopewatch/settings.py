@@ -9,11 +9,11 @@ from pathlib import Path
 
 # Import our custom config module instead of using decouple directly
 from scopewatch.config import (
-    config, 
-    is_debug_mode, 
-    is_test_environment, 
+    config,
+    is_debug_mode,
+    is_development,
     is_production,
-    is_development
+    is_test_environment,
 )
 
 # Build paths inside the project
@@ -26,7 +26,9 @@ if is_production():
     SECRET_KEY = config("DJANGO_SECRET_KEY", required=True)
 else:
     # In development/test, allow a fallback for convenience
-    SECRET_KEY = config("DJANGO_SECRET_KEY", default="dev-only-insecure-key-do-not-use-in-production")
+    SECRET_KEY = config(
+        "DJANGO_SECRET_KEY", default="dev-only-insecure-key-do-not-use-in-production"
+    )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = is_debug_mode()
@@ -35,7 +37,11 @@ DEBUG = is_debug_mode()
 TEST_RUNNER = "scopewatch.test_runner.NoMigrationsTestRunner"
 
 # Add required environment-specific hosts
-ADDITIONAL_HOSTS = config("ADDITIONAL_HOSTS", default="", cast=str).split(",") if config("ADDITIONAL_HOSTS", default="") else []
+ADDITIONAL_HOSTS = (
+    config("ADDITIONAL_HOSTS", default="", cast=str).split(",")
+    if config("ADDITIONAL_HOSTS", default="")
+    else []
+)
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"] + ADDITIONAL_HOSTS
 
 # Security settings for production

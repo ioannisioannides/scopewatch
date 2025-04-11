@@ -5,22 +5,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     """Migration created to fix dependency issues in CI environment."""
 
-    dependencies = [
-        ("audits", "0004_add_document_submission_audit_result")
-    ]
+    dependencies = [("audits", "0004_add_document_submission_audit_result")]
 
     operations = [
         migrations.AlterField(
-                model_name="nonconformance",
-                name="status",
-                field=models.CharField(
-                    choices=[
-                        ("open", "Open"),
-                        ("closed", "Closed"),
-                        ("in_review", "In Review"),
-                    ],
-                    default="open",
-                    max_length=20,
-                ),
-            )
+            model_name="nonconformance",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("open", "Open"),
+                    ("closed", "Closed"),
+                    ("in_review", "In Review"),
+                ],
+                default="open",
+                max_length=20,
+            ),
+        )
     ]

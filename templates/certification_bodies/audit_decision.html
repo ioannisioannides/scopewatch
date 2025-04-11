@@ -113,7 +113,7 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
-                
+
                 <div class="mb-3">
                     <label for="{{ form.decision.id_for_label }}" class="form-label">{{ form.decision.label }}</label>
                     {{ form.decision }}
@@ -125,7 +125,7 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="{{ form.recommendation.id_for_label }}" class="form-label">{{ form.recommendation.label }}</label>
                     {{ form.recommendation }}
@@ -137,7 +137,7 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3 form-check">
                     {{ form.nonconformances_closed }}
                     <label class="form-check-label" for="{{ form.nonconformances_closed.id_for_label }}">
@@ -151,7 +151,7 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
                     {{ form.notes }}
@@ -163,7 +163,7 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Submit Decision</button>
                     <a href="{% url 'certification_bodies:pending_decisions' %}" class="btn btn-secondary">Cancel</a>

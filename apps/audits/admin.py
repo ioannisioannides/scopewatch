@@ -2,14 +2,7 @@
 
 from django.contrib import admin
 
-from .models import (
-    Audit,
-    AuditTeam,
-    AuditorAssignment,
-    NonConformance,
-    DocumentSubmission,
-    AuditResult,
-)
+from .models import Audit, AuditResult, DocumentSubmission
 
 
 @admin.register(Audit)

@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     """
-    This migration is created to fix dependency issues between 
+    This migration is created to fix dependency issues between
     branches 0007_add_certification_scope_and_audit_link and 0009_remove_organizationuser_joined_date_and_more.
     """
 

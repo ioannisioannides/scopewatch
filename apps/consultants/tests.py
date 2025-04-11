@@ -3,14 +3,15 @@
 """
 Tests for the consultants app.
 
-This module contains test cases for consultant-related functionality.
+This module contains tests for models, views, and forms related to
+consultants and consultancy firms.
 """
 
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
-from django.utils import timezone
-from datetime import timedelta
+
+User = get_user_model()
 
 from apps.consultants.models import ConsultancyFirm, Consultant, ConsultantEngagement
 from apps.organizations.models import Organization
@@ -21,52 +22,52 @@ class ConsultantModelTest(TestCase):
     """
     Test cases for Consultant model
     """
-    
+
     def test_create_consultant_with_firm(self):
         """
         Test creating a consultant associated with a consultancy firm.
         """
         user = User.objects.create_user(
             username=get_test_credential("consultant", "username"),
-            password=get_test_credential("consultant", "password")
+            password=get_test_credential("consultant", "password"),
         )  # Ensure user is created with a password
         consultant = Consultant.objects.create(
             user=user,
             bio="Experienced consultant with over 10 years in the field.",
             specialties="ISO 27001, ISO 9001",
-            is_active=True
+            is_active=True,
         )
-        
+
         # Create a consultancy firm and associate the consultant
         firm = ConsultancyFirm.objects.create(
             name="Quality Consultants Inc.",
             address="123 Consulting Ave, Suite 200",
             contact_email="contact@qualityconsultants.com",
-            is_active=True
+            is_active=True,
         )
         consultant.firm = firm
         consultant.save()
-        
+
         self.assertEqual(consultant.user, user)
         self.assertEqual(consultant.firm, firm)
         self.assertIn("ISO 27001", consultant.specialties)
         self.assertTrue(consultant.is_active)
-    
+
     def test_create_independent_consultant(self):
         """
         Test creating an independent consultant (not associated with a firm).
         """
         user = User.objects.create_user(
             username=get_test_credential("consultant", "username", "independent_consultant"),
-            password=get_test_credential("consultant", "password")
+            password=get_test_credential("consultant", "password"),
         )
         consultant = Consultant.objects.create(
             user=user,
             bio="Independent consultant with expertise in ISO standards.",
             specialties="ISO 14001, ISO 45001",
-            is_active=True
+            is_active=True,
         )
-        
+
         self.assertEqual(consultant.user, user)
         self.assertIsNone(consultant.firm)
         self.assertIn("ISO 14001", consultant.specialties)
@@ -83,9 +84,7 @@ class ConsultantViewTest(TestCase):
         Set up test data for the Consultant views.
         """
         self.user = User.objects.create_user(username="consultant_user")
-        self.consultant = Consultant.objects.create(
-            user=self.user, specialty="ISO 9001"
-        )
+        self.consultant = Consultant.objects.create(user=self.user, specialty="ISO 9001")
         self.firm = ConsultancyFirm.objects.create(name="Test Firm")
 
     def test_consultant_list_view(self):

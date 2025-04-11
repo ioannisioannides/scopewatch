@@ -2,13 +2,12 @@
 URL configuration for the Scopewatch project.
 """
 
-from django.contrib import admin
-from django.urls import include, path
-from django.http import HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import include, path, reverse
 
 from apps.public.views import (
     certificate_verification_view,

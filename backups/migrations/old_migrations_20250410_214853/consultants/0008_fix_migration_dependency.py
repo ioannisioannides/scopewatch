@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     This migration fixes a dependency issue between consultants.0003 and organizations.0005.
     The problem is that consultants.0003 references organizations.0005, causing a NodeNotFoundError
     in CI environments where migrations are processed in a different order.
-    
+
     This migration replaces the dependency with one that is guaranteed to exist.
     """
 

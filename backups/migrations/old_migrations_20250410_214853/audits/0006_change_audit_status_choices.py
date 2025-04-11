@@ -5,24 +5,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     """Migration created to fix dependency issues in CI environment."""
 
-    dependencies = [
-        ("audits", "0005_alter_nonconformance_status")
-    ]
+    dependencies = [("audits", "0005_alter_nonconformance_status")]
 
     operations = [
         migrations.AlterField(
-                model_name="audit",
-                name="status",
-                field=models.CharField(
-                    choices=[
-                        ("scheduled", "Scheduled"),
-                        ("in_progress", "In Progress"),
-                        ("completed", "Completed"),
-                        ("closed", "Closed"),
-                        ("certification_issued", "Certification Issued"),
-                    ],
-                    default="scheduled",
-                    max_length=50,
-                ),
-            )
+            model_name="audit",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("scheduled", "Scheduled"),
+                    ("in_progress", "In Progress"),
+                    ("completed", "Completed"),
+                    ("closed", "Closed"),
+                    ("certification_issued", "Certification Issued"),
+                ],
+                default="scheduled",
+                max_length=50,
+            ),
+        )
     ]

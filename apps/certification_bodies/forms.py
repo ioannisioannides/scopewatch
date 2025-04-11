@@ -4,7 +4,6 @@ from django import forms
 from django.utils import timezone
 
 from apps.audits.models import AuditResult
-from apps.organizations.models import Certification
 
 
 class AuditDecisionForm(forms.ModelForm):

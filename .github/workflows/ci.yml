@@ -15,13 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-        
+        cache: 'pip'
+
     - name: Install system dependencies
       run: |
         sudo apt-get update
@@ -37,7 +38,7 @@ jobs:
       run: |
         mkdir -p logs
         mkdir -p backups
-        
+
     - name: Configure SQLite
       env:
         DJANGO_SECRET_KEY: ${{ github.ref == 'refs/heads/main' && secrets.PROD_DJANGO_SECRET_KEY || secrets.DEV_DJANGO_SECRET_KEY || 'django-insecure-test-key-for-ci' }}
@@ -59,6 +60,13 @@ jobs:
       run: |
         # Run our specialized CI migration fix script that handles the nonconformance model issue
         python scripts/migrations/ci_migration_fix.py
+
+    - name: Run code quality checks
+      run: |
+        pip install pre-commit black isort flake8 flake8-django
+        black --check --line-length=100 .
+        isort --check --profile black --line-length=100 .
+        flake8 --max-line-length=100 --extend-ignore=E203,W503 --exclude=*/migrations/* .
 
     - name: Run tests
       env:

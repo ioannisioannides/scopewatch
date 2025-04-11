@@ -4,16 +4,12 @@ API URL configuration for the Scopewatch project.
 This module defines the URL patterns for the API endpoints of the Scopewatch project.
 """
 
-from django.urls import path, include
 from django.http import JsonResponse
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
-)
-from rest_framework.routers import DefaultRouter
+from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.routers import DefaultRouter
 
 
 # Setup dummy view for API documentation

@@ -7,13 +7,15 @@ This module contains test cases for the Organization model and its functionality
 Expand these tests to cover additional scenarios and edge cases.
 """
 
+from datetime import timedelta
+
 from django.test import TestCase
 from django.urls import reverse
-
-from .models import Organization, Certification
-from apps.certification_bodies.models import CertBody
 from django.utils import timezone
-from datetime import timedelta
+
+from apps.certification_bodies.models import CertBody
+
+from .models import Certification, Organization
 
 
 class OrganizationModelTest(TestCase):
@@ -31,9 +33,7 @@ class OrganizationModelTest(TestCase):
         This test ensures that an Organization instance can be created
         with valid data and that its attributes are correctly set.
         """
-        org = Organization.objects.create(
-            name="TestOrg", contact_email="contact@testorg.com"
-        )
+        org = Organization.objects.create(name="TestOrg", contact_email="contact@testorg.com")
         self.assertEqual(org.name, "TestOrg")
         self.assertEqual(org.contact_email, "contact@testorg.com")
         self.assertTrue(org.is_active)
@@ -100,9 +100,7 @@ class OrganizationViewTest(TestCase):
         This test ensures that the organization detail view returns a 200 status code
         and contains the expected organization data.
         """
-        response = self.client.get(
-            reverse("organization_detail", args=[self.organization.id])
-        )
+        response = self.client.get(reverse("organization_detail", args=[self.organization.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Org")
 
@@ -116,9 +114,7 @@ class CertificationModelTest(TestCase):
         self.organization = Organization.objects.create(
             name="Certified Org", contact_email="certified@example.com"
         )
-        self.cert_body = CertBody.objects.create(
-            name="Certifier Inc", accreditation_id="CERT-123"
-        )
+        self.cert_body = CertBody.objects.create(name="Certifier Inc", accreditation_id="CERT-123")
 
     def test_certification_creation(self):
         """

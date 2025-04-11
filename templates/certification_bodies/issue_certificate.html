@@ -79,7 +79,7 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
-                
+
                 <div class="mb-3">
                     <label for="{{ form.certificate_number.id_for_label }}" class="form-label">{{ form.certificate_number.label }}</label>
                     {{ form.certificate_number }}
@@ -91,7 +91,7 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="{{ form.scope.id_for_label }}" class="form-label">{{ form.scope.label }}</label>
                     {{ form.scope }}
@@ -103,7 +103,7 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="{{ form.expiry_date.id_for_label }}" class="form-label">{{ form.expiry_date.label }}</label>
                     {{ form.expiry_date }}
@@ -116,7 +116,7 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Issue Certificate</button>
                     <a href="{% url 'certification_bodies:pending_decisions' %}" class="btn btn-secondary">Cancel</a>

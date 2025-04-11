@@ -1,7 +1,8 @@
-from django.test.runner import DiscoverRunner
-from django.db import connections
-from django.conf import settings
 import sys
+
+from django.conf import settings
+from django.db import connections
+from django.test.runner import DiscoverRunner
 
 
 class NoMigrationsTestRunner(DiscoverRunner):
@@ -11,7 +12,7 @@ class NoMigrationsTestRunner(DiscoverRunner):
     """
 
     def __init__(self, *args, **kwargs):
-        self.check_migrations = kwargs.pop('check_migrations', False)
+        self.check_migrations = kwargs.pop("check_migrations", False)
         super().__init__(*args, **kwargs)
 
     def setup_databases(self, **kwargs):
@@ -48,9 +49,7 @@ class NoMigrationsTestRunner(DiscoverRunner):
                 # Force create test database
                 test_database_name = connection.creation._get_test_db_name()
                 connection.settings_dict["NAME"] = test_database_name
-                connection.creation._create_test_db(
-                    verbosity=self.verbosity, autoclobber=True
-                )
+                connection.creation._create_test_db(verbosity=self.verbosity, autoclobber=True)
 
                 # Create tables directly from models
                 print("Creating tables directly from application models...")
@@ -72,9 +71,7 @@ class NoMigrationsTestRunner(DiscoverRunner):
                             try:
                                 if not model._meta.managed:
                                     continue
-                                print(
-                                    f"Creating table for {model.__name__}...", end=" "
-                                )
+                                print(f"Creating table for {model.__name__}...", end=" ")
                                 schema_editor.create_model(model)
                                 print("Done", end=" ")
                             except Exception as e:
@@ -91,7 +88,7 @@ class NoMigrationsTestRunner(DiscoverRunner):
         # If migration checking is enabled, use the default behavior
         if self.check_migrations:
             return super().teardown_databases(old_config, **kwargs)
-            
+
         # Intentionally do nothing to preserve the test database
         print("Preserving test database for faster future test runs.")
         return
@@ -102,7 +99,7 @@ class MigrationCheckingTestRunner(NoMigrationsTestRunner):
     Test runner that uses Django's migration system to verify migration integrity.
     This runner is slower but validates that migrations work correctly.
     """
-    
+
     def __init__(self, *args, **kwargs):
-        kwargs['check_migrations'] = True
+        kwargs["check_migrations"] = True
         super().__init__(*args, **kwargs)

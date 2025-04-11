@@ -2,12 +2,7 @@
 
 from django.contrib import admin
 
-from .models import (
-    ConsultancyFirm,
-    Consultant,
-    ConsultantEngagement,
-    ConsultantDocument,
-)
+from .models import ConsultancyFirm, Consultant, ConsultantDocument
 
 
 @admin.register(Consultant)

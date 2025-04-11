@@ -7,7 +7,7 @@ to and from JSON format for the REST API.
 
 from rest_framework import serializers
 
-from .models import Organization, Certification
+from .models import Certification, Organization
 
 
 class CertificationSerializer(serializers.ModelSerializer):

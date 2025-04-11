@@ -1,5 +1,5 @@
-from django.db import migrations, models
 import django.db.models.deletion
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -26,9 +26,7 @@ class Migration(migrations.Migration):
                 ("expiry_date", models.DateField(blank=True, null=True)),
                 (
                     "evidence_document",
-                    models.FileField(
-                        blank=True, null=True, upload_to="auditor_qualifications/"
-                    ),
+                    models.FileField(blank=True, null=True, upload_to="auditor_qualifications/"),
                 ),
                 ("notes", models.TextField(blank=True)),
                 (

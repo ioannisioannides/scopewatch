@@ -6,10 +6,10 @@ Models for the Consultants app.
 This module defines the database models for consultants and consultancy firms.
 """
 
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.utils import timezone
 from django.apps import apps
+from django.contrib.auth import get_user_model
+from django.db import models
+from django.utils import timezone
 
 from apps.organizations.models import Organization
 
@@ -67,9 +67,7 @@ class Consultant(models.Model):
     )
     bio = models.TextField(blank=True)
     specialties = models.CharField(max_length=255, blank=True)
-    specialty = models.CharField(
-        max_length=255, blank=True
-    )  # For backward compatibility
+    specialty = models.CharField(max_length=255, blank=True)  # For backward compatibility
     standards = models.CharField(max_length=255, blank=True)
     experience_years = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -104,9 +102,7 @@ class ConsultantEngagement(models.Model):
         ("cancelled", "Cancelled"),
     ]
 
-    consultant = models.ForeignKey(
-        Consultant, on_delete=models.CASCADE, related_name="engagements"
-    )
+    consultant = models.ForeignKey(Consultant, on_delete=models.CASCADE, related_name="engagements")
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name="consultant_engagements"
     )
@@ -157,9 +153,7 @@ class ConsultantDocument(models.Model):
         ("archived", "Archived"),
     ]
 
-    consultant = models.ForeignKey(
-        Consultant, on_delete=models.CASCADE, related_name="documents"
-    )
+    consultant = models.ForeignKey(Consultant, on_delete=models.CASCADE, related_name="documents")
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name="consultant_documents"
     )
@@ -197,7 +191,7 @@ class ConsultantDocument(models.Model):
 
         Returns:
             DocumentSubmission: The newly created document submission
-            
+
         Raises:
             ValueError: If the document is already submitted to an audit
             ValueError: If the audit is not in a valid state for submission
@@ -206,14 +200,16 @@ class ConsultantDocument(models.Model):
         # Validate that document isn't already submitted
         if self.status == "submitted" and self.submitted_to_audit is not None:
             raise ValueError(f"Document '{self.title}' is already submitted to an audit")
-            
+
         # Validate that the audit belongs to the same organization
         if audit.organization.id != self.organization.id:
-            raise ValueError(f"Cannot submit document to an audit for a different organization")
-            
+            raise ValueError("Cannot submit document to an audit for a different organization")
+
         # Validate that the audit is in a state that can accept documents
         if audit.status not in ["scheduled", "in_progress", "completed"]:
-            raise ValueError(f"Cannot submit document to an audit with status: {audit.get_status_display()}")
+            raise ValueError(
+                f"Cannot submit document to an audit with status: {audit.get_status_display()}"
+            )
 
         # Use get_model to break circular dependency
         DocumentSubmission = apps.get_model("audits", "DocumentSubmission")
@@ -225,9 +221,7 @@ class ConsultantDocument(models.Model):
 
         # Check if document type matches any in DocumentSubmission types
         doc_types = [c[0] for c in DocumentSubmission.DOCUMENT_TYPES]
-        final_doc_type = (
-            self.document_type if self.document_type in doc_types else "other"
-        )
+        final_doc_type = self.document_type if self.document_type in doc_types else "other"
 
         # Create a DocumentSubmission
         submission = DocumentSubmission.objects.create(
