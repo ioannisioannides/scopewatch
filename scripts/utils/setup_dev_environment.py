@@ -9,6 +9,7 @@ required packages.
 
 import os
 import platform
+import shlex
 import shutil
 import subprocess
 import sys
@@ -39,6 +40,13 @@ def print_warning(message):
     print(f"\033[1;33m! {message}\033[0m")
 
 
+def safe_subprocess_run(command, **kwargs):
+    """Wrapper for subprocess.run to ensure safety."""
+    if isinstance(command, str):
+        command = shlex.split(command)
+    return subprocess.run(command, check=True, **kwargs)
+
+
 def check_python_version():
     """Check if Python version is 3.8 or higher."""
     print_step("Checking Python version...")
@@ -58,7 +66,7 @@ def check_pip():
     print_step("Checking for pip...")
 
     try:
-        result = subprocess.run(
+        result = safe_subprocess_run(
             [sys.executable, "-m", "pip", "--version"], check=True, capture_output=True, text=True
         )
         if "pip" not in result.stdout:
@@ -75,7 +83,7 @@ def check_virtualenv():
     print_step("Checking for virtualenv...")
 
     try:
-        result = subprocess.run(
+        result = safe_subprocess_run(
             [sys.executable, "-m", "pip", "show", "virtualenv"],
             check=True,
             capture_output=True,
@@ -88,7 +96,7 @@ def check_virtualenv():
     except (subprocess.CalledProcessError, ValueError) as e:
         print_warning(f"virtualenv check failed: {e}. Installing...")
         try:
-            subprocess.run(
+            safe_subprocess_run(
                 [sys.executable, "-m", "pip", "install", "virtualenv"],
                 check=True,
                 capture_output=True,
@@ -116,7 +124,9 @@ def create_virtualenv():
             return True
 
     try:
-        subprocess.run([sys.executable, "-m", "virtualenv", str(venv_path)], check=True, text=True)
+        safe_subprocess_run(
+            [sys.executable, "-m", "virtualenv", str(venv_path)], check=True, text=True
+        )
         print_success("Virtual environment created successfully.")
         return True
     except subprocess.CalledProcessError as e:
@@ -136,7 +146,7 @@ def install_requirements():
 
     # Install development requirements
     try:
-        subprocess.run(
+        safe_subprocess_run(
             [
                 str(pip_path),
                 "install",
@@ -153,7 +163,7 @@ def install_requirements():
 
     # Install production requirements
     try:
-        subprocess.run(
+        safe_subprocess_run(
             [str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements.txt")],
             check=True,
             text=True,
@@ -197,14 +207,14 @@ def setup_database():
 
     try:
         # Make migrations
-        subprocess.run(
+        safe_subprocess_run(
             [str(python_path), str(PROJECT_ROOT / "manage.py"), "makemigrations"],
             check=True,
             text=True,
         )
 
         # Apply migrations
-        subprocess.run(
+        safe_subprocess_run(
             [str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True, text=True
         )
 
@@ -245,7 +255,7 @@ def create_superuser():
     try:
         # Use a more secure approach with shell=False (the default)
         # and a list of arguments instead of a string
-        result = subprocess.run(
+        result = safe_subprocess_run(
             [str(python_path), str(PROJECT_ROOT / "manage.py"), "createsuperuser"],
             check=True,
             text=True,

@@ -101,6 +101,14 @@ MIDDLEWARE = [
     "apps.management.middleware.SQLiteOptimizedConnectionMiddleware",  # SQLite optimization
 ]
 
+# Ensure SQLite-specific middleware is disabled in production
+if not is_development() and not is_test_environment():
+    MIDDLEWARE = [
+        mw
+        for mw in MIDDLEWARE
+        if mw != "apps.management.middleware.SQLiteOptimizedConnectionMiddleware"
+    ]
+
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
@@ -157,7 +165,18 @@ SPECTACULAR_SETTINGS = {
 # Default to SQLite, but allow override through environment variables
 DB_ENGINE = config("DB_ENGINE", default="django.db.backends.sqlite3")
 
-if DB_ENGINE == "django.db.backends.sqlite3":
+if is_production():
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME", required=True),
+            "USER": config("DB_USER", required=True),
+            "PASSWORD": config("DB_PASSWORD", required=True),
+            "HOST": config("DB_HOST", default="localhost"),
+            "PORT": config("DB_PORT", default="5432"),
+        }
+    }
+elif DB_ENGINE == "django.db.backends.sqlite3":
     DATABASES = {
         "default": {
             "ENGINE": DB_ENGINE,

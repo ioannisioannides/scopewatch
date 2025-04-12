@@ -166,6 +166,10 @@ For production deployment, please ensure:
 4. Configure PostgreSQL database settings
 5. Set up proper web server (Nginx, Apache, etc.)
 
+### Serving Static and Media Files in Production
+
+In production, ensure static and media files are served via a CDN or a dedicated static file server. Update the `STATIC_URL` and `MEDIA_URL` settings accordingly.
+
 See our [deployment guide](docs/deployment.md) for more detailed instructions (coming soon).
 
 ## Contributing
