@@ -76,7 +76,11 @@ class Consultant(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Consultant: {self.user.username}" if self.user and hasattr(self.user, 'username') else "Consultant: Unassigned"
+        return (
+            f"Consultant: {self.user.username}"
+            if self.user and hasattr(self.user, "username")
+            else "Consultant: Unassigned"
+        )
 
 
 class ConsultantEngagement(models.Model):

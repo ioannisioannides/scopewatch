@@ -9,10 +9,10 @@ Expand these tests to cover additional scenarios and edge cases.
 
 from datetime import timedelta
 
+from django.db.models.manager import Manager
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from django.db.models.manager import Manager
 
 from .models import Certification, Organization
 

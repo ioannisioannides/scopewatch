@@ -109,7 +109,7 @@ class Migration(migrations.Migration):
                     "scope",
                     models.TextField(
                         blank=True,
-                        help_text="The scope of certification - what activities, processes, or sites are covered."
+                        help_text="The scope of certification - what activities, processes, or sites are covered.",
                     ),
                 ),
                 (
