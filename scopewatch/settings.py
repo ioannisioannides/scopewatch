@@ -103,7 +103,11 @@ MIDDLEWARE = [
 
 # Ensure SQLite-specific middleware is disabled in production
 if not is_development() and not is_test_environment():
-    MIDDLEWARE = [mw for mw in MIDDLEWARE if mw != "apps.management.middleware.SQLiteOptimizedConnectionMiddleware"]
+    MIDDLEWARE = [
+        mw
+        for mw in MIDDLEWARE
+        if mw != "apps.management.middleware.SQLiteOptimizedConnectionMiddleware"
+    ]
 
 # CORS configuration
 CORS_ALLOW_ALL_ORIGINS = False

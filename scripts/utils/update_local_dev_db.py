@@ -22,11 +22,11 @@ Options:
 
 import argparse
 import os
+import shlex
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-import shlex
 
 import django
 from django.db import connections
@@ -118,9 +118,7 @@ def fake_migrations():
             ["python", "manage.py", "migrate", "--fake-initial", "contenttypes"],
             text=True,
         )
-        safe_subprocess_run(
-            ["python", "manage.py", "migrate", "--fake-initial", "auth"], text=True
-        )
+        safe_subprocess_run(["python", "manage.py", "migrate", "--fake-initial", "auth"], text=True)
         safe_subprocess_run(
             ["python", "manage.py", "migrate", "--fake-initial", "admin"], text=True
         )
@@ -152,9 +150,7 @@ def restore_backup(backup_file):
     print(f"\n5️⃣ Restoring data from backup {backup_file}...")
 
     try:
-        result = safe_subprocess_run(
-            ["python", "manage.py", "loaddata", backup_file], text=True
-        )
+        result = safe_subprocess_run(["python", "manage.py", "loaddata", backup_file], text=True)
         if result.returncode != 0:
             raise ValueError("Restore command failed")
         print("✅ Data restored successfully")

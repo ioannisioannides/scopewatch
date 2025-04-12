@@ -9,10 +9,10 @@ required packages.
 
 import os
 import platform
+import shlex
 import shutil
 import subprocess
 import sys
-import shlex
 from pathlib import Path
 
 # Add the project root to the path to ensure proper execution from any location
@@ -124,7 +124,9 @@ def create_virtualenv():
             return True
 
     try:
-        safe_subprocess_run([sys.executable, "-m", "virtualenv", str(venv_path)], check=True, text=True)
+        safe_subprocess_run(
+            [sys.executable, "-m", "virtualenv", str(venv_path)], check=True, text=True
+        )
         print_success("Virtual environment created successfully.")
         return True
     except subprocess.CalledProcessError as e:
