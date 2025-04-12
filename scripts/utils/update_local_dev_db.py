@@ -28,7 +28,6 @@ from datetime import datetime
 from pathlib import Path
 
 import django
-from django.conf import settings
 from django.db import connections
 
 # Set up Django
@@ -46,7 +45,7 @@ def create_backup():
 
     print(f"\n1️⃣ Creating a backup of your database to {backup_file}...")
     try:
-        subprocess.run(
+        result = subprocess.run(
             [
                 "python",
                 "manage.py",
@@ -61,11 +60,14 @@ def create_backup():
                 backup_file,
             ],
             check=True,
+            text=True,
         )
-        print(f"✅ Database backup created successfully")
+        if result.returncode != 0:
+            raise ValueError("Backup command failed")
+        print("✅ Database backup created successfully")
         return backup_file
-    except subprocess.CalledProcessError:
-        print("⚠️ Warning: Failed to create database backup")
+    except (ValueError, OSError, subprocess.CalledProcessError) as e:
+        print(f"⚠️ Warning: Failed to create database backup: {e}")
         choice = input("Continue anyway? [y/N]: ").lower()
         if choice != "y":
             print("Operation cancelled")
@@ -86,7 +88,7 @@ def reset_database():
                 db_path = connection.settings_dict["NAME"]
                 if os.path.exists(db_path):
                     os.remove(db_path)
-                open(db_path, "w").close()  # Create an empty file
+                open(db_path, "w", encoding="utf-8").close()  # Create an empty file
             else:
                 # For other databases, drop all tables
                 tables = connection.introspection.table_names()
@@ -105,20 +107,22 @@ def fake_migrations():
     print("\n3️⃣ Applying migrations with --fake flag...")
 
     try:
-        # First handle Django's built-in apps
         subprocess.run(
             ["python", "manage.py", "migrate", "--fake-initial", "contenttypes"],
             check=True,
+            text=True,
         )
-        subprocess.run(["python", "manage.py", "migrate", "--fake-initial", "auth"], check=True)
-        subprocess.run(["python", "manage.py", "migrate", "--fake-initial", "admin"], check=True)
-
-        # Then handle all migrations together
-        subprocess.run(["python", "manage.py", "migrate", "--fake-initial"], check=True)
+        subprocess.run(
+            ["python", "manage.py", "migrate", "--fake-initial", "auth"], check=True, text=True
+        )
+        subprocess.run(
+            ["python", "manage.py", "migrate", "--fake-initial", "admin"], check=True, text=True
+        )
+        subprocess.run(["python", "manage.py", "migrate", "--fake-initial"], check=True, text=True)
 
         print("✅ Migrations applied with --fake flag")
     except subprocess.CalledProcessError as e:
-        print(f"⚠️ Error applying migrations: {str(e)}")
+        print(f"⚠️ Error applying migrations: {e}")
         print("\nTry running the migrations manually with:")
         print("  python manage.py migrate --fake-initial")
 
@@ -142,11 +146,14 @@ def restore_backup(backup_file):
     print(f"\n5️⃣ Restoring data from backup {backup_file}...")
 
     try:
-        # Load the data back (skipping contenttypes and auth.Permission)
-        subprocess.run(["python", "manage.py", "loaddata", backup_file], check=True)
+        result = subprocess.run(
+            ["python", "manage.py", "loaddata", backup_file], check=True, text=True
+        )
+        if result.returncode != 0:
+            raise ValueError("Restore command failed")
         print("✅ Data restored successfully")
-    except subprocess.CalledProcessError:
-        print("⚠️ Error restoring data")
+    except (ValueError, OSError, subprocess.CalledProcessError) as e:
+        print(f"⚠️ Error restoring data: {e}")
         print("\nYou may need to load the backup manually:")
         print(f"  python manage.py loaddata {backup_file}")
 

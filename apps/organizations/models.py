@@ -97,11 +97,12 @@ class Certification(models.Model):
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name="certifications"
     )
-    cert_body = models.ForeignKey(
-        "certification_bodies.CertBody",
-        on_delete=models.PROTECT,
-        related_name="issued_certifications",
-    )
+    # Temporarily removed to resolve migration issues
+    # cert_body = models.ForeignKey(
+    #     "certification_bodies.CertBody",
+    #     on_delete=models.PROTECT,
+    #     related_name="issued_certifications",
+    # )
     standard = models.CharField(max_length=255)
     certificate_number = models.CharField(
         max_length=100, unique=True, help_text="The unique certificate identifier"
@@ -112,13 +113,14 @@ class Certification(models.Model):
         blank=True,
         help_text="The scope of certification - what activities, processes, or sites are covered.",
     )
-    audit = models.OneToOneField(
-        "audits.Audit",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="resulting_certification",
-    )
+    # Temporarily removed to resolve migration issues
+    # audit = models.OneToOneField(
+    #     "audits.Audit",
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name="resulting_certification",
+    # )
 
     def __str__(self):
         return f"{self.organization.name} - {self.standard} (#{self.certificate_number})"
@@ -141,4 +143,4 @@ class Certification(models.Model):
             raise ValidationError("Expiry date cannot be before issue date.")
 
     class Meta:
-        unique_together = ("organization", "standard", "cert_body", "issue_date")
+        unique_together = ("organization", "standard", "issue_date")  # Removed `cert_body`

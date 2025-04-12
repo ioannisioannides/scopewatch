@@ -58,12 +58,15 @@ def check_pip():
     print_step("Checking for pip...")
 
     try:
-        subprocess.run([sys.executable, "-m", "pip", "--version"], check=True, capture_output=True)
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "--version"], check=True, capture_output=True, text=True
+        )
+        if "pip" not in result.stdout:
+            raise ValueError("Unexpected pip output")
         print_success("pip is installed.")
         return True
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print_error("pip is not installed or not working.")
-        print("Please install pip and try again.")
+    except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
+        print_error(f"pip check failed: {e}")
         return False
 
 
@@ -72,25 +75,29 @@ def check_virtualenv():
     print_step("Checking for virtualenv...")
 
     try:
-        subprocess.run(
+        result = subprocess.run(
             [sys.executable, "-m", "pip", "show", "virtualenv"],
             check=True,
             capture_output=True,
+            text=True,
         )
+        if "virtualenv" not in result.stdout:
+            raise ValueError("virtualenv not found in pip output")
         print_success("virtualenv is installed.")
         return True
-    except subprocess.CalledProcessError:
-        print_warning("virtualenv is not installed. Installing...")
+    except (subprocess.CalledProcessError, ValueError) as e:
+        print_warning(f"virtualenv check failed: {e}. Installing...")
         try:
             subprocess.run(
                 [sys.executable, "-m", "pip", "install", "virtualenv"],
                 check=True,
                 capture_output=True,
+                text=True,
             )
             print_success("virtualenv installed successfully.")
             return True
-        except subprocess.CalledProcessError:
-            print_error("Failed to install virtualenv.")
+        except subprocess.CalledProcessError as install_error:
+            print_error(f"Failed to install virtualenv: {install_error}")
             return False
 
 
@@ -109,11 +116,11 @@ def create_virtualenv():
             return True
 
     try:
-        subprocess.run([sys.executable, "-m", "virtualenv", str(venv_path)], check=True)
+        subprocess.run([sys.executable, "-m", "virtualenv", str(venv_path)], check=True, text=True)
         print_success("Virtual environment created successfully.")
         return True
-    except subprocess.CalledProcessError:
-        print_error("Failed to create virtual environment.")
+    except subprocess.CalledProcessError as e:
+        print_error(f"Failed to create virtual environment: {e}")
         return False
 
 
@@ -137,10 +144,11 @@ def install_requirements():
                 str(PROJECT_ROOT / "requirements-dev.txt"),
             ],
             check=True,
+            text=True,
         )
         print_success("Development dependencies installed successfully.")
-    except subprocess.CalledProcessError:
-        print_error("Failed to install development dependencies.")
+    except subprocess.CalledProcessError as e:
+        print_error(f"Failed to install development dependencies: {e}")
         return False
 
     # Install production requirements
@@ -148,11 +156,12 @@ def install_requirements():
         subprocess.run(
             [str(pip_path), "install", "-r", str(PROJECT_ROOT / "requirements.txt")],
             check=True,
+            text=True,
         )
         print_success("Production dependencies installed successfully.")
         return True
-    except subprocess.CalledProcessError:
-        print_error("Failed to install production dependencies.")
+    except subprocess.CalledProcessError as e:
+        print_error(f"Failed to install production dependencies: {e}")
         return False
 
 
@@ -191,15 +200,18 @@ def setup_database():
         subprocess.run(
             [str(python_path), str(PROJECT_ROOT / "manage.py"), "makemigrations"],
             check=True,
+            text=True,
         )
 
         # Apply migrations
-        subprocess.run([str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True)
+        subprocess.run(
+            [str(python_path), str(PROJECT_ROOT / "manage.py"), "migrate"], check=True, text=True
+        )
 
         print_success("Database migrations applied successfully.")
         return True
-    except subprocess.CalledProcessError:
-        print_error("Failed to set up database.")
+    except subprocess.CalledProcessError as e:
+        print_error(f"Failed to set up database: {e}")
         return False
 
 

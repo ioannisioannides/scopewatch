@@ -87,10 +87,6 @@ load-plugins=
 # Pickle collected data for later comparisons.
 persistent=yes
 
-# Resolve imports to .pyi stubs if available. May reduce no-member messages and
-# increase not-an-iterable messages.
-prefer-stubs=no
-
 # Minimum Python version to use for version dependent checks. Will default to
 # the version used to run pylint.
 py-version=3.13
@@ -310,9 +306,6 @@ max-locals=15
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7
-
-# Maximum number of positional arguments for function / method.
-max-positional-arguments=5
 
 # Maximum number of public methods for a class (see R0904).
 max-public-methods=20
