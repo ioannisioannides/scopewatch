@@ -46,5 +46,5 @@ class ConsultantDocumentAdmin(admin.ModelAdmin):
         "organization__name",
         "standard",
     )
-    raw_id_fields = ("consultant", "organization", "engagement", "submitted_to_audit")
+    raw_id_fields = ("consultant", "organization", "engagement")
     date_hierarchy = "created_at"

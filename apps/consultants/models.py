@@ -31,7 +31,7 @@ class ConsultancyFirm(models.Model):
 
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255, blank=True)
-    contact_email = models.EmailField(null=True, blank=True)
+    contact_email = models.EmailField(blank=True)
     website = models.URLField(blank=True)
     specialties = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
@@ -76,7 +76,11 @@ class Consultant(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user.get_full_name() or self.user.username
+        return (
+            f"Consultant: {self.user.username}"
+            if self.user and hasattr(self.user, "username")
+            else "Consultant: Unassigned"
+        )
 
 
 class ConsultantEngagement(models.Model):
@@ -113,7 +117,7 @@ class ConsultantEngagement(models.Model):
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.consultant} - {self.organization} ({self.get_status_display()})"
+        return f"{self.consultant} - {self.organization}"
 
 
 class ConsultantDocument(models.Model):
@@ -170,14 +174,14 @@ class ConsultantDocument(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="draft")
     file = models.FileField(upload_to="consultant_documents/")
     notes = models.TextField(blank=True)
-    # Use the string reference to break circular dependency
-    submitted_to_audit = models.ForeignKey(
-        "audits.Audit",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="submitted_consultant_documents",
-    )
+    # Temporarily removed to resolve migration issues
+    # submitted_to_audit = models.ForeignKey(
+    #     "audits.Audit",
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True,
+    #     related_name="consultant_documents",
+    # )
 
     def __str__(self):
         return f"{self.title} - {self.organization.name}"
@@ -197,12 +201,12 @@ class ConsultantDocument(models.Model):
             ValueError: If the audit is not in a valid state for submission
             ValueError: If the audit is for a different organization
         """
-        # Validate that document isn't already submitted
-        if self.status == "submitted" and self.submitted_to_audit is not None:
-            raise ValueError(f"Document '{self.title}' is already submitted to an audit")
+        # Temporarily removed to resolve migration issues
+        # if self.status == "submitted" and self.submitted_to_audit is not None:
+        #     raise ValueError(f"Document '{self.title}' is already submitted to an audit")
 
         # Validate that the audit belongs to the same organization
-        if audit.organization.id != self.organization.id:
+        if audit.organization_id != self.organization_id:
             raise ValueError("Cannot submit document to an audit for a different organization")
 
         # Validate that the audit is in a state that can accept documents
@@ -216,7 +220,8 @@ class ConsultantDocument(models.Model):
 
         # Update this document's status
         self.status = "submitted"
-        self.submitted_to_audit = audit
+        # Temporarily removed to resolve migration issues
+        # self.submitted_to_audit = audit
         self.save()
 
         # Check if document type matches any in DocumentSubmission types
@@ -224,11 +229,15 @@ class ConsultantDocument(models.Model):
         final_doc_type = self.document_type if self.document_type in doc_types else "other"
 
         # Create a DocumentSubmission
+        submitted_by_user = self.consultant.user_id
+        if not submitted_by_user:
+            raise ValueError("Consultant user is not assigned")
+
         submission = DocumentSubmission.objects.create(
             audit=audit,
             title=self.title,
             document_type=final_doc_type,
-            submitted_by=self.consultant.user,
+            submitted_by=submitted_by_user,
             consultant=self.consultant,
             file=self.file,
             notes=f"Submitted from consultant document: {self.title}",
