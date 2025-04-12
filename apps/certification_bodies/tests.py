@@ -13,7 +13,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from apps.audits.models import Audit, AuditResult
+from apps.certification_bodies.models import Audit, AuditResult
 from apps.organizations.models import Certification, Organization
 from apps.utils.test_credentials import get_test_credential
 

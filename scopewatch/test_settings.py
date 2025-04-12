@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     "apps.organizations",
     "apps.certification_bodies",
     "apps.consultants.apps.ConsultantsConfig",
-    "apps.audits.apps.AuditsConfig",
+    # "apps.audits.apps.AuditsConfig",  # Removed as audits app is merged into certification_bodies
     "apps.public.apps.PublicConfig",
 ]
 

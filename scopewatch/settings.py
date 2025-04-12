@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Scopewatch apps
-    "apps.audits.apps.AuditsConfig",
+    # "apps.audits.apps.AuditsConfig",  # Removed as audits app is merged into certification_bodies
     "apps.certification_bodies.apps.CertificationBodiesConfig",
     "apps.organizations.apps.OrganizationsConfig",
     "apps.consultants.apps.ConsultantsConfig",
