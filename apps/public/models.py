@@ -33,6 +33,9 @@ class CertificationVerification(models.Model):
     verification_date = models.DateTimeField(default=timezone.now)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
     user_agent = models.TextField(blank=True)
+    temporary_field = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # Temporary field to force migration
 
     @property
     def created_at(self):

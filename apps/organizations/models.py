@@ -41,6 +41,12 @@ class Organization(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    temporary_field = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # Temporary field to force migration
+    temporary_field_2 = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # Temporary field to force migration
 
     def __str__(self):
         return str(self.name)
@@ -143,4 +149,8 @@ class Certification(models.Model):
             raise ValidationError("Expiry date cannot be before issue date.")
 
     class Meta:
-        unique_together = ("organization", "standard", "issue_date")  # Removed `cert_body`
+        unique_together = (
+            "organization",
+            "standard",
+            "issue_date",
+        )  # Removed outdated references to `cert_body`

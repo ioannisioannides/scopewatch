@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
-from apps.audits.models import Audit, AuditResult
+from apps.certification_bodies.models import Audit, AuditResult
 from apps.organizations.models import Certification
 
 from .forms import AuditDecisionForm, CertificationIssueForm

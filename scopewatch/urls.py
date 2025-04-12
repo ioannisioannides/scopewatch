@@ -23,7 +23,7 @@ def index(request):
 urlpatterns = [
     path("admin", admin.site.urls),
     # Include URLs for the Audits app
-    path("audits/", include("apps.audits.urls")),
+    # path("audits/", include("apps.audits.urls")),  # Removed as audits app is merged into certification_bodies
     # Include URLs for Certification Bodies app
     path("certification_bodies/", include("apps.certification_bodies.urls")),
     # Include URLs for Consultants app
