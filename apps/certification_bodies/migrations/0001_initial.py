@@ -186,9 +186,7 @@ class Migration(migrations.Migration):
                 ("address", models.CharField(blank=True, max_length=255)),
                 (
                     "logo",
-                    models.ImageField(
-                        blank=True, null=True, upload_to="certbody_logos/"
-                    ),
+                    models.ImageField(blank=True, null=True, upload_to="certbody_logos/"),
                 ),
                 (
                     "contact_email",
@@ -323,9 +321,7 @@ class Migration(migrations.Migration):
                 ("expiry_date", models.DateField(blank=True, null=True)),
                 (
                     "evidence_document",
-                    models.FileField(
-                        blank=True, null=True, upload_to="auditor_qualifications/"
-                    ),
+                    models.FileField(blank=True, null=True, upload_to="auditor_qualifications/"),
                 ),
                 ("notes", models.TextField(blank=True)),
             ],

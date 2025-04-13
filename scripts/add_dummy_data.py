@@ -1,8 +1,10 @@
 from django.utils import timezone
-from apps.organizations.models import Organization, Certification
-from apps.certification_bodies.models import CertBody, Audit
+
+from apps.certification_bodies.models import Audit, CertBody
 from apps.consultants.models import ConsultancyFirm, Consultant, ConsultantEngagement
+from apps.organizations.models import Certification, Organization
 from apps.public.models import SearchLog
+
 
 def add_dummy_data():
     # Add Certification Body
@@ -11,7 +13,7 @@ def add_dummy_data():
         accreditation_id="GC-12345",
         address="123 Certification Lane",
         contact_email="info@globalcertifiers.com",
-        is_active=True
+        is_active=True,
     )
 
     # Add Organization
@@ -21,7 +23,7 @@ def add_dummy_data():
         contact_email="contact@techinnovators.com",
         website="https://techinnovators.com",
         industry="Technology",
-        is_active=True
+        is_active=True,
     )
 
     # Add Certification
@@ -32,7 +34,7 @@ def add_dummy_data():
         issue_date=timezone.now().date(),
         expiry_date=timezone.now().date().replace(year=timezone.now().year + 3),
         scope="Quality Management System",
-        audit=None  # Placeholder for now
+        audit=None,  # Placeholder for now
     )
 
     # Add Consultant and Consultancy Firm
@@ -42,7 +44,7 @@ def add_dummy_data():
         contact_email="support@complianceexperts.com",
         website="https://complianceexperts.com",
         specialties="ISO Standards",
-        is_active=True
+        is_active=True,
     )
 
     consultant = Consultant.objects.create(
@@ -52,7 +54,7 @@ def add_dummy_data():
         specialties="Quality Management",
         experience_years=10,
         is_active=True,
-        is_independent=False
+        is_independent=False,
     )
 
     # Add Consultant Engagement
@@ -61,7 +63,7 @@ def add_dummy_data():
         organization=organization,
         start_date=timezone.now().date(),
         standards="ISO 9001:2015",
-        status="active"
+        status="active",
     )
 
     # Add Search Log
@@ -71,10 +73,11 @@ def add_dummy_data():
         results_count=1,
         ip_address="127.0.0.1",
         user_agent="Mozilla/5.0",
-        location="Localhost"
+        location="Localhost",
     )
 
     print("Dummy data added successfully.")
+
 
 if __name__ == "__main__":
     add_dummy_data()

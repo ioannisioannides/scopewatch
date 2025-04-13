@@ -14,7 +14,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import DetailView, ListView
 
 from apps.organizations.models import Certification
-from apps.public.models import SearchLog, CertificationVerification
+from apps.public.models import CertificationVerification, SearchLog
 
 from .forms import CertificateSearchForm
 
@@ -35,6 +35,7 @@ class CertificateSearchView(ListView):
     """
     View for searching certifications.
     """
+
     model = Certification
     template_name = "public/certificate_search.html"
     context_object_name = "certifications"

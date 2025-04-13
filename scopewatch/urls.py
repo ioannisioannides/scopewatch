@@ -25,7 +25,10 @@ urlpatterns = [
     # Include URLs for the Audits app
     # path("audits/", include("apps.audits.urls")),  # Removed as audits app is merged into certification_bodies
     # Include URLs for Certification Bodies app
-    path("certification_bodies/", include("apps.certification_bodies.urls", namespace="certification_bodies")),
+    path(
+        "certification_bodies/",
+        include("apps.certification_bodies.urls", namespace="certification_bodies"),
+    ),
     # Include URLs for Consultants app
     path("consultants/", include("apps.consultants.urls", namespace="consultants")),
     # Include URLs for Organizations app
