@@ -4,8 +4,17 @@ Django settings for the Scopewatch project.
 This module contains the settings configuration for the Scopewatch project.
 """
 
+import os
 import sys
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Build paths inside the project
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
 
 # Import our custom config module instead of using decouple directly
 from scopewatch.config import (
@@ -15,9 +24,6 @@ from scopewatch.config import (
     is_production,
     is_test_environment,
 )
-
-# Build paths inside the project
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # In production, this will raise an error if the environment variable is not set
@@ -165,43 +171,17 @@ SPECTACULAR_SETTINGS = {
 # Default to SQLite, but allow override through environment variables
 DB_ENGINE = config("DB_ENGINE", default="django.db.backends.sqlite3")
 
-if is_production():
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": config("DB_NAME", required=True),
-            "USER": config("DB_USER", required=True),
-            "PASSWORD": config("DB_PASSWORD", required=True),
-            "HOST": config("DB_HOST", default="localhost"),
-            "PORT": config("DB_PORT", default="5432"),
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": DB_ENGINE,
+        "NAME": config("DB_NAME", default="db.sqlite3"),
+        "USER": config("DB_USER", default=""),
+        "PASSWORD": config("DB_PASSWORD", default=""),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
+        "ATOMIC_REQUESTS": True,
     }
-elif DB_ENGINE == "django.db.backends.sqlite3":
-    DATABASES = {
-        "default": {
-            "ENGINE": DB_ENGINE,
-            "NAME": BASE_DIR / "db.sqlite3",
-            # SQLite optimizations - removed incompatible parameters for Python 3.13
-            "OPTIONS": {
-                "timeout": 20,  # Busy timeout in seconds
-                "isolation_level": None,  # Use autocommit mode
-            },
-            "ATOMIC_REQUESTS": True,  # Wrap each HTTP request in a transaction
-        }
-    }
-else:
-    # PostgreSQL or other database engine
-    DATABASES = {
-        "default": {
-            "ENGINE": DB_ENGINE,
-            "NAME": config("DB_NAME", required=True),
-            "USER": config("DB_USER", required=True),
-            "PASSWORD": config("DB_PASSWORD", required=True),
-            "HOST": config("DB_HOST", default="localhost"),
-            "PORT": config("DB_PORT", default="5432"),
-            "ATOMIC_REQUESTS": True,
-        }
-    }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
