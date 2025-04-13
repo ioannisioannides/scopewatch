@@ -252,74 +252,7 @@ class Audit(models.Model):
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return (
-            f"{self.get_audit_type_display()} - {self.organization.name} "
-            f"({self.get_status_display()})"
-        )
-
-    def issue_certification(self, scope, certificate_number, issue_date, expiry_date):
-        """
-        Issues a new certification based on this audit.
-
-        Args:
-            scope: The scope of the certification
-            certificate_number: The unique certificate number
-            issue_date: The date the certificate is issued
-            expiry_date: The expiration date of the certificate
-
-        Returns:
-            The newly created Certification object
-
-        Raises:
-            ValueError: If the audit status doesn't allow certification
-            ValueError: If the certificate dates are invalid
-            ValueError: If the certificate number is already in use
-        """
-        from apps.organizations.models import Certification
-
-        # Check if a certification already exists for this audit
-        try:
-            if hasattr(self, "resulting_certification"):
-                return self.resulting_certification
-        except Certification.DoesNotExist:
-            pass
-
-        # Validate audit status
-        if self.status not in ["completed", "closed"]:
-            raise ValueError(
-                f"Cannot issue certification for an audit with status: {self.get_status_display()}. "
-                "Audit must be 'Completed' or 'Closed'."
-            )
-
-        # Validate dates
-        today = timezone.now().date()
-        if issue_date > today:
-            raise ValueError("Certificate issue date cannot be in the future")
-
-        if expiry_date <= issue_date:
-            raise ValueError("Certificate expiry date must be after the issue date")
-
-        # Validate certificate number uniqueness
-        if Certification.objects.filter(certificate_number=certificate_number).exists():
-            raise ValueError(f"Certificate number '{certificate_number}' is already in use")
-
-        # Create a new certification
-        certification = Certification.objects.create(
-            organization=self.organization,
-            cert_body=self.certbody,
-            standard=self.standard,
-            certificate_number=certificate_number,
-            issue_date=issue_date,
-            expiry_date=expiry_date,
-            scope=scope,
-            audit=self,
-        )
-
-        # Update the audit status
-        self.status = "certification_issued"
-        self.save()
-
-        return certification
+        return f"{self.get_audit_type_display()} - {self.organization.name} ({self.get_status_display()})"
 
 
 class AuditTeam(models.Model):

@@ -117,7 +117,7 @@ class ConsultantEngagement(models.Model):
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.consultant} - {self.organization}"
+        return f"Engagement: {self.consultant} with {self.organization}"
 
 
 class ConsultantDocument(models.Model):

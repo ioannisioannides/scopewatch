@@ -9,6 +9,8 @@ from django.urls import path
 
 from . import views
 
+app_name = "organizations"  # Namespace for the Organizations app
+
 urlpatterns = [
     path("", views.organization_list_view, name="organization_list"),  # List view for organizations
     path(

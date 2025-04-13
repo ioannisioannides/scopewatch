@@ -4,6 +4,7 @@ from django.db import connection
 from django.db.migrations.exceptions import InconsistentMigrationHistory
 
 
+@pytest.mark.django_db
 def test_migration_order():
     with pytest.raises(InconsistentMigrationHistory):
         call_command(
