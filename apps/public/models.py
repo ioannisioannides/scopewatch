@@ -58,12 +58,16 @@ class SearchLog(models.Model):
         created_at (datetime): When the search record was created (alias for search_date).
         results_count (int): Number of results returned.
         ip_address (str): The IP address of the searcher (anonymized).
+        user_agent (str): The user agent of the searcher.
+        location (str): Geolocation of the searcher.
     """
 
     search_term = models.CharField(max_length=255)
     search_date = models.DateTimeField(default=timezone.now)
     results_count = models.IntegerField(default=0)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True)
+    location = models.CharField(max_length=255, blank=True, help_text="Geolocation of the searcher")
 
     @property
     def created_at(self):

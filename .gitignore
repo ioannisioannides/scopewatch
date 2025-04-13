@@ -219,3 +219,6 @@ cython_debug/
 *.P12
 *.pfx
 *.PFX
+
+# Private reference document
+docs/private_reference.md

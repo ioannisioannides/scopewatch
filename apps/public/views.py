@@ -14,9 +14,9 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import DetailView, ListView
 
 from apps.organizations.models import Certification
+from apps.public.models import CertificationVerification, SearchLog
 
 from .forms import CertificateSearchForm
-from .models import CertificationVerification, SearchLog
 
 
 def get_client_ip(request):
@@ -54,7 +54,7 @@ class CertificateSearchView(ListView):
             # Log the search
             SearchLog.objects.create(
                 search_term=search_term or "",
-                ip_address=get_client_ip(self.request),
+                ip_address=self.get_client_ip(),
                 results_count=0,  # Will update after filtering
             )
 
@@ -70,7 +70,7 @@ class CertificateSearchView(ListView):
 
             # Update the search log with results count
             SearchLog.objects.filter(
-                search_term=search_term or "", ip_address=get_client_ip(self.request)
+                search_term=search_term or "", ip_address=self.get_client_ip()
             ).update(results_count=queryset.count())
 
         return queryset
@@ -79,6 +79,14 @@ class CertificateSearchView(ListView):
         context = super().get_context_data(**kwargs)
         context["form"] = CertificateSearchForm(self.request.GET)
         return context
+
+    def get_client_ip(self):
+        x_forwarded_for = self.request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(",")[0]
+        else:
+            ip = self.request.META.get("REMOTE_ADDR")
+        return ip
 
 
 class CertificateDetailView(DetailView):

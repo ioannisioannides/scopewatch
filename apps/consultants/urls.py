@@ -9,6 +9,8 @@ from django.urls import path
 
 from . import views
 
+app_name = "consultants"  # Namespace for the Consultants app
+
 urlpatterns = [
     path(
         "consultants", views.consultant_list_view, name="consultant_list"
