@@ -4,16 +4,17 @@ Django settings for the Scopewatch project.
 This module contains the settings configuration for the Scopewatch project.
 """
 
+import os
 import sys
 from pathlib import Path
+
 from dotenv import load_dotenv
-import os
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env file
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env'))
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, ".env"))
 
 # Import our custom config module instead of using decouple directly
 from scopewatch.config import (
