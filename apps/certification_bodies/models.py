@@ -207,7 +207,9 @@ class StandardQualification(models.Model):
             raise ValidationError("Expiry date cannot be before qualification date")
 
         # Standard should not be empty
-        if not self.standard or not str(self.standard).strip():  # Corrected handling of CharField value
+        if (
+            not self.standard or not str(self.standard).strip()
+        ):  # Corrected handling of CharField value
             raise ValidationError("Standard cannot be empty")
 
 

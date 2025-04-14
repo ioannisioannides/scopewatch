@@ -114,7 +114,7 @@ class Certification(models.Model):
     expiry_date = models.DateField()
     scope = models.TextField(
         blank=True,
-        help_text="The scope of certification - what activities, processes, or sites are covered."
+        help_text="The scope of certification - what activities, processes, or sites are covered.",
     )
 
     def __str__(self):
