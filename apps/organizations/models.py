@@ -75,7 +75,7 @@ class OrganizationUser(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.get_username()} ({self.role}) at {self.organization.name}"
+        return f"{self.user} ({self.role}) at {self.organization.name}"
 
 
 class Certification(models.Model):
@@ -95,7 +95,7 @@ class Certification(models.Model):
     """
 
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="certifications"
+        "organizations.Organization", on_delete=models.CASCADE, related_name="certifications"
     )
     standard = models.CharField(max_length=255)
     certificate_number = models.CharField(

@@ -64,7 +64,7 @@ class CertBodyUser(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.username} ({self.role}) at {self.cert_body.name}"
+        return f"{self.user} ({self.role}) at {self.cert_body.name}"
 
 
 class Auditor(models.Model):
@@ -85,9 +85,14 @@ class Auditor(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    qualifications = models.ManyToManyField(
+        "certification_bodies.StandardQualification",
+        related_name="auditor_qualifications",
+        blank=True,
+    )
 
     def __str__(self):
-        return str(self.user.get_full_name() or self.user.username)
+        return str(self.user)
 
     def can_audit_standard(self, standard, cert_body=None):
         """
@@ -101,10 +106,11 @@ class Auditor(models.Model):
         Returns:
             bool: True if qualified, False otherwise
         """
-        qualifications = self.qualifications.filter(standard=standard)
+        qualifications = self.qualifications.all()
+        qualifications = [q for q in qualifications if q.standard == standard]
 
         if cert_body:
-            qualifications = qualifications.filter(cert_body=cert_body)
+            qualifications = [q for q in qualifications if q.cert_body == cert_body]
 
         valid_qualifications = [q for q in qualifications if q.is_valid]
 
@@ -128,7 +134,9 @@ class StandardQualification(models.Model):
         notes (TextField): Additional information about the qualification.
     """
 
-    auditor = models.ForeignKey(Auditor, on_delete=models.CASCADE, related_name="qualifications")
+    auditor = models.ForeignKey(
+        Auditor, on_delete=models.CASCADE, related_name="standard_qualifications"
+    )
     standard = models.CharField(max_length=255)
     cert_body = models.ForeignKey(
         CertBody, on_delete=models.CASCADE, related_name="verified_qualifications"
@@ -199,7 +207,7 @@ class StandardQualification(models.Model):
             raise ValidationError("Expiry date cannot be before qualification date")
 
         # Standard should not be empty
-        if not self.standard.strip():
+        if not isinstance(self.standard, str) or not self.standard.strip():
             raise ValidationError("Standard cannot be empty")
 
 
@@ -252,7 +260,7 @@ class Audit(models.Model):
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.get_audit_type_display()} - {self.organization.name} ({self.get_status_display()})"
+        return f"{self.audit_type} - {self.organization.name} ({self.status})"
 
 
 class AuditTeam(models.Model):
@@ -308,7 +316,7 @@ class AuditorAssignment(models.Model):
     unassigned_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.auditor} - {self.team.audit} ({self.get_role_display()})"
+        return f"{self.auditor} - {self.team.audit} ({self.role})"
 
 
 class NonConformance(models.Model):
@@ -338,7 +346,7 @@ class NonConformance(models.Model):
     requires_evidence = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.get_severity_display()} NC - {self.audit}"
+        return f"{self.severity} NC - {self.audit}"
 
 
 class DocumentSubmission(models.Model):
@@ -377,7 +385,9 @@ class DocumentSubmission(models.Model):
         ("needs_revision", "Needs Revision"),
     ]
 
-    audit = models.ForeignKey(Audit, on_delete=models.CASCADE, related_name="documents")
+    audit = models.ForeignKey(
+        "certification_bodies.Audit", on_delete=models.CASCADE, related_name="documents"
+    )
     title = models.CharField(max_length=255)
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
     submitted_by = models.ForeignKey(
@@ -443,7 +453,7 @@ class AuditResult(models.Model):
     recommendation = models.CharField(max_length=20, choices=RECOMMENDATION_CHOICES, blank=True)
 
     def __str__(self):
-        return f"Result for {self.audit}: {self.get_decision_display()}"
+        return f"Result for {self.audit}: {self.decision}"
 
     def can_issue_certificate(self):
         """
@@ -470,10 +480,9 @@ class AuditResult(models.Model):
         """
         if not self.can_issue_certificate():
             raise ValueError("Cannot issue certificate with current audit result")
-
-        return self.audit.issue_certification(
-            scope=scope,
-            certificate_number=certificate_number,
-            issue_date=timezone.now().date(),
-            expiry_date=expiry_date,
-        )
+        # Assuming `issue_certification` is a method on the `Audit` model
+        if hasattr(self.audit, "issue_certification"):
+            return self.audit.issue_certification(
+                certificate_number=certificate_number, scope=scope, expiry_date=expiry_date
+            )
+        raise ValueError("Audit does not support issuing certifications")

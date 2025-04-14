@@ -11,8 +11,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-from apps.organizations.models import Organization
-
 # Use get_user_model() instead of directly importing User
 User = get_user_model()
 
@@ -106,9 +104,13 @@ class ConsultantEngagement(models.Model):
         ("cancelled", "Cancelled"),
     ]
 
-    consultant = models.ForeignKey(Consultant, on_delete=models.CASCADE, related_name="engagements")
+    consultant = models.ForeignKey(
+        "consultants.Consultant", on_delete=models.CASCADE, related_name="engagements"
+    )
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="consultant_engagements"
+        "organizations.Organization",
+        on_delete=models.CASCADE,
+        related_name="consultant_engagements",
     )
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(null=True, blank=True)
@@ -117,7 +119,11 @@ class ConsultantEngagement(models.Model):
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"Engagement: {self.consultant} with {self.organization}"
+        return (
+            f"Engagement: {self.consultant} with {self.organization}"
+            if self.consultant and self.organization
+            else "Engagement: Unassigned"
+        )
 
 
 class ConsultantDocument(models.Model):
@@ -157,12 +163,14 @@ class ConsultantDocument(models.Model):
         ("archived", "Archived"),
     ]
 
-    consultant = models.ForeignKey(Consultant, on_delete=models.CASCADE, related_name="documents")
+    consultant = models.ForeignKey(
+        "consultants.Consultant", on_delete=models.CASCADE, related_name="documents"
+    )
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="consultant_documents"
+        "organizations.Organization", on_delete=models.CASCADE, related_name="consultant_documents"
     )
     engagement = models.ForeignKey(
-        ConsultantEngagement, on_delete=models.CASCADE, related_name="documents"
+        "consultants.ConsultantEngagement", on_delete=models.CASCADE, related_name="documents"
     )
     title = models.CharField(max_length=255)
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
@@ -174,14 +182,6 @@ class ConsultantDocument(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="draft")
     file = models.FileField(upload_to="consultant_documents/")
     notes = models.TextField(blank=True)
-    # Temporarily removed to resolve migration issues
-    # submitted_to_audit = models.ForeignKey(
-    #     "audits.Audit",
-    #     on_delete=models.SET_NULL,
-    #     blank=True,
-    #     null=True,
-    #     related_name="consultant_documents",
-    # )
 
     def __str__(self):
         return f"{self.title} - {self.organization.name}"
@@ -206,7 +206,7 @@ class ConsultantDocument(models.Model):
         #     raise ValueError(f"Document '{self.title}' is already submitted to an audit")
 
         # Validate that the audit belongs to the same organization
-        if audit.organization_id != self.organization_id:
+        if not hasattr(audit, "organization") or audit.organization.pk != self.organization.pk:
             raise ValueError("Cannot submit document to an audit for a different organization")
 
         # Validate that the audit is in a state that can accept documents
@@ -229,7 +229,7 @@ class ConsultantDocument(models.Model):
         final_doc_type = self.document_type if self.document_type in doc_types else "other"
 
         # Create a DocumentSubmission
-        submitted_by_user = self.consultant.user_id
+        submitted_by_user = getattr(self.consultant, "user_id", None)
         if not submitted_by_user:
             raise ValueError("Consultant user is not assigned")
 
