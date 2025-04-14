@@ -49,7 +49,6 @@ class Consultant(models.Model):
         firm (ForeignKey): The consultancy firm this consultant works for.
         bio (str): Biographical information about the consultant.
         specialties (str): The consultant's areas of specialty.
-        specialty (str): The primary specialty of the consultant (for backward compatibility).
         standards (str): The standards the consultant is familiar with.
         is_active (bool): Whether the consultant is active.
         is_independent (bool): Whether the consultant works independently.
@@ -65,20 +64,35 @@ class Consultant(models.Model):
     )
     bio = models.TextField(blank=True)
     specialties = models.CharField(max_length=255, blank=True)
-    specialty = models.CharField(max_length=255, blank=True)  # For backward compatibility
     standards = models.CharField(max_length=255, blank=True)
-    experience_years = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     is_independent = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return (
-            f"Consultant: {self.user.username}"
-            if self.user and hasattr(self.user, "username")
-            else "Consultant: Unassigned"
-        )
+        return f"Consultant: {self.user.username}" if self.user else "Consultant: Unassigned"
+
+    def observe_audit_results(self, audit):
+        """
+        Allows the consultant to observe the results of a completed audit.
+
+        Args:
+            audit (Audit): The audit to observe results for.
+
+        Returns:
+            AuditResult: The results of the audit.
+
+        Raises:
+            ValueError: If the audit is not completed or the consultant is not authorized.
+        """
+        if audit.status != "completed":
+            raise ValueError("Cannot observe results for an audit that is not completed.")
+
+        if audit.organization not in self.engagements.values_list("organization", flat=True):
+            raise ValueError("Consultant is not authorized to observe this audit.")
+
+        return getattr(audit, "result", None)
 
 
 class ConsultantEngagement(models.Model):

@@ -28,7 +28,7 @@ class CertificationVerification(models.Model):
     certificate = models.ForeignKey(
         "organizations.Certification",
         on_delete=models.CASCADE,
-        related_name="verification_records",
+        related_name="public_verification_records",
     )
     verification_date = models.DateTimeField(default=timezone.now)
     ip_address = models.GenericIPAddressField(blank=True, null=True)

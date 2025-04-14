@@ -11,7 +11,7 @@ class ConsultantAdmin(admin.ModelAdmin):
     Admin configuration for the Consultant model.
     """
 
-    list_display = ("id", "user", "specialties", "experience_years")
+    list_display = ("id", "user", "specialties")  # Removed 'experience_years'
     search_fields = ("user__username", "specialties")
 
 
