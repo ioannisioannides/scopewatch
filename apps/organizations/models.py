@@ -85,17 +85,26 @@ class Certification(models.Model):
     Attributes:
         organization (ForeignKey): The organization holding the certification.
         cert_body (ForeignKey): The certification body that issued the certification.
+        audit (OneToOneField): The audit that resulted in this certification.
         standard (str): The standard the organization is certified against.
         certificate_number (str): The unique certificate number.
         issue_date (date): The date the certification was issued.
         expiry_date (date): The date the certification expires.
         scope (TextField): The scope of certification activities covered.
-        audit (OneToOneField): The audit that resulted in this certification.
-        is_valid (bool): Whether the certification is currently valid.
     """
 
     organization = models.ForeignKey(
         "organizations.Organization", on_delete=models.CASCADE, related_name="certifications"
+    )
+    cert_body = models.ForeignKey(
+        "certification_bodies.CertBody", on_delete=models.CASCADE, related_name="certifications"
+    )
+    audit = models.OneToOneField(
+        "certification_bodies.Audit",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="resulting_certification",
     )
     standard = models.CharField(max_length=255)
     certificate_number = models.CharField(
@@ -106,13 +115,6 @@ class Certification(models.Model):
     scope = models.TextField(
         blank=True,
         help_text="The scope of certification - what activities, processes, or sites are covered.",
-    )
-    audit = models.OneToOneField(
-        "certification_bodies.Audit",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="resulting_certification",
     )
 
     def __str__(self):

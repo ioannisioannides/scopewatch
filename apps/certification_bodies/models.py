@@ -106,7 +106,7 @@ class Auditor(models.Model):
         Returns:
             bool: True if qualified, False otherwise
         """
-        qualifications = self.qualifications.all()
+        qualifications = self.standard_qualifications.all()  # Corrected to use related_name
         qualifications = [q for q in qualifications if q.standard == standard]
 
         if cert_body:
@@ -207,7 +207,9 @@ class StandardQualification(models.Model):
             raise ValidationError("Expiry date cannot be before qualification date")
 
         # Standard should not be empty
-        if not isinstance(self.standard, str) or not self.standard.strip():
+        if (
+            not self.standard or not str(self.standard).strip()
+        ):  # Corrected handling of CharField value
             raise ValidationError("Standard cannot be empty")
 
 
@@ -223,6 +225,8 @@ class Audit(models.Model):
         organization (ForeignKey): The organization being audited.
         certbody (ForeignKey): The certification body conducting the audit.
         scheduled_date (date): When the audit is scheduled to take place.
+        standard (str): The standard being audited against.
+        notes (TextField): Additional notes about the audit.
     """
 
     AUDIT_TYPE_CHOICES = [
@@ -261,6 +265,45 @@ class Audit(models.Model):
 
     def __str__(self):
         return f"{self.audit_type} - {self.organization.name} ({self.status})"
+
+    def issue_certificate(self, certificate_number, scope, expiry_date):
+        """
+        Issues a certificate for this audit if it is completed and approved.
+
+        Args:
+            certificate_number (str): The unique certificate number.
+            scope (str): The scope of the certification.
+            expiry_date (date): The expiry date of the certification.
+
+        Returns:
+            Certification: The issued certification instance.
+
+        Raises:
+            ValueError: If the audit is not completed or already has a certification.
+        """
+        if self.status != "completed":
+            raise ValueError("Cannot issue a certificate for an audit that is not completed.")
+
+        if hasattr(self, "resulting_certification"):
+            raise ValueError("A certificate has already been issued for this audit.")
+
+        from apps.organizations.models import Certification
+
+        certification = Certification.objects.create(
+            organization=self.organization,
+            cert_body=self.certbody,
+            audit=self,
+            standard=self.standard,
+            certificate_number=certificate_number,
+            issue_date=timezone.now().date(),
+            expiry_date=expiry_date,
+            scope=scope,
+        )
+
+        self.status = "certification_issued"
+        self.save()
+
+        return certification
 
 
 class AuditTeam(models.Model):
@@ -316,7 +359,7 @@ class AuditorAssignment(models.Model):
     unassigned_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.auditor} - {self.team.audit} ({self.role})"
+        return f"{self.auditor} - {self.team.audit if hasattr(self.team, 'audit') else 'No Team'} ({self.role})"  # Added hasattr check for audit
 
 
 class NonConformance(models.Model):
@@ -486,3 +529,18 @@ class AuditResult(models.Model):
                 certificate_number=certificate_number, scope=scope, expiry_date=expiry_date
             )
         raise ValueError("Audit does not support issuing certifications")
+
+
+class CertificationVerification(models.Model):
+    """
+    Represents a verification record for a certification.
+
+    Attributes:
+        certificate (ForeignKey): The certification being verified.
+    """
+
+    certificate = models.ForeignKey(
+        "organizations.Certification",
+        on_delete=models.CASCADE,
+        related_name="certification_body_verification_records",
+    )
