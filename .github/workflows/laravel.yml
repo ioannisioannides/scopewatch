@@ -28,6 +28,12 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
+    - name: Update Dependencies
+      run: |
+        composer update
+        git add composer.lock
+        git commit -m "Update composer.lock to resolve dependency issues" || echo "No changes to commit"
+        git push || echo "No changes to push"
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
