@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <h1>Welcome to the Dashboard</h1>
-    <p>You are logged in!</p>
-    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-        @csrf
-    </form>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div id="dashboard-root"></div>
+    <script src="/build/assets/app.js"></script>
 </body>
 </html>
