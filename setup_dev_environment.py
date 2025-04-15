@@ -1,1 +1,0 @@
-scripts/utils/setup_dev_environment.py

@@ -1,193 +1,62 @@
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/ioannisioannides/scopewatch?utm_source=oss&utm_medium=github&utm_campaign=ioannisioannides%2Fscopewatch&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-# Scopewatch
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-Scopewatch is an open-source platform for managing compliance and certifications. It unites organizations, certifying bodies, and auditors in a privacy-first workflow, fostering trust, accountability, and transparency.
+## ScopeWatch
 
-## Why Scopewatch?
+ScopeWatch is a Laravel-based application designed to manage certifications, audits, and compliance workflows. The application is now located in the root directory of this repository.
 
-- **Centralized Compliance:** Manage multiple frameworks in one place.
-- **Transparency & Trust:** Provide public verification of certificates and audits.
-- **Privacy by Design:** Collect minimal personal data; keep sensitive info secure.
-- **Open-Source Collaboration:** Encourage community contributions and improvements.
+## Features
+- User registration and login.
+- Role-based access control (RBAC).
+- Group management for Certification Bodies, Organizations, and Consulting Firms.
+- Certification and audit workflows.
+- Public certification search interface.
 
-## System Architecture
-
-Scopewatch connects multiple stakeholders in the compliance ecosystem:
-
-- **Organizations** seeking certifications
-- **Certification Bodies** conducting audits and issuing certificates
-- **Auditors** gathering evidence and generating findings
-- **Consultants** assisting organizations with compliance
-- **Public Users** who can verify certificates
-
-For a detailed overview of the system architecture, please see the [System Architecture Overview](docs/system_architecture_overview.md).
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip (Python package manager)
-- Virtual environment tool (`virtualenv` or `venv`)
-
-### Automated Setup (Recommended)
-
-We provide an automated setup script for quickly preparing your development environment:
-
-```bash
-# Clone the repository
-git clone https://github.com/ioannisioannides/scopewatch.git
-cd scopewatch
-
-# Run the setup script
-./setup_dev_environment.py
-```
-
-The script will:
-1. Check for required dependencies
-2. Create a virtual environment
-3. Install required packages
-4. Set up a `.env` file
-5. Run database migrations
-6. Offer to create a superuser
-
-### Manual Setup
-
-If you prefer to set up manually, follow these steps:
-
-1. **Clone the Repository**
+## Setup Instructions
+1. Install dependencies:
    ```bash
-   git clone https://github.com/ioannisioannides/scopewatch.git
-   cd scopewatch
+   composer install
+   npm install
    ```
-
-2. **Create and Activate Virtual Environment**
+2. Set up the environment file:
    ```bash
-   # Using virtualenv
-   virtualenv .venv
-
-   # On Windows
-   .\.venv\Scripts\activate
-
-   # On Unix/MacOS
-   source .venv/bin/activate
-   ```
-
-3. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   pip install -r requirements-dev.txt  # For development
-   ```
-
-4. **Set Up Environment Variables**
-   ```bash
-   # Copy the example .env file
    cp .env.example .env
-
-   # Edit the .env file with your settings
    ```
-
-5. **Run Migrations**
+3. Generate the application key:
    ```bash
-   python manage.py makemigrations
-   python manage.py migrate
+   php artisan key:generate
    ```
-
-6. **Create Superuser**
+4. Run migrations and seed the database:
    ```bash
-   python manage.py createsuperuser
+   php artisan migrate --seed
+   ```
+5. Start the development server:
+   ```bash
+   php artisan serve
    ```
 
-### Running the Development Server
+## Folder Structure
+- `app/`: Contains the core application logic.
+- `bootstrap/`: Handles application bootstrapping.
+- `config/`: Configuration files.
+- `database/`: Migrations, seeders, and database files.
+- `public/`: Publicly accessible files.
+- `resources/`: Views, CSS, and JavaScript assets.
+- `routes/`: Application routes.
+- `storage/`: Logs, cache, and other storage.
+- `tests/`: Unit and feature tests.
+- `vendor/`: Composer dependencies.
 
-```bash
-python manage.py runserver
-```
-
-Access the application at http://127.0.0.1:8000/ and the admin interface at http://127.0.0.1:8000/admin/
-
-## Development Guidelines
-
-### Project Structure
-
-The project follows an organized structure to maintain clarity and separation of concerns:
-
-- `apps/` - Django applications organized by domain
-  - `audits/` - Audit management
-  - `certification_bodies/` - Certification bodies and auditors
-  - `consultants/` - Consultant management
-  - `management/` - Management commands application
-  - `organizations/` - Organization management
-  - `public/` - Public certificate verification portal
-  - `utils/` - Shared utility modules
-- `backups/` - Database and migration backups
-  - `db/` - Database backup files
-  - `migrations/` - Migration backup files
-- `docs/` - Project documentation
-- `scripts/` - Utility scripts
-  - `migrations/` - Migration management scripts
-  - `utils/` - General utility scripts
-- `scopewatch/` - Core project settings
-- `templates/` - HTML templates
-
-For more detailed information about the project structure, see our [Project Structure Documentation](docs/project_structure.md).
-
-### Running Tests
-
-```bash
-# Run all tests
-pytest
-
-# Generate coverage report
-pytest --cov=apps
-```
-
-### Code Quality
-
-We use several tools to maintain code quality:
-
-```bash
-# Run linting
-pylint apps
-
-# Format code
-black apps
-isort apps
-```
-
-## Deployment
-
-For production deployment, please ensure:
-
-1. Set `DEBUG=False` in your environment
-2. Provide a secure `DJANGO_SECRET_KEY`
-3. Update `ALLOWED_HOSTS` with your domain name
-4. Configure PostgreSQL database settings
-5. Set up proper web server (Nginx, Apache, etc.)
-
-### Serving Static and Media Files in Production
-
-In production, ensure static and media files are served via a CDN or a dedicated static file server. Update the `STATIC_URL` and `MEDIA_URL` settings accordingly.
-
-See our [deployment guide](docs/deployment.md) for more detailed instructions (coming soon).
-
-## Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add your feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
-
-For major changes, please [open an issue](../../issues) first to discuss your proposed modifications.
+## Future Enhancements
+- Integration with external systems.
+- Advanced analytics and dashboards.
+- Multi-language support.
 
 ## License
-
-This project is licensed under the terms of the license included in the [LICENSE](LICENSE) file.
-
-## Contact
-
-For questions or support, please open an issue on the GitHub repository.
+This project is licensed under the MIT License.
