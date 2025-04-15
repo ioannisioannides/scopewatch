@@ -18,11 +18,7 @@
         </testsuite>
     </testsuites>
 
-    <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true">
-        <include>
-            <directory>app</directory>
-        </include>
-    </source>
+    <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true" />
 
     <coverage>
         <include>

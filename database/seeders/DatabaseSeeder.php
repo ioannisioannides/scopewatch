@@ -32,8 +32,7 @@ class DatabaseSeeder extends Seeder
             Group::create($group);
         }
 
-        // Upda        npm install
-        npm run devte the existing user instead of creating a duplicate
+        // Update the existing user instead of creating a duplicate
         $user = User::updateOrCreate(
             ['email' => 'test@example.com'],
             [
